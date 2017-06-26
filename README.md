@@ -2,7 +2,7 @@
 
 > Software LibreClass CE.
 
-O LibreClass CE é mantido pela empresa Modeon Devhouse.
+O LibreClass CE é mantido pela empresa Modeon Devhouse. É um projeto que surgiu a partir do LibreClass desenvolvido e mantido pela empresa Sysvale Softgroup [Github](https://github.com/Sysvale/libreclass).
 
 ## Instalação
 
