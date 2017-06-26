@@ -6,7 +6,7 @@
     LibreClass Online
   @show
   </title>
-  <link rel="shortcut icon" href="{{{asset("images/favicon.ico")}}}">
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -118,7 +118,7 @@
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-    ga('create', 'UA-90938637-1', 'auto');
+    ga('create', 'UA-101695821-1', 'auto');
     ga('send', 'pageview');
   </script>
 
