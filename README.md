@@ -19,9 +19,9 @@ Modifique o arquivo `apache2/php.ini`, na linha onde há `post_max_size` coloque
 
 Habilite os módulos necessários:
 
-    $ a2enmod rewrite
-    $ php5enmod mcrypt
-    $ service apache2 restart
+    $ sudo a2enmod rewrite
+    $ sudo php5enmod mcrypt
+    $ sudo service apache2 restart
 
 #### Configuração do arquivo `.env.php`
 
