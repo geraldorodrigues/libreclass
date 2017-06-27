@@ -282,7 +282,10 @@ class UnitsController extends \BaseController
       }
       // dd($data['students']);
 
-      $pdf = PDF::loadView('reports.arroio_dos_ratos-rs.class_diary', ['data' => $data])
+      // return View::make('reports.diary', ['data' => $data]);
+
+      // PDF::setOptions(['tempDir', storage_path()]);
+      $pdf = PDF::loadView('reports.diary', ['data' => $data])
         ->setPaper('a4')
         ->setOrientation('landscape')
         ->setOption('margin-top', 5)
@@ -291,11 +294,9 @@ class UnitsController extends \BaseController
         ->setOption('margin-left', 5);
       return $pdf->stream();
 
-      // return View::make('reports.arroio_dos_ratos-rs.class_diary', ['data' => $data]);
-
     } catch (Exception $e) {
       return View::make("reports.report_error", [
-        "message" => $e->getMessage() . ' ' . $e->getLine() . '.',
+        "message" => $e->getMessage() . ' ' . $e->getLine() . ', file: (' . $e->getFile() . ').',
       ]);
     }
   }
@@ -405,7 +406,7 @@ class UnitsController extends \BaseController
       $data['discipline'] = $unit->offer->discipline->name;
       $data['teachers'] = $unit->offer->getTeachers();
 
-      $pdf = PDF::loadView('reports.arroio_dos_ratos-rs.descriptive_exam', ['data' => $data])
+      $pdf = PDF::loadView('reports.diary-descriptive', ['data' => $data])
         ->setPaper('a4')
         ->setOrientation('landscape')
         ->setOption('margin-top', 5)

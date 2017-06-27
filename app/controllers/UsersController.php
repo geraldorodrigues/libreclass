@@ -576,27 +576,27 @@ class UsersController extends \BaseController
       return "Aluno não possui disciplinas.";
     }
 
-		//Variável para acumular os pareceres
-		$pareceres = new StdClass;
-		$pareceres->disciplines = [];
+    //Variável para acumular os pareceres
+    $pareceres = new StdClass;
+    $pareceres->disciplines = [];
     foreach ($disciplines as $key => $discipline) {
 
       // Obtém informações da disciplinas
       $data['disciplines'][$key] = (array) $discipline;
 
-			$pareceres->disciplines[] = $discipline;
-			$pareceres->disciplines[$key]->units = [];
-			$pareceres->disciplines[$key]->hasParecer = false;
+      $pareceres->disciplines[] = $discipline;
+      $pareceres->disciplines[$key]->units = [];
+      $pareceres->disciplines[$key]->hasParecer = false;
 
       // Obtém unidades
       $units = Offer::find($data['disciplines'][$key]['offer'])->units()->orderBy('created_at')->get();
-			// dd($units);
-			// $pareceres = [];
+
       foreach ($units as $key2 => $unit) {
-				var_dump($key2, $key);
-				var_dump('<br />');
-				var_dump('<br />');
-				$pareceres->disciplines[$key]->units[] = $unit;
+        var_dump($key2, $key);
+        var_dump('<br />');
+        var_dump('<br />');
+        $pareceres->disciplines[$key]->units[] = $unit;
+
         // Obtém quantidade de aulas realizadas
         $data['disciplines'][$key][$unit->value]['lessons'] = Offer::find($unit->idOffer)->qtdUnitLessons($unit->value);
 
@@ -605,27 +605,25 @@ class UsersController extends \BaseController
 
         // Obtém a média do alunos por disciplina por unidade
         $average = number_format($unit->getAverage($data['student']['id'])[0], 0);
-				// var_dump($data['disciplines'][$key][$unit->value]);
+
         if ($unit->calculation != 'P') {
           $data['disciplines'][$key][$unit->value]['average'] = ($average > 10) ? number_format($average, 0) : number_format($average, 2);
-        }
-				else {
+        } else {
+          $pareceres->disciplines[$key]->units[$key2]->pareceres = [];
+          //Obtém os pareceres
+          $attend = Attend::where('idUnit', $unit->id)->where('idUser', $data['student']->id)->first();
+          $pareceresTmp = DescriptiveExam::where('idAttend', $attend->id)->get();
 
-					$pareceres->disciplines[$key]->units[$key2]->pareceres = [];
-					//Obtém os pareceres
-					$attend = Attend::where('idUnit', $unit->id)->where('idUser', $data['student']->id)->first();
-					$pareceresTmp = DescriptiveExam::where('idAttend', $attend->id)->get();
+          foreach ($pareceresTmp as $parecer) {
+            $parecer->exam = Exam::where('id', $parecer->idExam)->first(['title', 'type', 'date']);
+            $parecer->exam->type = $this->typesExams($parecer->exam->type);
+          }
+          if (!empty($pareceresTmp)) {
+            $pareceres->disciplines[$key]->hasParecer = true;
+          }
 
-					foreach ($pareceresTmp as $parecer) {
-						$parecer->exam = Exam::where('id', $parecer->idExam)->first(['title', 'type', 'date']);
-						$parecer->exam->type = $this->typesExams($parecer->exam->type);
-					}
-					if(!empty($pareceresTmp)) {
-						$pareceres->disciplines[$key]->hasParecer = true;
-					}
-
-					//Guarda os pareceres para enviar para view
-					$pareceres->disciplines[$key]->units[$key2]->pareceres = $pareceresTmp;
+          //Guarda os pareceres para enviar para view
+          $pareceres->disciplines[$key]->units[$key2]->pareceres = $pareceresTmp;
 
           $data['disciplines'][$key][$unit->value]['average'] = '<small>Parecer<br>descritivo</small>';
         }
@@ -640,8 +638,8 @@ class UsersController extends \BaseController
         }
       }
     }
-		//Guarda pareceres
-		$data['pareceres'] = $pareceres;
+    //Guarda pareceres
+    $data['pareceres'] = $pareceres;
 
     // Obtém dados do curso
     $data['course'] = Course::find($disciplines[0]->course);
@@ -649,27 +647,28 @@ class UsersController extends \BaseController
     // Obtém dados da turma
     $data['classe'] = Offer::find($disciplines[0]->offer)->classe;
 
-    $pdf = PDF::loadView('reports.arroio_dos_ratos-rs.final_result', ['data' => $data]);
+    $pdf = PDF::loadView('reports.student-bulletin', ['data' => $data]);
     return $pdf->stream();
-		// return $pareceres->disciplines;
+    // return $pareceres->disciplines;
   }
 
-	public function typesExams($type) {
-		$typesExams = [
-			"Prova Dissertativa Individual",
-			"Prova Dissertativa em Grupo",
-			"Prova Objetiva Individual",
-			"Prova Objetiva em Grupo",
-			"Trabalho Dissertativo Individual",
-			"Trabalho Dissertativo em Grupo",
-			"Apresentação de Seminário",
-			"Projeto",
-			"Produção Visual",
-			"Pesquisa de Campo",
-			"Texto Dissertativo",
-			"Avaliação Prática",
-			"Outros"
-		];
-		return $typesExams[$type];
-	}
+  public function typesExams($type)
+  {
+    $typesExams = [
+      "Prova Dissertativa Individual",
+      "Prova Dissertativa em Grupo",
+      "Prova Objetiva Individual",
+      "Prova Objetiva em Grupo",
+      "Trabalho Dissertativo Individual",
+      "Trabalho Dissertativo em Grupo",
+      "Apresentação de Seminário",
+      "Projeto",
+      "Produção Visual",
+      "Pesquisa de Campo",
+      "Texto Dissertativo",
+      "Avaliação Prática",
+      "Outros",
+    ];
+    return $typesExams[$type];
+  }
 }

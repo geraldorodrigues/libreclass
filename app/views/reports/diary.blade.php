@@ -2,7 +2,7 @@
 <html>
 
 	<head>
-		<meta charset="UTF-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<style type="text/css" media="screen">
 			.vertical {
@@ -12,8 +12,11 @@
 			.vertical-align {
 				vertical-align: middle !important;
 			}
-			.nowrap {
+			td {
 				white-space: nowrap;
+			}
+			tr, .panel {
+				page-break-inside: avoid;
 			}
 			.limited-width {
 				max-width: 3em;
@@ -31,18 +34,15 @@
 				margin-left: -10em;
 				margin-right: -10em;
 			}
-			tr, .panel {
-				page-break-inside: avoid;
-			}
 		</style>
 	</head>
 
-	<body>
+	<body style="width: 100%">
 
-		<header style="margin-bottom: 15px;">
-			<table>
-				<tr>
-					<td style="width: 10%; padding-right: 15px;"><img style="width: 85%;" src="{{ public_path() }}/images/logo-arroio_dos_ratos-rs.jpg" class="img-responsive"></td>
+		<header style="margin-bottom: 15px; width: 100%;">
+			<table style="width: 100%">
+				<tr style="width: 100%">
+					<td style="width: 10%; padding-right: 15px;"></td>
 					<td style="width: 80%;" class="text-center">
 						<div style="width: 100%;">
 							<h4>{{ $data['institution']->name }}</h4>
@@ -50,7 +50,7 @@
 							<h5>Código UEE: {{ $data['institution']->uee }}</h5>
 						</div>
 					</td>
-					<td style="width: 10%; padding-left: 15px;"><img src="{{ public_path() . $data['institution']->photo }}" class="img-responsive"></td>
+					<td style="width: 10%; padding-left: 15px;"></td>
 				</tr>
 			</table>
 		</header>
@@ -91,7 +91,7 @@
 				@foreach ($data['students'] as $student)
 					<tr>
 						<td class="text-center">{{ $student->number }}</td>
-						<td class="nowrap">{{ trim($student->name) }}</td>
+						<td>{{ trim($student->name) }}</td>
 						@foreach ($student->absences as $absence)
 							<td class="text-center">{{ $absence }}</td>
 						@endforeach
@@ -115,46 +115,34 @@
 			</div>
 		@endforeach
 
-		@if ($data['exams'] != null)
-			<div>
-				<h5 class='text-center breadcrumb'>Avaliações</h5>
-			</div>
+		<div>
+			<h5 class='text-center breadcrumb'>Avaliações</h5>
+		</div>
 
-			<div class="pdf small">
-			  @foreach ($data['exams'] as $exam)
-			  	<h5><strong>Disciplina: </strong> {{ $data['discipline'] }}</h5>
-			  	<h5>
-			  		@if (count($data['teachers']) == 1)
-				  		<strong>Professor(a): </strong>
-			  			<span>{{ $data['teachers'][0] }}</span>
-			  		@elseif (count($data['teachers']) > 1)
-			  			<strong>Professores(as): </strong>
-							@foreach ($data['teachers'] as $teacher)
-								<span>{{ $teacher }}</span>
-							@endforeach
-			  		@endif
-			  	<h5>
-			  	<h5><b>Aulas realizadas:</b> {{ $data['unit']->count_lessons }}</h5>
-					<h5><strong>Título da avaliação: </strong>{{ $exam['data']['title'] }}
-						<small>{{ date_format(date_create($exam['data']['date']), "d/m/Y") }}</small>
-					</h5>
-					@if ($exam['data']['comments'])
-						<h5><strong>Descrição: </strong>{{ $exam['data']['comments'] }}</h5>
-					@endif
-					<table class="table table-bordered">
-						@foreach ($exam['descriptions'] as $d)
-							<tr>
-								<td>
-									<h5><b>{{ $d->student->name }} <small>{{ $d->approved == 'A' ? 'Aprovado' : 'Reprovado' }}</small></b></h5>
-									<h5>Faltas: {{ $d->student->absence }}</b></h5>
-									<p>{{ $d->description }}</p>
-								</td>
-							</tr>
+		<div class="small">
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<th class="text-center vertical-align"><b>N#</b></th>
+					<th class="text-center vertical-align"><b>Aluno(a)</b></th>
+					@foreach ($data['exams'] as $exam)
+						<th class="limited-width text-center vertical-align"><div>Avaliação {{ $exam->number }} ({{ $exam->date }})</div></th>
+					@endforeach
+					<th class="limited-width text-center vertical-align">Média</th>
+					<th class="limited-width text-center vertical-align">Avaliação de recuperação</th>
+				</tr>
+				@foreach ($data['students'] as $student)
+					<tr>
+						<td class="text-center">{{ $student->number }}</td>
+						<td>{{ trim($student->name) }}</td>
+						@foreach ($student->exams as $exam)
+							<td class="text-center">{{ $exam }}</td>
 						@endforeach
-					</table>
+						<td class="text-center">{{ $student->average }}</td>
+						<td class="text-center">{{ $student->finalAverage }}</td>
+					</tr>
 				@endforeach
-			</div>
-		@endif
+			</table>
+		</div>
 
 	</body>
 
