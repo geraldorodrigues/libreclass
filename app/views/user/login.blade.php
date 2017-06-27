@@ -7,9 +7,9 @@ Login
 
 @section('extraJS')
 @parent
-  {{ HTML::script('http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/additional-methods.min.js') }}
-  {{ HTML::script('http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js') }}
-  {{ HTML::script('js/validations/usersLogin.js') }}
+  {{ HTML::script('/js/additional-methods.min.js') }}
+  {{ HTML::script('/js/jquery.validate.min.js') }}
+  {{ HTML::script('/js/validations/usersLogin.js') }}
 @stop
 
 @section('body')
