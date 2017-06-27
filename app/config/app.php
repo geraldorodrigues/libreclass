@@ -26,7 +26,7 @@ return array(
   |
    */
 
-  'url' => 'https://libreclass.com',
+  'url' => 'https://app.libreclass.com',
 
   /*
   |--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ return array(
   |
    */
 
-  'timezone' => 'America/Bahia',
+  'timezone' => 'America/Recife',
 
   /*
   |--------------------------------------------------------------------------
