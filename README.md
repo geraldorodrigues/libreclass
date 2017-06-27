@@ -32,6 +32,7 @@ Habilite os módulos necessários:
     return [
 
         // General
+        'KEY' => '7PeWDIaAGlf9OuS4yJfHjivZsFG5Nv19',
         'DEBUG' => true,
 
         // Database
