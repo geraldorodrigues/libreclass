@@ -9,7 +9,7 @@
 @section('js')
 @parent
   {{ HTML::script('js/config.js') }}
-  {{ HTML::script('http://maps.googleapis.com/maps/api/js?key=AIzaSyBVmdz-iIJpd-TisFvAg4qIU9WVqRVvVbk&v=3.exp&libraries=places') }}
+  {{ HTML::script('https://maps.googleapis.com/maps/api/js?key=AIzaSyD4URXHX5LG3wqtJGmRpERPcUE9ZXyptJU&libraries=places') }}
   {{ HTML::script('js/validations/usersConfig.js') }}
 @stop
 
@@ -120,8 +120,8 @@
                 </td>
               </tr>
             @endif
-            
-            @if($user->type == "I")  
+
+            @if($user->type == "I")
             <tr class="block-config-item">
               <td>Código da UEE</td>
               <td class="text-info">{{$user->uee or "Inserir"}}</td>
@@ -143,7 +143,7 @@
               </td>
             </tr>
           @endif
-            
+
           @if($user->type != "I")
             <tr class="block-config-item">
               <td>Data de Nascimento</td>
@@ -280,7 +280,7 @@
                 {{-- Form::close() --}}
               </td>
             </tr> -->
-          @if($user->type == "I")  
+          @if($user->type == "I")
             <tr class="block-config-item">
               <td>Endereço</td>
               <td class="text-info" id="institution-description">{{$user->street or "Inserir"}}</td>
@@ -302,7 +302,7 @@
               </td>
             </tr>
           @endif
-             
+
             <tr id="block-map" class="block-config-item">
               <td>Localização</td>
               <td class="text-info">{{ $user->idCity ? $user->printLocation() : "" }}</td>
