@@ -63,7 +63,7 @@ Execute o composer na raiz do projeto para instalar as dependências necessária
     $ composer install
 
 ## Banco de dados
-A estrutura do banco de dados poderá ser encontrada no projeto `doc` do LibreClass CE: [GitHub link](http://example.com/).
+A estrutura do banco de dados poderá ser encontrada no projeto `doc` do LibreClass CE: [GitHub link](https://github.com/LibreClass/doc).
 
 ## Pós-instalação
 
