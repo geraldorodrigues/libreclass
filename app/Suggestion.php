@@ -1,0 +1,13 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Suggestion extends Model
+{
+
+  protected $table = "Suggestions";
+  public $timestamps = false;
+
+}
