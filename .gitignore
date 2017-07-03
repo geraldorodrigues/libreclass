@@ -8,3 +8,4 @@ Thumbs.db
 nbproject/
 public/uploads/*.jpg
 .phpintel
+node_modules
