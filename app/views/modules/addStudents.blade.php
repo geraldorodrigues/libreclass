@@ -16,7 +16,7 @@
 @section('body')
 @parent
 
-<div class="row">
+<div class="row" id="view-student">
   <div class="col-md-8 col-xs-12 col-sm-12">
     <div id="block">
 
@@ -61,10 +61,17 @@
                 </thead>
                 <tbody>
                 @foreach($relationships as $relationship)
-                  <tr>
+                  <tr data-relationship-id="{{Crypt::encrypt($relationship->id)}}" class="student-item">
                     <td><a href='{{ URL::to("user/profile-student?u=".Crypt::encrypt($relationship->id)) }}'>{{$relationship->enrollment }}</a></td>
                     <td><a href='{{ URL::to("user/profile-student?u=".Crypt::encrypt($relationship->id)) }}'>{{ $relationship->name }}</a></td>
                     <td class="text-right">
+                      <div class="col-md-12 text-right">
+                        <i class="fa fa-gears icon-default click" data-toggle="dropdown" aria-expanded="false"></i>
+                        <ul class="dropdown-menu data" role="menu">
+                          <li><a class="new-student" edit title="Editar aluno"><i class="fa fa-edit text-info"></i> Editar</a></li>
+                        </ul>
+
+                      </div>
                       <!--<i class="fa fa-pencil icon-default"></i> <i class="fa fa-trash icon-default"></i>-->
                     </td>
                   </tr>
@@ -118,6 +125,7 @@
         <div class="col-md-12">
           <div class="block-new-student" hidden>
           {{ Form::open(["id" => "new-student"]) }}
+          {{ Form::text("student_id", null, ['class' => "hidden"]) }}
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
@@ -141,23 +149,33 @@
               {{ Form::label("name", "*Nome") }}
               {{ Form::text("name", null, ["class" => "form-control", "required"]) }}
             </div>
-            <div class="form-group">
-              {{ Form::label("email", "Email") }}
-              {{ Form::email("email", null, ["class" => "form-control"]) }}
+            <div class="row">
+              <div class="col-xs-12 col-sm-4">
+                <div class="form-group">
+                  {{ Form::label("gender", "*Sexo") }}
+                  {{ Form::select("gender", ['M'=> 'Masculino', 'F'=> 'Feminino'], null, ["class" => "form-control", 'required']) }}
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-8">
+                <div class="form-group">
+                  {{ Form::label("email", "Email") }}
+                  {{ Form::email("email", null, ["class" => "form-control"]) }}
+                </div>
+              </div>
             </div>
             <div class="form-group">
               {{ Form::label("course", "Curso") }}
               {{ Form::select("course", $courses, null, ["class" => "form-control"]) }}
             </div>
 
-          	<div class="row">
-          		<div class="col-xs-6">
+            <div class="row">
+              <div class="col-xs-6">
             {{ Form::submit("Confirmar", ["class" => "btn btn-primary"]) }}
-							</div>
-							<!-- <div class="col-xs-6 text-right">
-								<a href="" class="add-censo">Adicionar informações do censo escolar</a>
-							</div> -->
-						</div>
+              </div>
+              <!-- <div class="col-xs-6 text-right">
+                <a href="" class="add-censo">Adicionar informações do censo escolar</a>
+              </div> -->
+            </div>
           {{ Form::close() }}
 
           </div>

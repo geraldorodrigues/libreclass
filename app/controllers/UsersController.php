@@ -206,6 +206,16 @@ class UsersController extends \BaseController
     }
   }
 
+  public function postGetStudent()
+  {
+    $student = User::whereId(Crypt::decrypt(Input::get('student_id')))->first(['id', 'name', 'email', 'birthdate', 'enrollment', 'gender', 'course']);
+    if (!$student) {
+      return ['status' => 0, 'message' => 'Não encontrado'];
+    }
+    $student->id = Crypt::encrypt($student->id);
+    return ['status' => 1, 'student' => $student];
+  }
+
   public function anyReporterStudentClass()
   {
     $student = Crypt::decrypt(Input::get("student"));
@@ -411,7 +421,7 @@ class UsersController extends \BaseController
 
       $listCourses = ["" => ""];
       foreach ($courses as $course) {
-        $listCourses[$course->name] = $course->name;
+        $listCourses[$course->id] = $course->name;
       }
 
       $relationships = DB::select("SELECT Users.id, Users.name, Users.enrollment "
@@ -449,23 +459,32 @@ class UsersController extends \BaseController
 
   public function postStudent()
   {
-    $user = new User;
+    if (Input::has('student_id')) {
+      $user = User::find(Crypt::decrypt(Input::get('student_id')));
+      $message = "Os dados do aluno foram atualizados com sucesso.";
+    } else {
+      $user = new User;
+      $user->type = "N";
+      $message = "Aluno cadastrado com sucesso.";
+    }
     $user->enrollment = Input::get("enrollment");
     $user->name = Input::get("name");
     $user->email = strlen(Input::get("email")) ? Input::get("email") : null;
     $user->course = Input::get("course");
+    $user->gender = Input::get("gender");
     $user->birthdate = Input::get("date-year") . "-" . Input::get("date-month") . "-" . Input::get("date-day");
-    $user->type = "N";
     $user->save();
 
-    $relationship = new Relationship;
-    $relationship->idUser = $this->idUser;
-    $relationship->idFriend = $user->id;
-    $relationship->status = "E";
-    $relationship->type = "1";
-    $relationship->save();
+    if (!Input::has('student_id')) {
+      $relationship = new Relationship;
+      $relationship->idUser = $this->idUser;
+      $relationship->idFriend = $user->id;
+      $relationship->status = "E";
+      $relationship->type = "1";
+      $relationship->save();
+    }
 
-    return Redirect::guest("/user/student")->with("success", "Aluno cadastrado com sucesso!");
+    return Redirect::guest("/user/student")->with("success", $message);
   }
 
   public function postUnlink()
