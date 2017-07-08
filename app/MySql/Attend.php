@@ -1,12 +1,13 @@
 <?php
 
-namespace App;
+namespace App\MySql;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Attend extends Model
 {
   protected $table = "Attends";
+  protected $connection = 'mysql';
   protected $fillable = ['idUser', 'idUnit'];
 
   public function getUser()

@@ -1,13 +1,14 @@
 <?php
 
-namespace App;
+namespace App\MySql;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Classe extends Model
+class Discipline extends Model
 {
-  protected $table = "Classes";
-  protected $fillable = ['name', 'idPeriod', 'class'];
+  protected $table = 'Disciplines';
+  protected $connection = 'mysql';
+  protected $fillable = ['name', 'idPeriod'];
 
   public function period()
   {
@@ -17,10 +18,5 @@ class Classe extends Model
   public function getPeriod()
   {
     return Period::find($this->idPeriod);
-  }
-
-  public function fullName()
-  {
-    return "[$this->class] $this->name";
   }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\MySql;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,6 +10,7 @@ class User extends Authenticatable
   use Notifiable;
 
   protected $table = 'Users';
+  protected $connection = 'mysql';
   protected $fillable = ['name', 'type', 'cadastre', 'birthdate', 'enrollment', 'gender'];
 
   public function disciplines()

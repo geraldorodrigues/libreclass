@@ -1,12 +1,13 @@
 <?php
 
-namespace App;
+namespace App\MySql;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Exam extends Model
 {
   protected $table = "Exams";
+  protected $connection = 'mysql';
 
   public function unit()
   {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\MySql;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Campu extends Model
+class Classroom extends Model
 {
   protected $fillable = [];
 }

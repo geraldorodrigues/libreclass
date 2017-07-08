@@ -1,12 +1,13 @@
 <?php
 
-namespace App;
+namespace App\MySql;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Bind extends Model
 {
   protected $table = "Binds";
+  protected $connection = 'mysql';
   public $timestamps = false;
 
   public function discipline()

@@ -1,12 +1,13 @@
 <?php
 
-namespace App;
+namespace App\MySql;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Relationship extends Model
 {
   protected $table = "Relationships";
+  protected $connection = 'mysql';
   protected $fillable = ['idUser', 'idFriend', 'type'];
 
   public function getUser()

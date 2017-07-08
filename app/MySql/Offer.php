@@ -1,12 +1,13 @@
 <?php
 
-namespace App;
+namespace App\MySql;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Offer extends Model
 {
   protected $table = "Offers";
+  protected $connection = 'mysql';
   protected $fillable = ['idClass', 'idDiscipline', 'classroom', 'day_period'];
 
   public function discipline()

@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\User;
+use App\MySql\Relationship;
+use App\MySql\Course;
+
 class UsersController extends Controller
 {
 
