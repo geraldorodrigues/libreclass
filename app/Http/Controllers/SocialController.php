@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\User;
+use Session;
+use Redirect;
+use Mail;
+
 class SocialController extends Controller
 {
   private $idUser;
