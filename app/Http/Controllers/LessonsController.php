@@ -2,6 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\Lesson;
+use App\MySql\User;
+use App\MySql\Attend;
+use App\MySql\Frequency;
+use Session;
+use Crypt;
+use Redirect;
+
 class LessonsController extends Controller
 {
   private $idUser;
