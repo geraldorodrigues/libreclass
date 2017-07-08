@@ -2,6 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\User;
+use App\MySql\Exam;
+use App\MySql\Attend;
+use App\MySql\Unit;
+use App\MySql\ExamsValue;
+use App\MySql\DescriptiveExam;
+use App\MySql\FinalExam;
+use App\MySql\Offer;
+use App\MySql\Lecture;
+
+use Crypt;
+use Session;
+use Redirect;
+
 class AvaliableController extends Controller
 {
 

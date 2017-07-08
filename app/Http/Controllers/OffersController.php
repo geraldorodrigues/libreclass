@@ -2,6 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\User;
+use App\MySql\Classe;
+use App\MySql\Period;
+use App\MySql\Offer;
+use App\MySql\Course;
+use App\MySql\Unit;
+use App\MySql\Lector;
+use App\MySql\Attend;
+
+use Session;
+use Crypt;
+use Redirect;
+
 class OffersController extends Controller
 {
 

@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\User;
+
+use Session;
+
 class CensoController extends Controller
 {
 

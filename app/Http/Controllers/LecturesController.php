@@ -2,6 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\User;
+use App\MySql\Lecture;
+use App\MySql\Offer;
+use App\MySql\Unit;
+use App\MySql\FinalExam;
+
+use Session;
+use Crypt;
+use Redirect;
+
 class LecturesController extends Controller
 {
 
