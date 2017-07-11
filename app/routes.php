@@ -5,6 +5,10 @@
 //   return $pdf->stream();
 // });
 
+Route::group(['before' => 'cors'], function () {
+  Route::any('/landingpage/message', 'LandingpageController@message');
+});
+
 Route::controller('/censo', 'CensoController');
 
 // Erro ao detectar internet explorer
