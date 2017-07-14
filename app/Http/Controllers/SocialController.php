@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use Auth;
+use Session;
+
 class SocialController extends Controller
 {
   private $idUser;
 
   public function __construct()
   {
-    $id = Session::get("user");
-    if ($id == null || $id == "") {
+    // Log::info('SocialController', []);
+    if (Auth::check()) {
       $this->idUser = false;
     } else {
-      $this->idUser = Crypt::decrypt($id);
+      $user = Auth::user();
+      $this->idUser = $user->id;
     }
 
   }
@@ -23,7 +28,7 @@ class SocialController extends Controller
       return Redirect::to(Session::get("redirect"));
     }
 
-    $user = User::find($this->idUser);
+    $user = Auth::user();
     Session::put("type", $user->type);
 
     return view("social.home", ["user" => $user]);
