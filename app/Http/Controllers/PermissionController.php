@@ -2,6 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\User;
+use App\MySql\Ctrl;
+use App\MySql\Adminer;
+
+use Session;
+use Crypt;
+use Redirect;
+
 class PermissionController extends Controller
 {
 

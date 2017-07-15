@@ -2,6 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\Course;
+use App\MySql\Period;
+
+use Session;
+use Crypt;
+use Redirect;
+
 class CoursesController extends Controller
 {
 
