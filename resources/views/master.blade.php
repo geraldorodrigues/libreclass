@@ -16,12 +16,14 @@
 	{{ HTML::style('https://fonts.googleapis.com/icon?family=Material+Icons">')}}
 
   {{ HTML::style('assets/css/bootstrap.min.css') }}
+  {{ HTML::style('assets/lealjs/leal.min.css') }}
   {{ HTML::style('css/home.css') }}
   {{ HTML::style('css/fa/css/font-awesome.min.css') }}
   {{ HTML::style('css/validation.css') }}
 
 
   {{ HTML::script('js/jquery.min.js') }}
+	{{ HTML::style('assets/lealjs/leal.min.js') }}
   {{ HTML::script('assets/js/bootstrap.min.js') }}
   {{ HTML::script('js/register.js') }}
   {{ HTML::script('js/menu.js') }}

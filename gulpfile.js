@@ -21,6 +21,9 @@ elixir(function(mix) {
 	mix.stylus('configBootstrap.styl', 'public/assets/css/bootstrap.min.css');
 	mix.scripts('./resources/assets/lib/bootstrap/js/*.js', 'public/assets/js/bootstrap.min.js');
 
+	//Bibliotecas
+	mix.copy('node_modules/lealjs/dist', 'public/assets/lealjs');
+
 	// mix.stylus('bootstrap.styl', 'public/css/bootstrap.min.css');
 
 	// //Libs
