@@ -2,121 +2,119 @@
 
 namespace App\MongoDb;
 
-use Illuminate\Database\Eloquent\Model;
-
 class Offer extends \Moloquent
 {
-  protected $fillable = ['class_id', 'discipline_id', 'classroom', 'day_period'];
+	protected $fillable = ['class_id', 'discipline_id', 'classroom', 'day_period'];
 
-  public function discipline()
-  {
-    return $this->belongsTo('Discipline', 'discipline_id');
-  }
+	public function discipline()
+	{
+		return $this->belongsTo('Discipline', 'discipline_id');
+	}
 
-  public function units()
-  {
-    return $this->hasMany('Unit', 'offer_id');
-  }
+	public function units()
+	{
+		return $this->hasMany('Unit');
+	}
 
-  public function classe()
-  {
-    return $this->belongsTo('Classe', 'class_id');
-  }
+	public function classe()
+	{
+		return $this->belongsTo('Classe', 'class_id');
+	}
 
-  public function getDiscipline()
-  {
-    return Discipline::find($this->idDiscipline);
-  }
+	public function getDiscipline()
+	{
+		return Discipline::find($this->idDiscipline);
+	}
 
-  public function getClass()
-  {
-    return Classe::find($this->idClass);
-  }
+	public function getClass()
+	{
+		return Classe::find($this->idClass);
+	}
 
-  public function getFirstUnit()
-  {
-    return Unit::where("offer_id", $this->id)->first();
-  }
+	public function getFirstUnit()
+	{
+		return Unit::where("offer_id", $this->id)->first();
+	}
 
-  public function getLastUnit()
-  {
-    return Unit::where("idOffer", $this->id)->orderBy("value", "desc")->first();
-  }
+	public function getLastUnit()
+	{
+		return Unit::where("idOffer", $this->id)->orderBy("value", "desc")->first();
+	}
 
-  public function getUnits()
-  {
-    return Unit::where("offer_id", $this->id)->get();
-  }
+	public function getUnits()
+	{
+		return Unit::where("offer_id", $this->id)->get();
+	}
 
-  public function getLectures()
-  {
-    return Lecture::where("offer_id", $this->id)->first();
-  }
+	public function getLectures()
+	{
+		return Lecture::where("offer_id", $this->id)->first();
+	}
 
-  public function getAllLectures()
-  {
-    return Lecture::where("offer_id", $this->id)->get();
-  }
+	public function getAllLectures()
+	{
+		return Lecture::where("offer_id", $this->id)->get();
+	}
 
-  /*public function qtdAbsences($idStudent)
-  {
-    return DB::select("SELECT COUNT(*) as 'qtd'
-                        FROM Units, Attends, Lessons, Frequencies
-                        WHERE Units.idOffer=? AND
-                              Units.id=Lessons.idUnit AND
-                              Lessons.id=Frequencies.idLesson AND
-                              Lessons.deleted_at IS NULL AND
-                              Frequencies.idAttend=Attends.id AND
-                              Frequencies.value='F' AND
-                              Attends.idUser=?", [$this->id, $idStudent])[0]->qtd;
-  }
+	/*public function qtdAbsences($idStudent)
+	{
+		return DB::select("SELECT COUNT(*) as 'qtd'
+												FROM Units, Attends, Lessons, Frequencies
+												WHERE Units.idOffer=? AND
+															Units.id=Lessons.idUnit AND
+															Lessons.id=Frequencies.idLesson AND
+															Lessons.deleted_at IS NULL AND
+															Frequencies.idAttend=Attends.id AND
+															Frequencies.value='F' AND
+															Attends.idUser=?", [$this->id, $idStudent])[0]->qtd;
+	}
 
-  public function qtdUnitAbsences($idStudent, $unitValue)
-  {
-    return DB::select("SELECT COUNT(*) as 'qtd'
-                        FROM Units, Attends, Lessons, Frequencies
-                        WHERE Units.idOffer = ? AND
-                              Units.value = ? AND
-                              Units.id = Lessons.idUnit AND
-                              Lessons.id = Frequencies.idLesson AND
-                              Lessons.deleted_at IS NULL AND
-                              Frequencies.idAttend = Attends.id AND
-                              Frequencies.value = 'F' AND
-                              Attends.idUser = ?", [$this->id, $unitValue, $idStudent])[0]->qtd;
-  }
+	public function qtdUnitAbsences($idStudent, $unitValue)
+	{
+		return DB::select("SELECT COUNT(*) as 'qtd'
+												FROM Units, Attends, Lessons, Frequencies
+												WHERE Units.idOffer = ? AND
+															Units.value = ? AND
+															Units.id = Lessons.idUnit AND
+															Lessons.id = Frequencies.idLesson AND
+															Lessons.deleted_at IS NULL AND
+															Frequencies.idAttend = Attends.id AND
+															Frequencies.value = 'F' AND
+															Attends.idUser = ?", [$this->id, $unitValue, $idStudent])[0]->qtd;
+	}
 
-  public function qtdLessons()
-  {
-    return DB::select("SELECT COUNT(*) as 'qtd'
-                        FROM Units, Lessons
-                        WHERE Units.idOffer=? AND
-                              Units.id=Lessons.idUnit AND
-                              Lessons.deleted_at IS NULL", [$this->id])[0]->qtd;
-  }
+	public function qtdLessons()
+	{
+		return DB::select("SELECT COUNT(*) as 'qtd'
+												FROM Units, Lessons
+												WHERE Units.idOffer=? AND
+															Units.id=Lessons.idUnit AND
+															Lessons.deleted_at IS NULL", [$this->id])[0]->qtd;
+	}
 
-  public function qtdUnitLessons($unitValue)
-  {
-    return DB::select("SELECT COUNT(*) as 'qtd'
-                        FROM Units, Lessons
-                        WHERE Units.idOffer=? AND
-                              Units.value=? AND
-                              Units.id=Lessons.idUnit AND
-                              Lessons.deleted_at IS NULL", [$this->id, $unitValue])[0]->qtd;
-  }
+	public function qtdUnitLessons($unitValue)
+	{
+		return DB::select("SELECT COUNT(*) as 'qtd'
+												FROM Units, Lessons
+												WHERE Units.idOffer=? AND
+															Units.value=? AND
+															Units.id=Lessons.idUnit AND
+															Lessons.deleted_at IS NULL", [$this->id, $unitValue])[0]->qtd;
+	}
 
-  public function getCourse()
-  {
-    $course = DB::select("SELECT Periods.idCourse FROM Classes, Periods WHERE ?=Classes.id AND Classes.idPeriod=Periods.id", [$this->idClass])[0]->idCourse;
-    return Course::find($course);
-  }
+	public function getCourse()
+	{
+		$course = DB::select("SELECT Periods.idCourse FROM Classes, Periods WHERE ?=Classes.id AND Classes.idPeriod=Periods.id", [$this->idClass])[0]->idCourse;
+		return Course::find($course);
+	}
 
-  public function getTeachers()
-  {
-    $teachers = [];
-    $lectures = Lecture::where("idOffer", $this->id)->get();
-    foreach ($lectures as $lecture) {
-      $teachers[] = $lecture->getUser()->name;
-    }
-    return $teachers;
-  }*/
+	public function getTeachers()
+	{
+		$teachers = [];
+		$lectures = Lecture::where("idOffer", $this->id)->get();
+		foreach ($lectures as $lecture) {
+			$teachers[] = $lecture->getUser()->name;
+		}
+		return $teachers;
+	}*/
 }

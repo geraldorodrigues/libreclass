@@ -2,9 +2,7 @@
 
 namespace App\MongoDb;
 
-use Illuminate\Database\Eloquent\Model;
-
 class Block extends \Moloquent
 {
-  protected $hidden = ['_id'];
+	protected $hidden = ['_id'];
 }

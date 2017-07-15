@@ -26,7 +26,7 @@ CanResetPasswordContract
 	*
 	* @var array
 	*/
-	protected $fillable = ['name', 'type', 'cadastre', 'birthdate', 'enrollment', 'gender'];
+	protected $fillable = ['name', 'type', 'status', 'birth_date', 'enrollment', 'gender'];
 
 	//type: A - Adminer;	E - Employee
 	/**
