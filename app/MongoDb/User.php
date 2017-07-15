@@ -26,9 +26,8 @@ CanResetPasswordContract
 	*
 	* @var array
 	*/
-	protected $fillable = [
-		'name', 'email', 'password', 'type', 'delegacia_id'
-	];
+	protected $fillable = ['name', 'type', 'cadastre', 'birthdate', 'enrollment', 'gender'];
+
 	//type: A - Adminer;	E - Employee
 	/**
 	* The attributes that should be hidden for arrays.
@@ -39,40 +38,48 @@ CanResetPasswordContract
 		'password', 'remember_token','_id'
 	];
 
-	//Relacionamentos do Admin
-	public function syndicate()
+	public function disciplines()
 	{
-		return $this->belongsTo('App\Syndicate');
+		return $this->belongsToMany('Discipline', 'Binds', 'user_id', 'discipline_id');
 	}
 
-	//Imagem de perfil
-	public function file()
+	public function offers()
 	{
-		return $this->belongsTo('App\File');
+		return $this->belongsToMany('Offer', 'Lectures', 'user_id', 'offer_id');
 	}
 
-	public function documents()
+	public function courses()
 	{
-		return $this->hasMany('App\Document');
+		return $this->hasMany('Course', 'institution_id');
 	}
 
 	public function setNameAttribute($value)
 	{
-		$this->attributes['name'] = titleCase(trimpp($value));
+		$this->attributes['name'] = ucwords($value);
 	}
 
-	public function setEmailAttribute($value)
+	public function printLocation()
 	{
-		$this->attributes['email'] = strtolower($value);
+		$city = City::find($this->idCity);
+		if (!$city) {
+			return "";
+		}
+
+		$state = State::find($city->idState);
+		$country = Country::find($state->idCountry);
+
+		return "$city->name, $state->name, $country->name";
 	}
 
-	public function setCpfAttribute($value)
+	public function printCityState()
 	{
-		$this->attributes['cpf'] = str_replace(['.','-'], '', $value);
-	}
+		$city = City::find($this->idCity);
+		if (!$city) {
+			return "";
+		}
 
-	public function getCpfAttribute($value)
-	{
-		return format('%s%s%s.%s%s%s.%s%s%s-%s%s', $value);
+		$state = State::find($city->idState);
+
+		return "$city->name - $state->name";
 	}
 }
