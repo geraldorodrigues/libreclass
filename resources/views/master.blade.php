@@ -23,7 +23,7 @@
 
 
   {{ HTML::script('js/jquery.min.js') }}
-	{{ HTML::style('assets/lealjs/leal.min.js') }}
+	{{ HTML::script('assets/lealjs/leal.min.js') }}
   {{ HTML::script('assets/js/bootstrap.min.js') }}
   {{ HTML::script('js/register.js') }}
   {{ HTML::script('js/menu.js') }}
