@@ -6,26 +6,24 @@ O LibreClass CE é mantido pela empresa Modeon Devhouse. É um projeto que surgi
 
 ## Instalação
 
-Instale o apache:
+#### 1. Em uma máquina linux Ubuntu 16.04 ou outra distribuição semelhante, instale os softwares necessários:
 
-    $ sudo apt-get install apache2
+    $ sudo apt-get update && sudo apt-get install curl git apache2 php7.0 php7.0-mcrypt php7.0-curl php-imagick php7.0-mysql mysql-server
 
-Instale o php5, mysql, composer, etc:
+#### 2. Habilite os módulos necessários:
 
-    $ sudo apt-get install apache2 php5 php5-mcrypt php5-curl php5-imagick php5-mysql
-    $ sudo apt-get install mysql-server
+    $ sudo a2enmod rewrite && sudo php5nmod mcrypt && sudo service apache2 restart
 
-Modifique o arquivo `apache2/php.ini`, na linha onde há `post_max_size` coloque o tamanho máximo de arquivo em 10M.
+#### 3. Instale o código do LibreClass CE:
 
-Habilite os módulos necessários:
+    $ git clone https://github.com/LibreClass/libreclass.git
 
-    $ sudo a2enmod rewrite
-    $ sudo php5enmod mcrypt
-    $ sudo service apache2 restart
+#### 4. Configure o aquivo `.env.php`
 
-#### Configuração do arquivo `.env.php`
+    $ cd libreclass
+    $ cp .env.php.example .env.php
 
-É necessário criar o arquivo `.env.php` de acordo com o arquivo `.env.php.example`, na raiz do projeto, com as informações para conexão ao banco de dados MySQL e configurações para envio de email. Este passo deve ser executado antes de instalar as dependências do projeto com o composer. Exemplo:
+OBS: É necessário criar o arquivo `.env.php` de acordo com o arquivo `.env.php.example`, na raiz do projeto, com as informações para conexão ao banco de dados MySQL e configurações para envio de email. Este passo deve ser executado antes de instalar as dependências do projeto com o composer. Exemplo:
 
     <?php
 
@@ -36,10 +34,10 @@ Habilite os módulos necessários:
         'DEBUG' => true,
 
         // Database
-        'DB_HOST' => '192.168.50.200',
-        'DB_DATABASE' => 'libreclass-beta',
-        'DB_USERNAME' => 'libreclass',
-        'DB_PASSWORD' => 'libreClass1beta!',
+        'DB_HOST' => '127.0.0.1',
+        'DB_DATABASE' => 'libreclass',
+        'DB_USERNAME' => 'root',
+        'DB_PASSWORD' => '1234',
 
         // Email
         'EMAIL_DRIVER' => 'smtp',
@@ -53,12 +51,14 @@ Habilite os módulos necessários:
 
     ];
 
-Instale o composer:
+Atenção: Configure corretamente o `DB_USERNAME` e o `DB_PASSWORD` com o usuário e a senha do MySQL.
+
+#### 5. Instale o composer:
 
     $ php -r "readfile('https://getcomposer.org/installer');" | php
     $ sudo cp composer.phar /bin/composer
 
-Execute o composer na raiz do projeto para instalar as dependências necessárias:
+#### 6. Execute o composer na raiz do projeto para instalar as dependências necessárias:
 
     $ composer install
 
@@ -67,13 +67,13 @@ A estrutura do banco de dados poderá ser encontrada no projeto `doc` do LibreCl
 
 ## Pós-instalação
 
-#### Instalando o banco de dados
+#### 7. Instalando o banco de dados
 
 ###### Execute no terminal o seguinte comando para instalar o banco de dados:
 
     $ DB="$(curl https://raw.githubusercontent.com/LibreClass/doc/master/database/db.sql)" && mysql -u root -p --execute="CREATE DATABASE libreclass; USE libreclass; $DB"
 
-#### Criando uma conta institucional
+#### 8. Criando uma conta institucional
 
 ###### Criando um usuário instituição (type = I) com login `admin@email.com` e senha `1234`:
 
