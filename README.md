@@ -67,19 +67,17 @@ A estrutura do banco de dados poderá ser encontrada no projeto `doc` do LibreCl
 
 ## Pós-instalação
 
+#### Instalando o banco de dados
+
+###### Execute no terminal o seguinte comando para instalar o banco de dados:
+
+    $ DB="$(curl https://raw.githubusercontent.com/LibreClass/doc/master/database/db.sql)" && mysql -u root -p --execute="CREATE DATABASE libreclass; USE libreclass; $DB"
+
 #### Criando uma conta institucional
 
-###### 1) Abrir o banco de dados pelo terminal:
+###### Criando um usuário instituição (type = I) com login `admin@email.com` e senha `1234`:
 
-    $ mysql -u root -p
-
-###### 2) Selecionar o banco de dados do libreclass:
-
-    mysql> use libreclass-beta
-
-###### 3) Criar o usuário instituição (type = I) utilizando a string copiada no passo 3 como password:
-
-    mysql> INSERT INTO `Users` (`email`, `password`, `name`, `type`, `gender`, `birthdate`, `uee`, `course`, `formation`, `cadastre`, `idCity`, `street`, `photo`, `enrollment`, `created_at`, `updated_at`) VALUES ('admin@email.com', '$2y$10$Azi/NDbx8WrjAsq0q9VMNeRKtUzoE4QRZOqXu/nQWsqocFXVKOQhu', 'Nome da Instituição', 'I', NULL, NULL, NULL, NULL, '0', 'N', NULL, NULL, '/images/user-photo-default.jpg', NULL, NULL, NULL);
+    $ mysql -u root -p --execute="USE libreclass; INSERT INTO Users (email, password, name, type, gender, birthdate, uee, course, formation, cadastre, idCity, street, photo, enrollment, created_at, updated_at) VALUES ('admin@email.com', '$2y$10$Azi/NDbx8WrjAsq0q9VMNeRKtUzoE4QRZOqXu/nQWsqocFXVKOQhu', 'Nome da Instituição', 'I', NULL, NULL, NULL, NULL, '0', 'N', NULL, NULL, '/images/user-photo-default.jpg', NULL, NULL, NULL);"
 
 Neste ponto você terá um usuário do tipo instituição. Poderá realizar login com o email `admin@email.com` e a senha `1234`.
 
