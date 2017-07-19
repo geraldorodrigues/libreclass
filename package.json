@@ -12,6 +12,7 @@
     "font-awesome": "^4.7.0",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^3.5.0",
+    "gulp-connect-php": "^1.0.1",
     "gulp-header": "^1.8.8",
     "gulp-rename": "^1.2.2",
     "gulp-stylus": "^2.6.0",
