@@ -1,11 +1,12 @@
 var gulp = require('gulp');
-var browserSync = require('browser-sync').create();
+var browserSync = require('browser-sync');
 var header = require('gulp-header');
 var cleanCSS = require('gulp-clean-css');
 var rename = require("gulp-rename");
 var uglify = require('gulp-uglify');
 var pkg = require('./package.json');
 var stylus = require('gulp-stylus');
+var connect = require('gulp-connect-php');
 
 // Set the banner content
 var banner = ['/*!\n',
@@ -56,19 +57,25 @@ gulp.task('copy', function() {
             '!node_modules/font-awesome/*.json'
         ])
         .pipe(gulp.dest('public/vendor/font-awesome'));
-})
-
-// Configure the browserSync task
-gulp.task('browserSync', function() {
-    browserSync.init({
-        server: {
-            baseDir: ''
-        },
-    });
 });
 
-// Dev task with browserSync
-gulp.task('dev', ['browserSync', 'stylus', 'minify-js', 'copy'], function() {
+// Php Server Tasks
+gulp.task('connect-php', function() {
+   connect.server({
+      base: './public',
+      port: 8000,
+      keepalive: true
+   });
+});
+
+// Configure the browserSync task
+gulp.task('browserSync', ['connect-php'], function() {
+    browserSync({
+        proxy: '127.0.0.1:8000',
+        port: 8080,
+        open: true
+    });
+
     gulp.watch('assets/css/*.styl', ['stylus']);
     gulp.watch('assets/css/**/*.styl', browserSync.reload);
     gulp.watch('assets/js/*.js', ['minify-js']);
@@ -76,5 +83,8 @@ gulp.task('dev', ['browserSync', 'stylus', 'minify-js', 'copy'], function() {
     gulp.watch('app/views/*.blade.php', browserSync.reload);
 });
 
-gulp.task('default', ['stylus', 'minify-js', 'copy']);
-// gulp.task('default', ['dev']);
+// Dev task with browserSync
+gulp.task('dev', ['browserSync', 'stylus', 'minify-js', 'copy']);
+
+// gulp.task('default', ['stylus', 'minify-js', 'copy']);
+gulp.task('default', ['dev']);
