@@ -1,7 +1,22 @@
 {
+  "name": "LibreClassCE",
+  "version": "1.0.0",
+  "description": "Software LibreClass Community Edition",
+  "main": "index.js",
+  "repository": "https://github.com/LibreClass/landingpage",
+  "author": "modeon.co@gmail.com",
+  "license": "MIT",
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "browser-sync": "^2.18.12",
+    "font-awesome": "^4.7.0",
     "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.5.0",
+    "gulp-header": "^1.8.8",
+    "gulp-rename": "^1.2.2",
+    "gulp-stylus": "^2.6.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "^4.3.11",
     "jquery": "^3.2.1"
   }
 }
