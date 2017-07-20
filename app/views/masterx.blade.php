@@ -10,12 +10,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <!-- CSS are placed here -->
-  {{ HTML::style('css/bootstrap.min.css') }}
+  {{ HTML::style('/vendor/bootstrap/css/bootstrap.min.css') }}
   {{ HTML::style('css/jquery-ui-1.9.2.custom.css') }}
-  {{ HTML::style('css/fa/css/font-awesome.min.css') }}
+  {{ HTML::style('/vendor/font-awesome/css/font-awesome.min.css') }}
   <!-- Scripts are placed here -->
-  {{ HTML::script('js/jquery.min.js') }}
-  {{ HTML::script('js/bootstrap.min.js') }}
+  {{ HTML::script('/vendor/jquery/jquery.min.js') }}
+  {{ HTML::script('/vendor/bootstrap/js/bootstrap.min.js') }}
 </head>
 
 <body>

@@ -7,10 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no ">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  {{ HTML::style('css/bootstrap.min.css') }}
+  {{ HTML::style('/vendor/bootstrap/css/bootstrap.min.css') }}
   {{ HTML::style('css/home.css') }}
-  {{ HTML::style('css/fa/css/font-awesome.min.css') }}
-  {{ HTML::script('js/jquery.min.js') }}
+  {{ HTML::style('/vendor/font-awesome/css/font-awesome.min.css') }}
+  {{ HTML::script('/vendor/jquery/jquery.min.js') }}
   <!-- Scripts are placed here -->
 </head>
 <body>
@@ -41,13 +41,13 @@
               <br>
 
               <h3 class="text-center"><i class="fa fa-cloud-upload text-info"></i> Sincronizar dados</h3>
-              
+
               <hr>
               <p>Ao clicar em <b>confirmar</b>, os dados do LibreClass Online serão atualizados com as informações do aplicativo offline.</p>
               <p>Isso significa que o servidor online ficará igual ao offline.</p>
               <p>Essa ação é irreversível.</p>
               <br>
-              
+
               <div id="form-send">
                 {{ Form::open(["id" => "form-data",  "method" => "get"]) }}
                   {{ Form::hidden("confirm", "confirm") }}
@@ -63,7 +63,7 @@
                 <i class="fa fa-spinner fa-spin fa-2x text-blue"></i><br>
                 <span class='text-muted text-md'>Aguarde. Estamos sincronizando.</span>
               </div>
-              
+
           </div>
         </div>
       </div>
@@ -72,7 +72,7 @@
   </div>
 
   <script>
-      
+
       $("#form-data-submit").click(function(){
         $("#form-send").hide();
         $("#spin-send").show();

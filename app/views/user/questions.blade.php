@@ -2,9 +2,9 @@
 
 <html>
 <head>
-  {{ HTML::style('css/bootstrap.min.css') }}
+  {{ HTML::style('/vendor/bootstrap/css/bootstrap.min.css') }}
   {{ HTML::style('css/question.css') }}
-  {{ HTML::script('js/jquery.min.js') }}
+  {{ HTML::script('/vendor/jquery/jquery.min.js') }}
   <title>
     LibreClass
   </title>

@@ -11,15 +11,20 @@
   </title>
 
   <link rel="icon" type="image/png" href="/images/favicon.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no ">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  {{ HTML::style('css/bootstrap.min.css') }}
+  {{-- Vendor --}}
+  {{ HTML::style('/vendor/bootstrap/css/bootstrap.min.css') }}
+  {{ HTML::style('/vendor/font-awesome/css/font-awesome.min.css') }}
+
   {{ HTML::style('css/home.css') }}
-  {{ HTML::style('css/fa/css/font-awesome.min.css') }}
   {{ HTML::style('css/validation.css') }}
-  {{ HTML::script('js/jquery.min.js') }}
-  {{ HTML::script('js/bootstrap.min.js') }}
+
+  {{-- Vendor --}}
+  {{ HTML::script('/vendor/jquery/jquery.min.js') }}
+  {{ HTML::script('/vendor/bootstrap/js/bootstrap.min.js') }}
+
   {{ HTML::script('js/register.js') }}
   {{ HTML::script('js/menu.js') }}
 

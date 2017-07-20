@@ -7,8 +7,10 @@ Login
 
 @section('extraJS')
 @parent
-  {{ HTML::script('/js/additional-methods.min.js') }}
-  {{ HTML::script('/js/jquery.validate.min.js') }}
+  {{-- Vendor --}}
+  {{ HTML::script('/vendor/jquery-validation/jquery.validate.min.js') }}
+  {{ HTML::script('/vendor/jquery-validation/additional-methods.js') }}
+
   {{ HTML::script('/js/validations/usersLogin.js') }}
 @stop
 

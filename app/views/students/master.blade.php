@@ -10,22 +10,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  {{ HTML::style('css/bootstrap.min.css') }}
+  {{ HTML::style('/vendor/bootstrap/css/bootstrap.min.css') }}
   {{ HTML::style('css/social.master.css') }}
   {{ HTML::style('css/students.css') }}
   {{-- HTML::style('css/jquery-ui-1.9.2.custom.css') --}}
-  {{ HTML::style('css/fa/css/font-awesome.min.css') }}
+  {{ HTML::style('/vendor/font-awesome/css/font-awesome.min.css') }}
   {{ HTML::style('css/validation.css') }}
 
 
   @section('css')
   @show
   <!-- Scripts are placed here -->
-  {{ HTML::script('js/jquery.min.js') }}
-  {{ HTML::script('js/bootstrap.min.js') }}
+  {{ HTML::script('/vendor/jquery/jquery.min.js') }}
+  {{ HTML::script('/vendor/bootstrap/js/bootstrap.min.js') }}
   {{-- HTML::script('js/bootstrapValidator.js') --}}
-  {{ HTML::script('js/validations/jquery.validate.min.js') }}
-  {{ HTML::script('js/validations/additional-methods.min.js') }}
+  {{ HTML::script('/vendor/jquery-validation/jquery.validate.min.js') }}
+  {{ HTML::script('/vendor/jquery-validation/additional-methods.js') }}
 
   @section('js')
   @show

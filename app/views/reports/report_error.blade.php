@@ -13,7 +13,7 @@
     <title>LibreClass</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   </head>
 
   <style type="text/css" media="screen">
