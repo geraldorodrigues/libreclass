@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Crypt;
 use Hash;
 use Illuminate\Http\Request;
-use Mail;
+use Illuminate\Support\Facades\Auth;
 use Redirect;
-use Session;
+
+// use Session;
 
 class LoginController extends Controller
 {
@@ -16,12 +16,13 @@ class LoginController extends Controller
 
   public function __construct()
   {
-    $id = Session::get("user");
-    if ($id == null || $id == "") {
+    if (Auth::check() == false) {
       $this->idUser = false;
     } else {
-      $this->idUser = Crypt::decrypt($id);
+      $user = Auth::user();
+      $this->idUser = $user['id'];
     }
+    \Log::info('LoginController: __construct', ['idUser' => $this->idUser]);
     session_save_path("/tmp/");
     session_start();
   }
@@ -53,7 +54,7 @@ class LoginController extends Controller
 
       $url = url("/check/") . "/" . Crypt::encrypt($user->id);
 
-      Mail::send('email.welcome', ["url" => $url, "name" => $user->name, "email" => $user->email], function ($message) {
+      Mail::send('email . welcome', ["url" => $url, "name" => $user->name, "email" => $user->email], function ($message) {
         $user = User::whereEmail(Input::get("email"))->first();
         $message->to($user->email, $user->name)
           ->subject("Seja bem-vindo");
@@ -81,24 +82,28 @@ class LoginController extends Controller
   {
     $user = User::whereEmail($in->get("email"))->first();
     if ($user and (Hash::check($in->get("password"), $user->password))) {
+      \Log::info('LoginController: postLogin if', []);
       if ($user->cadastre == "W") {
+        \Log::info('LoginController: postLogin if if', []);
         $url = url("/check/") . "/" . Crypt::encrypt($user->id);
-        Mail::send('email.welcome', ["url" => $url, "name" => $user->name], function ($message) {
+        Mail::send('email . welcome', ["url" => $url, "name" => $user->name], function ($message) {
           $user = User::whereEmail($in->get("email"))->first();
           $message->to($user->email, $user->name)
             ->subject("Seja bem-vindo");
         });
         return Redirect::to("/login")->with("error", "O email <b>" . $in->get("email") . "</b> ainda não foi validado.")->withInput($in->except("password"));
       } else {
+        \Log::info('LoginController: postLogin if else', []);
         if ($user->type == "M" or $user->type == "N") {
           $user->type = "P";
           $user->save();
         }
-        Session::put("user", Crypt::encrypt($user->id));
-        Session::put("type", $user->type);
-        return Redirect::guest("/");
+        Auth::attempt(['email' => $in->email, 'password' => $in->password]);
+        // Auth::loginUsingId($user->id);
+        return redirect('/');
       }
     } else {
+      \Log::info('LoginController: postLogin else', []);
       return Redirect::to("/login")->with("error", "Login ou senha incorretos.")->withInput($in->except("password"));
     }
   }
@@ -119,7 +124,7 @@ class LoginController extends Controller
 
   public function getEmail()
   {
-    Mail::send('email.welcome', ["url" => "teste.com.br/?n=asdasdasdasda", "name" => "user"], function ($message) {
+    Mail::send('email . welcome', ["url" => "teste.com.br/?n=asdasdasdasda", "name" => "user"], function ($message) {
       $message->to("user@gmail.com", "User")->cc("user@gmail.com")
         ->subject("Seja bem-vindo ao LibreClass Social");
     });
@@ -135,7 +140,7 @@ class LoginController extends Controller
       $user->password = Hash::make($password);
       $user->save();
 
-      Mail::send('email.forgot-password', ["password" => $password, "user" => $user], function ($message) {
+      Mail::send('email . forgot - password', ["password" => $password, "user" => $user], function ($message) {
         $user = User::whereEmail(Input::get("email"))->first();
         $message->to($user->email, $user->name)
           ->subject("LibreClass Social - Sua nova senha");

@@ -1,5 +1,7 @@
 <?php
 
+\Log::info('route', []);
+
 # Route::controller('/censo', 'CensoController');
 Route::get('/censo/student', 'CensoController@getStudent');
 
@@ -23,13 +25,15 @@ Route::get('/sync/receive', 'SyncController@getReceive');
 Route::get('/sync/error', 'SyncController@getError');
 
 Route::get('logout', function () {
-  Session::flush();
+  Auth::logout();
   return Redirect::guest("/");
 });
 
 Route::get('help/{rota}', 'HelpController@getIndex');
 
-if (Session::get("user") == null) {
+if (Auth::check() == false) {
+  \Log::info('route: Auth::check() == false', []);
+
   # Route::controller('/', 'LoginController');
   Route::get('/', 'LoginController@getIndex');
   Route::post('/', 'LoginController@postIndex');
@@ -39,10 +43,11 @@ if (Session::get("user") == null) {
   Route::get('/email', 'LoginController@getEmail');
   Route::post('/forgot-password', 'LoginController@postForgotPassword');
 } else {
+  \Log::info('route: Auth::check() == true', []);
   /*
    * Perfil de instituição
    */
-  if (Session::get("type") == "I") {
+  if (Auth::user()['type'] == "I") {
     Route::get('/user/scholar-report', "UsersController@printScholarReport");
     Route::post('user/teacher/delete', "UsersController@postUnlink");
     Route::post('user/teacher/update-enrollment', "UsersController@updateEnrollment");
@@ -156,7 +161,7 @@ if (Session::get("user") == null) {
   /*
    * Perfil de professor
    */
-  if (Session::get("type") == "P") {
+  if (Auth::user()['type'] == "P") {
     Route::get('user/profile', "UsersController@getProfile");
     Route::get('user/student', "UsersController@getStudent");
     Route::post('user/student', "UsersController@postStudent");
