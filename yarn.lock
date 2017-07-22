@@ -332,10 +332,6 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
-bootstrap-styl@^5.0.8:
-  version "5.0.8"
-  resolved "https://registry.yarnpkg.com/bootstrap-styl/-/bootstrap-styl-5.0.8.tgz#3c601a7aa942ef7e70be9594f75a5dc6116f8f68"
-
 brace-expansion@^1.0.0, brace-expansion@^1.1.7:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.8.tgz#c07b211c7c952ec1f8efd51a77ef0d1d3990a292"
@@ -2181,6 +2177,10 @@ lcid@^1.0.0:
   resolved "https://registry.yarnpkg.com/lcid/-/lcid-1.0.0.tgz#308accafa0bc483a3867b4b6f2b9506251d1b835"
   dependencies:
     invert-kv "^1.0.0"
+
+lealjs@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/lealjs/-/lealjs-0.1.2.tgz#b034578c8f6621670d9fbfb612a5544243d5ff6f"
 
 "less@2.6.x || ^2.7.1":
   version "2.7.2"
