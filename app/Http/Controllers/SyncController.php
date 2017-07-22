@@ -2,6 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\User;
+use App\MySql\Exam;
+use App\MySql\Attend;
+use App\MySql\Lesson;
+use App\MySql\Offer;
+use App\MySql\Unit;
+use App\MySql\ExamsValue;
+use App\MySql\Discipline;
+use App\MySql\Frequency;
+use App\MySql\Course;
+
+use Session;
+use Crypt;
+use Mail;
+
 class SyncController extends Controller
 {
 

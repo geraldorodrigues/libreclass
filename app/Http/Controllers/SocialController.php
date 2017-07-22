@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use Auth;
+use App\MySql\User;
 use Session;
+use Redirect;
+use Mail;
 
 class SocialController extends Controller
 {

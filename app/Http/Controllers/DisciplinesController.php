@@ -2,6 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\Discipline;
+use App\MySql\User;
+use App\MySql\Course;
+use App\MySql\Period;
+use Crypt;
+use Session;
+use Redirect;
+
 class DisciplinesController extends Controller
 {
 

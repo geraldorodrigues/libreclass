@@ -1,0 +1,24 @@
+<?php
+
+namespace App\MongoDb;
+
+class Lecture extends \Moloquent
+{
+	protected $fillable = ['user_id', 'offer_id'];
+
+	public function offer()
+	{
+		return $this->belongsTo('App\Offer');
+	}
+
+	public function getUser()
+	{
+		return User::find($this->idUser);
+	}
+
+	public function getOffer()
+	{
+		return Offer::find($this->idOffer);
+	}
+
+}

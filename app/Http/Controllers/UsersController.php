@@ -2,6 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\MySql\User;
+use App\MySql\Relationship;
+use App\MySql\Course;
+use App\MySql\FinalExam;
+use App\MySql\Offer;
+use App\MySql\ExamsValue;
+use App\MySql\Attend;
+use App\MySql\Lesson;
+use App\MySql\Frequency;
+use App\MySql\Unit;
+use App\MySql\DescriptiveExam;
+use Crypt;
+use StdClass;
+use Session;
+
 class UsersController extends Controller
 {
 
