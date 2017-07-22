@@ -1,0 +1,31 @@
+.table
+	thead
+		tr
+
+			td, th
+				border: 0
+				vertical-align: middle
+
+
+	tbody
+		tr
+			&.ok-item
+				background-color: $color-light-green
+
+			td, th
+				vertical-align: middle
+
+		&.align-top
+			tr
+				td, th
+					vertical-align: top
+
+
+	&.table-striped
+		> thead
+			color: $color-grey--dark
+		> tbody
+			> tr:nth-of-type(2n+1)
+				background-color: $color-white
+			> tr:nth-of-type(2n)
+				background-color: $color-light

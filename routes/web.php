@@ -35,7 +35,8 @@ if (Auth::check() == false) {
   \Log::info('route: Auth::check() == false', []);
 
   # Route::controller('/', 'LoginController');
-  Route::get('/', 'LoginController@getIndex');
+  Route::get('/', 'HomeController@index');
+  // Route::get('/', 'LoginController@getIndex');
   Route::post('/', 'LoginController@postIndex');
   Route::get('/login', 'LoginController@getLogin');
   Route::post('/login', 'LoginController@postLogin');

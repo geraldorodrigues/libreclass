@@ -23,8 +23,15 @@ elixir(function(mix) {
 
 	//Bibliotecas
 	mix.copy('node_modules/lealjs/dist', 'public/assets/lealjs');
+	mix.copy('node_modules/jquery/dist/jquery.min.js', 'public/assets/js/jquery.min.js');
 
-	// mix.stylus('bootstrap.styl', 'public/css/bootstrap.min.css');
+	//Controllers
+	//Instituição
+	mix.scripts('controllers/institution/*.js', 'public/assets/js/institutionControllers.min.js');
+
+
+	//Tarefas para compilação dos arquivos de layout
+	mix.stylus('layout/index.styl', 'public/assets/css/master.min.css');
 
 	// //Libs
 	// mix.copy('bower_components/jquery/dist/jquery.min.js', 'public/lib/js');
@@ -34,8 +41,8 @@ elixir(function(mix) {
 	//
 	// mix.version(['lib/js/jquery.min.js', 'lib/js/typed.min.js', 'js/script.min.js', 'css/bootstrap.min.css', 'css/master.min.css']);
 	//
-	// mix.browserSync({
-	// 	proxy: 'localhost:8000'
-	// });
+	mix.browserSync({
+		proxy: 'localhost:8001'
+	});
 
 });
