@@ -24,7 +24,7 @@ class ConfigController extends \BaseController
   /**
    *
    */
-  public function ConfigController()
+  public function __construct()
   {
     $id = Session::get("user");
     if ($id == null || $id == "") {

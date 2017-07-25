@@ -9,7 +9,7 @@ class AvaliableController extends \BaseController
    */
   private $idUser;
 
-  public function AvaliableController()
+  public function __construct()
   {
     $id = Session::get("user");
     if ($id == null || $id == "") {

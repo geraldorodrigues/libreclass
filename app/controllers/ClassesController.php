@@ -5,7 +5,7 @@ class ClassesController extends \BaseController
 
   private $idUser;
 
-  public function ClassesController()
+  public function __construct()
   {
     $id = Session::get("user");
     if ($id == null || $id == "") {
@@ -30,14 +30,14 @@ class ClassesController extends \BaseController
       }
 
       $classes = DB::select("SELECT Classes.id AS id, Periods.name AS period,
-				CONCAT('[', Classes.class, '] ', Classes.name) AS classe,
-															Courses.name AS name, Classes.status AS status
-														 FROM Courses, Periods, Classes
-														 WHERE Courses.idInstitution=? AND
-															Courses.status = 'E' AND
-															Classes.status <> 'D' AND
-															Periods.idCourse=Courses.id AND
-															Classes.idPeriod=Periods.id", [$user->id]);
+        CONCAT('[', Classes.class, '] ', Classes.name) AS classe,
+                              Courses.name AS name, Classes.status AS status
+                             FROM Courses, Periods, Classes
+                             WHERE Courses.idInstitution=? AND
+                              Courses.status = 'E' AND
+                              Classes.status <> 'D' AND
+                              Periods.idCourse=Courses.id AND
+                              Classes.idPeriod=Periods.id", [$user->id]);
       //~ return $classes;
       return View::make("modules.classes", ["listPeriod" => $listPeriod, "user" => $user, "classes" => $classes]);
     } else {
@@ -195,14 +195,14 @@ class ClassesController extends \BaseController
     $courses = Course::where("idInstitution", $this->idUser)->whereStatus("E")->get();
     foreach ($courses as $course) {
       $course->units = DB::select("SELECT Units.value
-																		 FROM Periods, Classes, Offers, Units
-																		WHERE Periods.idCourse=?
-																					AND Periods.id=Classes.idPeriod
-																					AND Classes.id=Offers.idCLass
-																					AND Classes.status='E'
-																					AND Offers.id=Units.idOffer
-																					AND Units.status=?
-																 GROUP BY Units.value", [$course->id, $status]);
+                                     FROM Periods, Classes, Offers, Units
+                                    WHERE Periods.idCourse=?
+                                          AND Periods.id=Classes.idPeriod
+                                          AND Classes.id=Offers.idCLass
+                                          AND Classes.status='E'
+                                          AND Offers.id=Units.idOffer
+                                          AND Units.status=?
+                                 GROUP BY Units.value", [$course->id, $status]);
 
       $course->id = Crypt::encrypt($course->id);
     }

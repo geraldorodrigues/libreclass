@@ -1,16 +1,16 @@
 <?php
 
-class CoursesController extends \BaseController {
+class CoursesController extends \BaseController
+{
 
   private $idUser;
 
-  public function CoursesController()
+  public function __construct()
   {
     $id = Session::get("user");
     if ($id == null || $id == "") {
       $this->idUser = false;
-    }
-    else {
+    } else {
       $this->idUser = Crypt::decrypt($id);
       $this->user = User::find($this->idUser);
     }
@@ -21,27 +21,25 @@ class CoursesController extends \BaseController {
     if ($this->idUser) {
       $courses = Course::where("idInstitution", $this->idUser)->whereStatus("E")->orderBy("name")->get();
       $listcourses = [];
-      foreach($courses as $course )
-      {
+      foreach ($courses as $course) {
         $listcourses[Crypt::encrypt($course->id)] = $course->name;
         $course->periods = Period::where("idCourse", $course->id)->get();
       }
       return View::make("social.courses", ["courses" => $courses, "user" => $this->user, "listcourses" => $listcourses]);
-    }
-    else {
+    } else {
       return Redirect::guest("/");
     }
   }
 
-  public function postAllCourses() {
+  public function postAllCourses()
+  {
     if ($this->idUser) {
       $courses = Course::where("idInstitution", $this->idUser)->whereStatus("E")->orderBy("name")->get();
 
-      foreach($courses as $course)
-      {
+      foreach ($courses as $course) {
         $course->id = Crypt::encrypt($course->id);
       }
-      return $courses;                                                                                                              ;
+      return $courses;
     }
   }
 
@@ -51,28 +49,26 @@ class CoursesController extends \BaseController {
 
     if (strlen(Input::get("course"))) {
       $course = Course::find(Crypt::decrypt(Input::get("course")));
-    }
-    else {
+    } else {
       if ($this->user->type == "I") {
         $course = new Course;
-      }
-      else {
+      } else {
         return Redirect::to("/courses")->with("error", "Adquira uma conta <i>premium</i> para completar essa operação.");
       }
     }
 
     $course->idInstitution = $this->idUser;
-    $course->name          = Input::get("name");
-    $course->type          = Input::get("type");
-    $course->modality      = Input::get("modality");
+    $course->name = Input::get("name");
+    $course->type = Input::get("type");
+    $course->modality = Input::get("modality");
     $course->absentPercent = Input::get("absentPercent");
-    $course->average       = Input::get("average");
-    $course->averageFinal  = Input::get("averageFinal");
+    $course->average = Input::get("average");
+    $course->averageFinal = Input::get("averageFinal");
 
     $course->save();
 
     if (Input::hasFile("curricularProfile") &&
-        Input::file("curricularProfile")->getClientOriginalExtension() === "pdf") {
+      Input::file("curricularProfile")->getClientOriginalExtension() === "pdf") {
       $name = md5($course->id) . ".pdf";
       Input::file("curricularProfile")->move(public_path() . "/uploads/curricularProfile/", $name);
       $course->curricularProfile = $name;
@@ -98,8 +94,7 @@ class CoursesController extends \BaseController {
       $course->status = "D";
       $course->save();
       return Redirect::guest("/courses")->with("success", "Excluído com sucesso!");
-    }
-    else {
+    } else {
       return Redirect::guest("/courses")->with("error", "Não foi possível deletar");
     }
   }
@@ -119,21 +114,19 @@ class CoursesController extends \BaseController {
     try
     {
       $course = Course::find(Crypt::decrypt(Input::get("course")));
-      if( $course->idInstitution != $this->user->id )
+      if ($course->idInstitution != $this->user->id) {
         throw new Exception("Esse usuario nao tem acesso ao curso.");
+      }
 
       $periods = Period::where("idCourse", $course->id)->get();
-      foreach($periods as $period)
-      {
+      foreach ($periods as $period) {
         $period->id = Crypt::encrypt($period->id);
         unset($period->idCourse);
         unset($period->created_at);
         unset($period->updated_at);
       }
       return $periods;
-    }
-    catch (Exception $e)
-    {
+    } catch (Exception $e) {
       return $e->getMessage();
     }
   }
@@ -143,21 +136,22 @@ class CoursesController extends \BaseController {
     try
     {
       $course = Course::find(Crypt::decrypt(Input::get("course")));
-      if( $course->idInstitution != $this->user->id )
+      if ($course->idInstitution != $this->user->id) {
         throw new Exception("Esse usuario nao tem aceso ao curso.");
+      }
 
-      if ( Input::has("key") )
+      if (Input::has("key")) {
         $period = Period::find(Crypt::decrypt(Input::get("key")));
-      else
+      } else {
         $period = new Period;
+      }
+
       $period->name = Input::get("value");
       $period->idCourse = $course->id;
       $period->save();
 
       return "ok";
-    }
-    catch (Exception $e)
-    {
+    } catch (Exception $e) {
       return $e->getMessage();
     }
   }
