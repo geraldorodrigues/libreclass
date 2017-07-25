@@ -12,7 +12,7 @@
 
   {{ HTML::style('/vendor/bootstrap/css/bootstrap.min.css') }}
   {{ HTML::style('css/social.master.css') }}
-  {{-- HTML::style('css/jquery-ui-1.9.2.custom.css') --}}
+  {{-- HTML::style('/vendor/jquery-ui-dist/jquery-ui.min.css') --}}
   {{ HTML::style('css/icon-education.css') }}
   {{ HTML::style('/vendor/font-awesome/css/font-awesome.min.css') }}
   {{ HTML::style('css/validation.css') }}

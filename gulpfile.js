@@ -42,27 +42,46 @@ gulp.task('minify-js', function() {
 
 // Copy vendor libraries from /node_modules into /vendor
 gulp.task('copy', function() {
-    gulp.src(['node_modules/bootstrap/dist/**/*', '!**/npm.js', '!**/bootstrap-theme.*', '!**/*.map'])
+    gulp.src([
+        'node_modules/bootstrap/dist/**/*',
+        '!**/npm.js', '!**/bootstrap-theme.*',
+        '!**/*.map'
+    ]).pipe(gulp.dest('public/vendor/bootstrap'));
 
-    gulp.src(['node_modules/bootstrap-toggle/**/*', '!**/*.map'])
-        .pipe(gulp.dest('public/vendor/bootstrap-toggle'));
+    gulp.src([
+        'node_modules/bootstrap-toggle/**/*',
+        '!**/*.map'
+    ]).pipe(gulp.dest('public/vendor/bootstrap-toggle'));
 
-    gulp.src(['node_modules/jquery/dist/jquery.js', 'node_modules/jquery/dist/jquery.min.js'])
-        .pipe(gulp.dest('public/vendor/jquery'));
+    gulp.src([
+        'node_modules/jquery/dist/jquery.js',
+        'node_modules/jquery/dist/jquery.min.js'
+    ]).pipe(gulp.dest('public/vendor/jquery'));
 
-    gulp.src(['node_modules/jquery-validation/dist/**/*'])
-        .pipe(gulp.dest('public/vendor/jquery-validation'));
+    gulp.src([
+        'node_modules/jquery-validation/dist/**/*'
+    ]).pipe(gulp.dest('public/vendor/jquery-validation'));
+
+    gulp.src([
+        'node_modules/jquery-ui-dist/jquery-ui.min.css',
+        'node_modules/jquery-ui-dist/jquery-ui.min.js',
+        'node_modules/jquery-ui-dist/jquery-ui.structure.min.css',
+        'node_modules/jquery-ui-dist/jquery-ui.theme.min.css',
+    ]).pipe(gulp.dest('public/vendor/jquery-ui-dist'));
+
+    gulp.src([
+        'node_modules/jquery-ui-dist/images/**/*'
+    ]).pipe(gulp.dest('public/vendor/jquery-ui-dist/images'));
 
 
     gulp.src([
-            'node_modules/font-awesome/**',
-            '!node_modules/font-awesome/**/*.map',
-            '!node_modules/font-awesome/.npmignore',
-            '!node_modules/font-awesome/*.txt',
-            '!node_modules/font-awesome/*.md',
-            '!node_modules/font-awesome/*.json'
-        ])
-        .pipe(gulp.dest('public/vendor/font-awesome'));
+        'node_modules/font-awesome/**',
+        '!node_modules/font-awesome/**/*.map',
+        '!node_modules/font-awesome/.npmignore',
+        '!node_modules/font-awesome/*.txt',
+        '!node_modules/font-awesome/*.md',
+        '!node_modules/font-awesome/*.json'
+    ]).pipe(gulp.dest('public/vendor/font-awesome'));
 });
 
 // Php Server Tasks
