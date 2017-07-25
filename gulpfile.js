@@ -82,6 +82,11 @@ gulp.task('copy', function() {
         '!node_modules/font-awesome/*.md',
         '!node_modules/font-awesome/*.json'
     ]).pipe(gulp.dest('public/vendor/font-awesome'));
+
+     gulp.src([
+        'node_modules/bootstrap-toggle/**',
+        '!node_modules/bootstrap-toggle/**/*.map'
+    ]).pipe(gulp.dest('public/vendor/bootstrap-toggle'));
 });
 
 // Php Server Tasks

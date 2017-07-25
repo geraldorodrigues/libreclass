@@ -1,11 +1,11 @@
 @section('css')
 @parent
-{{ HTML::style("css/bootstrap-toggle.min.css") }}
+{{ HTML::style("/vendor/bootstrap-toggle/css/bootstrap-toggle.min.css") }}
 @stop
 
 @section('js')
 @parent
-{{ HTML::script("js/bootstrap-toggle.min.js") }}
+{{ HTML::script("/vendor/bootstrap-toggle/js/bootstrap-toggle.min.js") }}
 {{ HTML::script("js/offer-toogle.js") }}
 @stop
 
@@ -73,7 +73,7 @@
               <p>Turno: Vespertino</p>
             @elseif($offer->day_period == "N")
               <p>Turno: Noturno</p>
-            @else  
+            @else
               <p>Turno: Não informado</p>
             @endif
             <p>Quantidade máxima de aulas: {{ $offer->maxlessons }}</p>
