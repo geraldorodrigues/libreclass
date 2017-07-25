@@ -7,6 +7,5 @@ composer.phar
 Thumbs.db
 nbproject/
 public/uploads/*.jpg
-public/vendor
 .phpintel
 node_modules
