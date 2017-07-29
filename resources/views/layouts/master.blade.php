@@ -8,6 +8,7 @@
 		{{ HTML::style('assets/css/bootstrap.min.css') }}
 		{{ HTML::style('assets/lealjs/leal.min.css') }}
 		{{ HTML::style('assets/css/master.min.css') }}
+		{{ HTML::style('assets/css/summernote/summernote.min.css') }}
 
 		{{--
 		<link rel="stylesheet" href="/assets/css/master.min.css">
@@ -18,7 +19,9 @@
 
 		{{ HTML::script('js/jquery.min.js') }}
 		{{ HTML::script('assets/lealjs/leal.min.js') }}
-	  {{ HTML::script('assets/js/bootstrap.min.js') }}
+		{{ HTML::script('assets/js/bootstrap.min.js') }}
+		{{ HTML::script('assets/js/summernote.min.js') }}
+		{{ HTML::script('assets/js/scripts.min.js') }}
 
 		{{-- <script src="/lib/moment.min.js"></script> --}}
 		{{-- <script src="/lib/pikaday/pikaday.min.js"></script> --}}
@@ -60,12 +63,11 @@
 					</div>
 				</div>
 
-				<div class="page__content page--scroll">
+				<div class="page__content page--scroll bg-color-grey--light">
 
 					<div class="page__header">
 						<div class="flex center-left">
 							<div class="flex grow center-left">
-								<img src="" class="icon-sm mr" alt="" id="page-title-icon" />
 								<div id="page-title" class="page__header-title">Title</div>
 							</div>
 

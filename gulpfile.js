@@ -19,11 +19,26 @@ elixir(function(mix) {
 
 	// Tarefas para o framework bootstrap
 	mix.stylus('configBootstrap.styl', 'public/assets/css/bootstrap.min.css');
-	mix.scripts('./resources/assets/lib/bootstrap/js/*.js', 'public/assets/js/bootstrap.min.js');
+	mix.scripts(
+		[
+			'./resources/assets/lib/bootstrap/js/modal.js',
+			'./resources/assets/lib/bootstrap/js/tooltip.js',
+			'./resources/assets/lib/bootstrap/js/popover.js',
+			'./resources/assets/lib/bootstrap/js/dropdown.js'
+		], 'public/assets/js/bootstrap.min.js');
 
 	//Bibliotecas
 	mix.copy('node_modules/lealjs/dist', 'public/assets/lealjs');
 	mix.copy('node_modules/jquery/dist/jquery.min.js', 'public/assets/js/jquery.min.js');
+
+	//summernote
+	mix.scripts([
+		'./node_modules/summernote/dist/summernote.js',
+		'./node_modules/summernote/dist/lang/summernote-pt-BR.js'
+	], 'public/assets/js/summernote.min.js');
+
+	mix.copy('node_modules/summernote/dist/summernote.css', 'public/assets/css/summernote/summernote.min.css');
+	mix.copy('node_modules/summernote/dist/font', 'public/assets/css/summernote/font');
 
 	//Controllers
 	//Instituição
@@ -32,6 +47,9 @@ elixir(function(mix) {
 
 	//Tarefas para compilação dos arquivos de layout
 	mix.stylus('layout/index.styl', 'public/assets/css/master.min.css');
+
+	//Scripts
+	mix.scripts('*.js', 'public/assets/js/scripts.min.js');
 
 	// //Libs
 	// mix.copy('bower_components/jquery/dist/jquery.min.js', 'public/lib/js');
