@@ -157,10 +157,6 @@ class UnitsController extends Controller
     }
   }
 
-  public function getNewunit()
-  {
-    return "nova unidade";
-  }
 
   public function getReportunitz()
   {

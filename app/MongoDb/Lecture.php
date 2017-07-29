@@ -2,6 +2,8 @@
 
 namespace App\MongoDb;
 
+use Illuminate\Database\Eloquent\Model;
+
 class Lecture extends \Moloquent
 {
 	protected $fillable = ['user_id', 'offer_id'];
@@ -20,5 +22,6 @@ class Lecture extends \Moloquent
 	{
 		return Offer::find($this->idOffer);
 	}
+
 
 }

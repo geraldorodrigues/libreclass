@@ -14,3 +14,4 @@ npm-debug.log
 .env
 .env.php
 yarn-error.log
+composer.lock
