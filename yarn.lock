@@ -332,6 +332,10 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
+bootstrap@^3.3.7:
+  version "3.3.7"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.3.7.tgz#5a389394549f23330875a3b150656574f8a9eb71"
+
 brace-expansion@^1.0.0, brace-expansion@^1.1.7:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.8.tgz#c07b211c7c952ec1f8efd51a77ef0d1d3990a292"
@@ -3932,6 +3936,13 @@ stylus@^0.54.0:
     sax "0.5.x"
     source-map "0.1.x"
 
+summernote@^0.8.6:
+  version "0.8.6"
+  resolved "https://registry.yarnpkg.com/summernote/-/summernote-0.8.6.tgz#e40ddb3ef85eb5c75672b24fc3a68c76c474c0bb"
+  dependencies:
+    bootstrap "^3.3.7"
+    jquery "^2.2.4"
+
 supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
@@ -4020,6 +4031,10 @@ tildify@^1.0.0:
 time-stamp@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-1.1.0.tgz#764a5a11af50561921b133f3b44e618687e0f5c3"
+
+tinymce@^4.6.4:
+  version "4.6.4"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-4.6.4.tgz#7415559f266de24bea7e69d59e43e1e61e7d11a4"
 
 to-array@0.1.4:
   version "0.1.4"
