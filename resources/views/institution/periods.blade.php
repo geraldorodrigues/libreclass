@@ -5,7 +5,7 @@
 		<li class="active">Periodos</li>
 	</ol>
 
-	<button class="ev-openModalAddPeriod">Adicionar</button>
+	<button class="btn btn-primary ev-openModalAddPeriod">Adicionar</button>
 
 	<div class="row periods-list mt">
 		<div class="col-xs-4 mb">

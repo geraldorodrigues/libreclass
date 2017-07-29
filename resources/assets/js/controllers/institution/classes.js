@@ -1,25 +1,25 @@
-controller('periods', function() {
-	var view = "#view-periods";
+controller('classes', function() {
+	var view = "#view-classes";
 
 	this.initialize = function() {
 		view = $(view);
-		view.on('click', '.ev-openModalAddPeriod', this.openModalAddPeriod);
+		view.on('click', '.ev-openModalAddClasse', this.openModalAddClasse);
 		view.on('click', '.ev-redirectToDiscipline', this.redirectToDiscipline);
 	};
 
 	this.show = function() {
 		view.show();
-		$("#page-title").text('Nome do curso');
+		$("#page-title").text('Turmas');
 	};
 
-	this.openModalAddPeriod = function(e) {
+	this.openModalAddClasse = function(e) {
 		e.stopPropagation();
-		var modal = $('#modalAddPeriod');
+		var modal = $('#modalAddClasse');
 
 		//Verifica se o elemento do evento tem o atributo edit
 		if($(e.currentTarget).is('[edit]')) {
-			var id = $(e.currentTarget).closest('.item-period').attr('data-id');
-			this.getPeriod(id);
+			var id = $(e.currentTarget).closest('.item-classe').attr('data-id');
+			this.getClasse(id);
 			modal.find('.modal-title').text('Editar período');
 		}
 		else {
@@ -29,7 +29,7 @@ controller('periods', function() {
 		modal.modal();
 	};
 
-	this.getPeriod = function(id) {
+	this.getClasse = function(id) {
 		console.log(id);
 	};
 

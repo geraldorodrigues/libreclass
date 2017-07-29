@@ -12,6 +12,7 @@ controller('disciplines', function() {
 	};
 
 	this.openModalAddDiscipline = function(e) {
+		e.stopPropagation();
 		var modal = $('#modalAddDiscipline');
 
 		//Verifica se o elemento do evento tem o atributo edit

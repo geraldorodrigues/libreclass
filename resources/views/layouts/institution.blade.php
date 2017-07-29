@@ -8,4 +8,5 @@
 	@include('institution/courses')
 	@include('institution/periods')
 	@include('institution/disciplines')
+	@include('institution/classes')
 @endsection
