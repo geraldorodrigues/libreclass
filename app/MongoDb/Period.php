@@ -8,17 +8,12 @@ class Period extends \Moloquent
 
 	public function course()
 	{
-		return $this->belongsTo('Course', 'course_id');
+		return $this->belongsTo('Course');
 	}
 
 	public function disciplines()
 	{
-		return $this->hasMany('Discipline', 'period_id');
+		return $this->hasMany('Discipline');
 	}
-
-	/*public function getCourse()
-	{
-		return Course::find($this->idCourse);
-	}*/
 
 }

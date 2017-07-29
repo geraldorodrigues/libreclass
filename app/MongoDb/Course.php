@@ -2,8 +2,11 @@
 
 namespace App\MongoDb;
 
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
+
 class Course extends \Moloquent
 {
+	use SoftDeletes;
 	protected $fillable = ['name', 'institution_id'];
 
 	public function institution()
@@ -13,7 +16,7 @@ class Course extends \Moloquent
 
 	public function periods()
 	{
-		return $this->hasMany('Period', 'course_id');
+		return $this->hasMany('Period');
 	}
 
 	public function getInstitution()
