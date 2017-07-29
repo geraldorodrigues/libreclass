@@ -1,6 +1,11 @@
 <?php
 
-\Log::info('route', []);
+Route::get('/login', function () {
+  return view('auth/login');
+});
+
+Route::post('auth/in', 'Auth\LoginController@authenticate');
+Route::any('auth/out', 'Auth\LoginController@out');
 
 # Route::controller('/censo', 'CensoController');
 Route::get('/censo/student', 'CensoController@getStudent');
