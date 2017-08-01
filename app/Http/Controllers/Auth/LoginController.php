@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use App\MongoDb\User;
+use Auth;
+use Crypt;
 
 class LoginController extends Controller
 {
@@ -34,7 +38,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        //$this->middleware('guest')->except('logout');
     }
 
 		private function dataLog($in, $description = "")
@@ -49,22 +53,22 @@ class LoginController extends Controller
 
 		public function authenticate(Request $in)
 		{
-			Log::useFiles(storage_path('logs/login.log'));
+			//Log::useFiles(storage_path('logs/login.log'));
 
-			$user = User::whereEmail($in->login)->orWhere('cpf', preg_replace('/\D/', '', $in->login))->first();
+			$user = User::whereEmail($in->email)->orWhere('cpf', preg_replace('/\D/', '', $in->login))->first();
 			if ( $user ) {
+				//dd($user);
 				if ( $user->status == 'W' ) {
 					return response()->json(['status' => 0, 'message' => 'Estamos aguardando a confirmação do email. <a class="text-danger ck" id="resendEmail"><u>Reenviar email de validação da conta</u></a>']);
 				}
 				if ( $user->status == 'D' ) {
 					return response()->json(['status' => 0, 'message' => 'Sua conta está desabilitada.']);
 				}
-				if ( $user->status == 'E' && Auth::attempt(['_id' => $user->id, 'password' => $in->get('password')], $in->has('remember'))) {
+				if ( $user->status == 'E' && Auth::attempt(['_id' => $user->id, 'password' => $in->password], $in->has('remember'))) {
 					$user->id = Crypt::encrypt($user->id);
 					unset($user->created_at);
 					unset($user->updated_at);
-					unset($user->investments_access);
-					Log::notice('login success', $this->dataLog($in, "Login realizado"));
+					//Log::notice('login success', $this->dataLog($in, "Login realizado"));
 					return response()->json(['status' => 1, 'user' => $user]);
 				}
 			}

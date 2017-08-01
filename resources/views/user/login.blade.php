@@ -38,7 +38,7 @@ Login
 
       <div id="form-login">
         <div class="row">
-          {{ Form::open(["url" => url("/login"), "id" => "loginForm"]) }}
+          {{ Form::open(["url" => url("/auth/in"), "id" => "loginForm"]) }}
           <div class="col-md-12">
               <div class="form-group">
                 {{ Form::text("email", null, ["placeholder" => "Digite seu email", "class" => "form-control", "required" => "required", "autofocus"]) }}

@@ -14,14 +14,29 @@ class Offer extends \Moloquent
 
 	public function classe()
 	{
-		return $this->belongsTo('Classe');
+		return $this->belongsTo('Classe', 'class_id');
+	}
+
+	public function lectures()
+	{
+		return $this->hasMany('Lecture');
+	}
+
+	public function getDiscipline()
+	{
+		return Discipline::find($this->idDiscipline);
+	}
+
+	public function getClass()
+	{
+		return Classe::find($this->idClass);
 	}
 
 	public function units()
 	{
 		return $this->hasMany('Unit');
 	}
-	
+
 	public function lectures()
 	{
 		return $this->hasMany('Lecture');
