@@ -8,13 +8,9 @@ class Offer extends \Moloquent
 
 	public function discipline()
 	{
-		return $this->belongsTo('Discipline', 'discipline_id');
+		return $this->belongsTo('Discipline');
 	}
 
-	public function units()
-	{
-		return $this->hasMany('Unit');
-	}
 
 	public function classe()
 	{
@@ -36,30 +32,27 @@ class Offer extends \Moloquent
 		return Classe::find($this->idClass);
 	}
 
-	public function getFirstUnit()
+	public function units()
 	{
-		return Unit::where("offer_id", $this->id)->first();
+		return $this->hasMany('Unit');
 	}
 
-	public function getLastUnit()
+	public function lectures()
 	{
-		return Unit::where("idOffer", $this->id)->orderBy("value", "desc")->first();
+		return $this->hasMany('Lecture');
 	}
 
-	public function getUnits()
-	{
-		return Unit::where("offer_id", $this->id)->get();
-	}
 
-	public function getLectures()
-	{
-		return Lecture::where("offer_id", $this->id)->first();
-	}
+	// public function getFirstUnit()
+	// {
+	// 	return Unit::where("offer_id", $this->id)->first();
+	// }
+	//
+	// public function getLastUnit()
+	// {
+	// 	return Unit::where("idOffer", $this->id)->orderBy("value", "desc")->first();
+	// }
 
-	public function getAllLectures()
-	{
-		return Lecture::where("offer_id", $this->id)->get();
-	}
 
 	/*public function qtdAbsences($idStudent)
 	{

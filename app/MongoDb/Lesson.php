@@ -8,6 +8,6 @@ class Lesson extends \Moloquent
 
 	public function unit()
 	{
-		return $this->belongsTo("Unit", "unit_id");
+		return $this->belongsTo("Unit");
 	}
 }

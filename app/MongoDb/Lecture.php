@@ -2,6 +2,8 @@
 
 namespace App\MongoDb;
 
+use Illuminate\Database\Eloquent\Model;
+
 class Lecture extends \Moloquent
 {
 	protected $fillable = ['teacher_id', 'offer_id'];
@@ -15,5 +17,6 @@ class Lecture extends \Moloquent
 	{
 		return $this->belongsTo('App\User','teacher_id');
 	}
+
 
 }
