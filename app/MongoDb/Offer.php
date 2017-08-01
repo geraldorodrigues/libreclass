@@ -21,6 +21,11 @@ class Offer extends \Moloquent
 		return $this->belongsTo('Classe', 'class_id');
 	}
 
+	public function lectures()
+	{
+		return $this->hasMany('Lecture');
+	}
+
 	public function getDiscipline()
 	{
 		return Discipline::find($this->idDiscipline);
