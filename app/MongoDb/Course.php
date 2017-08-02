@@ -11,12 +11,12 @@ class Course extends \Moloquent
 
 	public function institution()
 	{
-		return $this->belongsTo('App\Mongodb\User', 'institution_id');
+		return $this->belongsTo('App\MongoDb\User', 'institution_id');
 	}
 
 	public function periods()
 	{
-		return $this->hasMany('App\Mongodb\Period');
+		return $this->hasMany('App\MongoDb\Period');
 	}
 
 	public function getInstitution()
