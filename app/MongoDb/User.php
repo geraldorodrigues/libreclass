@@ -53,6 +53,11 @@ CanResetPasswordContract
 		return $this->hasMany('Course', 'institution_id');
 	}
 
+	public function attends()
+	{
+		return $this->hasMany('Attend');
+	}
+
 	public function setNameAttribute($value)
 	{
 		$this->attributes['name'] = ucwords($value);

@@ -6,6 +6,11 @@ class Frequency extends \Moloquent
 {
 	protected $hidden = ['_id'];
 
+	public function attend()
+	{
+		return $this->belongsTo('Attend', 'attend_id');
+	}
+
 	/*public static function getValue($user, $lesson)
 	{
 		$out = DB::select("select Frequencies.value "

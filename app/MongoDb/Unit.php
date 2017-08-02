@@ -12,6 +12,11 @@ class Unit extends \Moloquent
 		return $this->belongsTo('Offer', 'offer_id');
 	}
 
+	public function attends()
+	{
+		return $this->hasMany('Attend');
+	}
+
 	/*public function getOffer()
 	{
 		return Offer::find($this->idOffer);
