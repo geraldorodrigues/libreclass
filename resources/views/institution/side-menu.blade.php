@@ -1,5 +1,5 @@
 {{--SIDE MENU DO INSTITUIÇÃO --}}
-<ul class="side-menu color-white">
+<ul class="side-menu">
 	<li class="side-menu__item">
 		<a href="#courses">
 			<div class="text-medium">Cursos</div>

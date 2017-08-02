@@ -67,7 +67,7 @@ controller('courses', function() {
 	};
 
 	this.redirectToPeriod = function(e) {
-		redirect('periods/'+$(e.currentTarget).attr('data-id'));
+		redirect('periods/'+$(e.currentTarget).closest('.item-course').attr('data-id'));
 	};
 
 	// Salvar curso
@@ -78,22 +78,21 @@ controller('courses', function() {
 		if (!form.validation()) {
 			return false;
 		}
-		var _data = new FormData(document.getElementById('form-course'));
+		var _data = form.serializeObject();
 
 		//Necessário usar ajax para enviar o objeto FormData
 		$.ajax({
 			type: "POST",
 			url: '/course/save',
-			data: _data,
+			data: new FormData(document.getElementById('form-course')),
 			processData: false,
 			contentType: false,
 			success: function(data) {
 				if(data.status == 1) {
 					$('#modalAddCourse').modal('hide');
 					var courseList = $('.courses-list', view);
-
 					if(_data.course_id) {
-						courseList.find('.item-period[data-id="'+ _data.course_id +'"]').replaceWith(this.templateItemCourse(data.course));
+						courseList.find('.item-course[data-id="'+ _data.course_id +'"]').replaceWith(this.templateItemCourse(data.course));
 						$.alert('Curso editado com sucesso');
 					}
 					else {
@@ -111,8 +110,8 @@ controller('courses', function() {
 
 	this.templateItemCourse = function(item){
 		var html =
-		'<div class="col-xs-4 mb">'+
-			'<div class="ck card card--shadow item-course ev-redirectToPeriod" data-id="'+item.id+'">'+
+		'<div class="col-xs-4 mb item-course" data-id="'+ item.id +'">'+
+			'<div class="ck card card--shadow ev-redirectToPeriod">'+
 				'<div class="card__header">'+
 					'<div class="flex">'+
 						'<span class="grow text-bold text-md">'+ item.name +'</span>'+

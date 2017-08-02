@@ -83,7 +83,7 @@ controller('periods', function() {
 				}
 				else {
 					periodsList.prepend(this.templateItemPeriod(data.period));
-					$.alert('Novo período criado sucesso');
+					$.alert('Novo período criado com sucesso');
 				}
 			}
 

@@ -40,13 +40,13 @@
 							<div class="form-group">
 								<label for="absent" class="control-label">Percentual para reprovação (%)</label>
 								<span class="help-block"></span>
-								<input class="form-control" name="absent_percent"type="text">
+								<input class="form-control" name="absent_percent" type="number">
 							</div>
 						</div>
 						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="average" class="control-label">Nota máxima</label>
-								<input class="form-control" name="max_value"type="text">
+								<input class="form-control" name="max_value" type="number">
 							</div>
 						</div>
 					</div>
@@ -56,14 +56,14 @@
 							<div class="form-group">
 								<label for="average" class="control-label">Média para aprovação</label>
 								<span class="help-block">Valor da média de aprovação do seu curso</span>
-								<input class="form-control" name="average"type="text">
+								<input class="form-control" name="average" type="number">
 							</div>
 						</div>
 						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="averageFinal" class="control-label">Média final</label>
 								<span class="help-block">Valor da média da avaliação final</span>
-								<input class="form-control" name="final_average" type="text">
+								<input class="form-control" name="final_average" type="number">
 							</div>
 						</div>
 					</div>
