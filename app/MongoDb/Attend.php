@@ -1,9 +1,11 @@
 <?php
 
 namespace App\MongoDb;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 
 class Attend extends \Moloquent
 {
+	use SoftDeletes;
 
 	protected $fillable = ['user_id', 'unit_id'];
 

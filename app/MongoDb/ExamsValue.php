@@ -1,14 +1,16 @@
 <?php
 
 namespace App\MongoDb;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 
 class ExamsValue extends \Moloquent
 {
+	use SoftDeletes;
 	protected $hidden = ['_id'];
 
 	public function student()
 	{
-		return $this->belongsTo('Attend', 'attend_id')->first()->getUser();
+		return $this->belongsTo('App\MongoDb\Attend', 'attend_id')->first()->getUser();
 	}
 
 	/*public static function getValue($user, $exam)

@@ -1,14 +1,16 @@
 <?php
 
 namespace App\MongoDb;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 
 class Exam extends \Moloquent
 {
+	use SoftDeletes;
 	protected $hidden = ['_id'];
-	
+
 	public function unit()
 	{
-		return $this->belongsTo("Unit", "unit_id");
+		return $this->belongsTo('App\MongoDb\Unit');
 	}
 
 	// public function descriptive_exams()

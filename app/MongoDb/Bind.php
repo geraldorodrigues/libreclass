@@ -8,6 +8,6 @@ class Bind extends \Moloquent
 
 	public function discipline()
 	{
-		return $this->hasOne('App\Discipline');
+		return $this->hasOne('App\MongoDb\Discipline');
 	}
 }

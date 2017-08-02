@@ -12,11 +12,11 @@ class Classe extends \Moloquent
 
 	public function period()
 	{
-		return $this->belongsTo('App\Period');
+		return $this->belongsTo('App\MongoDb\Period');
 	}
 
 	public function offers()
 	{
-		return $this->hasMany('Offer');
+		return $this->hasMany('App\MongoDb\Offer');
 	}
 }
