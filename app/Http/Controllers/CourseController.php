@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\MongoDb\Course;
 use App\MongoDb\Period;
 
@@ -80,7 +81,7 @@ class CourseController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$course = Course::find(Crypt::decrypt($in->course_id);
+		$course = Course::find(Crypt::decrypt($in->course_id));
 		if (!$course){
 			return ['status'=>0, 'message'=>'Curso não encontrado'];
 		}
@@ -100,7 +101,7 @@ class CourseController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$course = Course::find(Crypt::decrypt($in->course_id);
+		$course = Course::find(Crypt::decrypt($in->course_id));
 		if (!$course){
 			return ['status'=>0, 'message'=>'Curso não encontrado'];
 		}
