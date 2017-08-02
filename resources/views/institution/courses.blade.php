@@ -13,7 +13,7 @@
 				<div class="card__header">
 					<div class="flex">
 						<span class="grow text-bold text-md">Curso de Línguas</span>
-						<i class="material-icons icon ev-openModalAddCourse" edit>&#xE254;</i>
+						<i class="ck material-icons icon ev-openModalAddCourse" edit>&#xE254;</i>
 					</div>
 				</div>
 				<div class="card__body">
@@ -55,13 +55,13 @@
 							<div class="form-group">
 								<label for="absent" class="control-label">Percentual para reprovação (%)</label>
 								<span class="help-block"></span>
-								<input class="form-control" name="absentPercent"type="text">
+								<input class="form-control" name="absent_percent"type="text">
 							</div>
 						</div>
 						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="average" class="control-label">Nota máxima</label>
-								<input class="form-control" name="average"type="text">
+								<input class="form-control" name="max_value"type="text">
 							</div>
 						</div>
 					</div>
@@ -78,7 +78,7 @@
 							<div class="form-group">
 								<label for="averageFinal" class="control-label">Média final</label>
 								<span class="help-block">Valor da média da avaliação final</span>
-								<input class="form-control" name="averageFinal" type="text">
+								<input class="form-control" name="final_average" type="text">
 							</div>
 						</div>
 					</div>
@@ -86,13 +86,13 @@
 					<div class="form-group">
 						<label for="curricularProfile" class="control-label">Perfil Curricular</label>
 						<span class="help-block">Anexe o arquivo do perfil curricular do curso (PDF).</span>
-						<input class="form-control" name="curricularProfile" type="file">
+						<input class="form-control" name="curricular_profile" type="file">
 					</div>
 
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-primary">Salvar</button>
+					<button type="submit" class="ev-addCourse btn btn-primary">Salvar</button>
 				</div>
 			</form>
 		</div>
