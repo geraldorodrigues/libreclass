@@ -4,9 +4,6 @@ Route::get('/login', function () {
 	return view('auth/login');
 });
 
-Route::post('auth/in', 'Auth\LoginController@authenticate');
-Route::any('auth/out', 'Auth\LoginController@out');
-
 # Route::controller('/censo', 'CensoController');
 Route::get('/censo/student', 'CensoController@getStudent');
 
@@ -38,12 +35,16 @@ Route::get('help/{rota}', 'HelpController@getIndex');
 
 # Route::controller('/', 'LoginController');
 Route::get('/', 'HomeController@index');
-Route::post('/', 'LoginController@postIndex');
 Route::get('/login', 'LoginController@getLogin')->name('login');
-Route::post('/login', 'LoginController@postLogin');
+// Route::post('/', 'LoginController@postIndex');
+// Route::post('/login', 'LoginController@postLogin');
 Route::get('/check', 'LoginController@getCheck');
 Route::get('/email', 'LoginController@getEmail');
 Route::post('/forgot-password', 'LoginController@postForgotPassword');
+
+#Rotas de Autenticação
+Route::post('auth/in', 'Auth\LoginController@authenticate');
+Route::any('auth/out', 'Auth\LoginController@out');
 
 Route::get('/user/scholar-report', "UsersController@printScholarReport");
 Route::post('user/teacher/delete', "UsersController@postUnlink");
@@ -227,7 +228,7 @@ Route::post('/config/street', 'ConfigController@postStreet');
 Route::post('/config/uee', 'ConfigController@postUee');
 
 # Route::controller('/', 'SocialController');
-Route::get('/', 'SocialController@getIndex');
+// Route::get('/', 'SocialController@getIndex');
 Route::post('/question', 'SocialController@postQuestion');
 Route::post('/suggestion', 'SocialController@postSuggestion');
 
