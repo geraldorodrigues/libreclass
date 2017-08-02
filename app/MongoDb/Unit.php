@@ -17,6 +17,11 @@ class Unit extends \Moloquent
 		return $this->hasMany('App\MongoDb\Lesson');
 	}
 
+	public function attends()
+	{
+		return $this->hasMany('Attend');
+	}
+
 	/*public function getOffer()
 	{
 		return Offer::find($this->idOffer);

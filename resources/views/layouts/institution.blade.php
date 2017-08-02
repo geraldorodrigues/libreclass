@@ -1,5 +1,6 @@
 @extends('layouts.master')
 
+@section('title', 'Libreclass - Instituição')
 @section('scripts')
 	 {{ HTML::script('assets/js/institutionControllers.min.js') }}
 @endsection

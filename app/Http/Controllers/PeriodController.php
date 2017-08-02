@@ -90,5 +90,7 @@ class PeriodController extends Controller
 		if (!$period){
 			return ['status'=>0, 'message'=>'Período não encontrado'];
 		}
+
+		return ['status'=>1, 'period'=>$period ];
 	}
 }

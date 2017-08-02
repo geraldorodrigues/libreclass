@@ -7,7 +7,22 @@ class Attend extends \Moloquent
 {
 	use SoftDeletes;
 
-	protected $fillable = ['user_id', 'unit_id'];
+	protected $fillable = ['student_id', 'unit_id'];
+
+	public function unit()
+	{
+		return $this->belongsTo('Unit', 'unit_id');
+	}
+
+	public function student()
+	{
+		return $this->belongsTo('User','student_id');
+	}
+
+	public function student()
+	{
+		return $this->hasMany('Frequency');
+	}
 
 	/*public function getUser()
 	{

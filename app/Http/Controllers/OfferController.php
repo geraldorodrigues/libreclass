@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\MySql\User;
-use App\MySql\Classe;
-use App\MySql\Period;
-use App\MySql\Offer;
-use App\MySql\Course;
-use App\MySql\Unit;
-use App\MySql\Lector;
-use App\MySql\Attend;
+use App\MongoDb\User;
+use App\MongoDb\Classe;
+use App\MongoDb\Period;
+use App\MongoDb\Offer;
+use App\MongoDb\Course;
+use App\MongoDb\Unit;
+use App\MongoDb\Lector;
+use App\MongoDb\Attend;
 
 use Session;
 use Crypt;
 use Redirect;
 
-class OffersController extends Controller
+class OfferController extends Controller
 {
 
   private $idUser;
 
-  public function OffersController()
+  public function __construct()
   {
     $id = Session::get("user");
     if ($id == null || $id == "") {
@@ -42,128 +42,129 @@ class OffersController extends Controller
     }
   }
 
-  public function getIndex()
+  public function index(Request $in)
   {
-    if ($this->idUser) {
-      $user = User::find($this->idUser);
+    if ($user = User::find($in->user_id)) {
 
-      $classe = Classe::find(Crypt::decrypt(Input::get("t")));
-      $period = Period::find($classe->idPeriod);
-      $course = Course::find($period->idCourse);
-      $offers = Offer::where("idClass", $classe->id)->get();
+      $classe = Classe::find(Crypt::decrypt($in->classe_id));
+      $period = Period::find($classe->period_id);
+      $course = Course::find($period->course_id);
+      $offers = Offer::where("classe_id", $classe->id)->get();
       foreach ($offers as $offer) {
         $teachers = [];
-        $list = Lecture::where("idOffer", $offer->id)->get();
+        $list = Lecture::where("offer_id", $offer->id)->get();
         foreach ($list as $value) {
-          $teachers[] = base64_encode($value->idUser);
+          $teachers[] = Crypt::encrypt($value->user_id);
         }
 
         $offer->teachers = $teachers;
       }
 
-      return view("offers.institution",
-        [
+      return ['status' => 1,
           "course" => $course,
           "user" => $user,
           "offers" => $offers,
           "period" => $period,
           "classe" => $classe,
-        ]
-      );
+        ];
     } else {
-      return Redirect::guest("/login");
+      return ['status' => 0];
     }
   }
 
-  public function getUnit($offer)
+  public function unit(Request $in)
   {
-    $offer = Offer::find(Crypt::decrypt($offer));
-    if ($this->idUser != $offer->getClass()->getPeriod()->getCourse()->idInstitution) {
-      return Redirect::to("/classes/offers?t=" . Crypt::encrypt($offer->idClass))->with("error", "Você não tem permissão para criar unidade");
+    $offer = Offer::find(Crypt::decrypt($in->offer_id));
+    if (auth()->id() != $offer->class->period->course->institution_id) {
+      ['status' => 0, 'message' => "Você não tem permissão para criar unidade"];
     }
 
-    $old = Unit::where("idOffer", $offer->id)->orderBy("value", "desc")->first();
+    $old = Unit::where("offer_id", $offer->id)->orderBy("value", "desc")->first();
 
     $unit = new Unit;
-    $unit->idOffer = $old->idOffer;
+    $unit->offer_id = $old->offer_id;
     $unit->value = $old->value + 1;
     $unit->calculation = $old->calculation;
     $unit->save();
 
-    $attends = Attend::where("idUnit", $old->id)->get();
+    $attends = Attend::where("unit_id", $old->id)->get();
 
     foreach ($attends as $attend) {
       $new = new Attend;
-      $new->idUnit = $unit->id;
-      $new->idUser = $attend->idUser;
+      $new->unit_id = $unit->id;
+      $new->user_id = $attend->user_id;
       $new->save();
     }
 
-    return Redirect::to("/classes/offers?t=" . Crypt::encrypt($offer->idClass))->with("success", "Unidade criada com sucesso!");
+    return ['status' => 1, 'message' => "Unidade criada com sucesso!"];
   }
 
-  public function postTeacher()
+  public function teacher(Request $in)
   {
     // return Input::all();
 
-    $offer = Offer::find(Crypt::decrypt(Input::get("offer")));
-    $offer->classroom = Input::get("classroom");
-    $offer->day_period = Input::get("day_period");
-    $offer->maxlessons = Input::get("maxlessons");
-    $offer->save();
-    $lectures = $offer->getAllLectures();
+    $offer = Offer::find(Crypt::decrypt($in->offer_id));
+		if ($offer) {
 
-    $teachers = [];
-    if (Input::has("teachers")) {
-      $teachers = Input::get("teachers");
-      for ($i = 0; $i < count($teachers); $i++) {
-        $teachers[$i] = base64_decode($teachers[$i]);
-      }
+			$offer->classroom = $in->classroom;
+			$offer->day_period = $in->day_period;
+			$offer->maxlessons = $in->maxlessons;
+			$offer->save();
+			$lectures = $offer->getAllLectures();
 
-    }
-    // return $teachers;
-    foreach ($lectures as $lecture) {
-      $find = array_search($lecture->idUser, $teachers);
-      if ($find === false) {
-        Lecture::where('idOffer', $offer->id)->where('idUser', $lecture->idUser)->delete();
-      } else {
-        unset($teachers[$find]);
-      }
+			$teachers = [];
+			if (Input::has("teachers")) {
+				$teachers = Input::get("teachers");
+				for ($i = 0; $i < count($teachers); $i++) {
+					$teachers[$i] = base64_decode($teachers[$i]);
+				}
 
-    }
+			}
+			// return $teachers;
+			foreach ($lectures as $lecture) {
+				$find = array_search($lecture->idUser, $teachers);
+				if ($find === false) {
+					Lecture::where('idOffer', $offer->id)->where('idUser', $lecture->idUser)->delete();
+				} else {
+					unset($teachers[$find]);
+				}
 
-    foreach ($teachers as $teacher) {
-      $last = Lecture::where("idUser", $teacher)->orderBy("order", "desc")->first();
-      $last = $last ? $last->order + 1 : 1;
+			}
 
-      $lecture = new Lecture;
-      $lecture->idUser = $teacher;
-      $lecture->idOffer = $offer->id;
-      $lecture->order = $last;
-      $lecture->save();
-    }
+			foreach ($teachers as $teacher) {
+				$last = Lecture::where("idUser", $teacher)->orderBy("order", "desc")->first();
+				$last = $last ? $last->order + 1 : 1;
 
-    //   $idTeacher = Crypt::decrypt(Input::get("teacher"));
-    //   $last = Lecture::where("idUser", $idTeacher)->orderBy("order", "desc")->first();
-    //   $last = $last ? $last->order+1 : 1;
-    //
-    //   if (!$lecture) {
-    //     $lecture = new Lecture;
-    //     $lecture->idUser = $idTeacher;
-    //     $lecture->idOffer = $offer->id;
-    //     $lecture->order = $last;
-    //     $lecture->save();
-    //   }
-    //   else if($lecture->idUser != $idTeacher) {
-    //     Lecture::where('idOffer', $offer->id)->where('idUser', $lecture->idUser)->update(["idUser" => $idTeacher, "order" => $last]);
-    //   }
-    // }
-    // else if ($lecture)
-    // {
-    //   Lecture::where('idOffer', $offer->id)->where('idUser', $lecture->idUser)->delete();
-    // }
+				$lecture = new Lecture;
+				$lecture->idUser = $teacher;
+				$lecture->idOffer = $offer->id;
+				$lecture->order = $last;
+				$lecture->save();
+			}
 
-    return Redirect::guest(Input::get("prev"))->with("success", "Modificado com sucesso!");
+			//   $idTeacher = Crypt::decrypt(Input::get("teacher"));
+			//   $last = Lecture::where("idUser", $idTeacher)->orderBy("order", "desc")->first();
+			//   $last = $last ? $last->order+1 : 1;
+			//
+			//   if (!$lecture) {
+			//     $lecture = new Lecture;
+			//     $lecture->idUser = $idTeacher;
+			//     $lecture->idOffer = $offer->id;
+			//     $lecture->order = $last;
+			//     $lecture->save();
+			//   }
+			//   else if($lecture->idUser != $idTeacher) {
+			//     Lecture::where('idOffer', $offer->id)->where('idUser', $lecture->idUser)->update(["idUser" => $idTeacher, "order" => $last]);
+			//   }
+			// }
+			// else if ($lecture)
+			// {
+			//   Lecture::where('idOffer', $offer->id)->where('idUser', $lecture->idUser)->delete();
+			// }
+
+			return Redirect::guest(Input::get("prev"))->with("success", "Modificado com sucesso!");
+		}
+		return ['status' => 0, 'message' => 'Oferta não encontrada']
   }
 
   public function postStatus()
