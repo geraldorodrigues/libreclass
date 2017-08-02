@@ -13,7 +13,7 @@ class CourseController extends Controller
 {
 	public function save(Request $in)
 	{
-		if (auth()->user()->type == "I") {
+		if (auth()->user()->type != "I") {
 			return ['status'=>0, 'message'=>'Operação não permitida'];
 		}
 
@@ -40,6 +40,10 @@ class CourseController extends Controller
 	// public function getIndex()
 	public function list()
 	{
+		if (auth()->user()->type != "I") {
+			return ['status'=>0, 'message'=>'Operação não permitida'];
+		}
+
 		$courses = auth()->user()->courses()->whereStatus("E")->orderBy("name")->get();
 		foreach ($courses as $course) {
 			$course->periods = $course->periods;
@@ -88,6 +92,10 @@ class CourseController extends Controller
 
 	public function delete(Request $in)
 	{
+		if (auth()->user()->type != "I") {
+			return ['status'=>0, 'message'=>'Operação não permitida'];
+		}
+
 		if (!isset($in->course_id)){
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
