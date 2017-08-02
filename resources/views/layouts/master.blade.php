@@ -59,7 +59,6 @@
 						@yield('side-menu')
 					</div>
 					<div class="side__footer">
-						<img src="img/logo-white.png" class="center-block img-md"/>
 					</div>
 				</div>
 
