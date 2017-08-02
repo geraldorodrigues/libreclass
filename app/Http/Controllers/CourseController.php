@@ -31,8 +31,10 @@ class CourseController extends Controller
 		$course->absent_percent = $in->absent_percent;
 		$course->average = $in->average;
 		$course->average_final = $in->average_final;
+		$course->status = 'E';
 
 		$course->save();
+
 		$course->id = Crypt::encrypt($course->id);
 
 		return ['status'=>1, 'course'=>$course];
