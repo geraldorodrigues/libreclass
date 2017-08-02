@@ -40,17 +40,17 @@ CanResetPasswordContract
 
 	public function disciplines()
 	{
-		return $this->belongsToMany('Discipline', 'Binds', 'user_id', 'discipline_id');
+		return $this->belongsToMany('App\MongoDb\Discipline', 'App\MongoDb\Binds', 'user_id', 'discipline_id');
 	}
 
 	public function offers()
 	{
-		return $this->belongsToMany('Offer', 'Lectures', 'user_id', 'offer_id');
+		return $this->belongsToMany('App\MongoDb\Offer', 'App\MongoDb\Lectures', 'user_id', 'offer_id');
 	}
 
 	public function courses()
 	{
-		return $this->hasMany('Course', 'institution_id');
+		return $this->hasMany('App\MongoDb\Course', 'institution_id');
 	}
 
 	public function attends()

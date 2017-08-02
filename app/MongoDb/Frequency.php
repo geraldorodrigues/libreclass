@@ -1,9 +1,11 @@
 <?php
 
 namespace App\MongoDb;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 
 class Frequency extends \Moloquent
 {
+	use SoftDeletes;
 	protected $hidden = ['_id'];
 
 	public function attend()
