@@ -67,7 +67,7 @@
 					<div class="page__header">
 						<div class="flex center-left">
 							<div class="flex grow center-left">
-								<div id="page-title" class="page__header-title">Title</div>
+								<div id="page-title" class="page__header-title"></div>
 							</div>
 
 							<div class="mr" title="Configurações">
