@@ -5,17 +5,16 @@ controller('courses', function() {
 		view = $(view);
 		view.on('click', '.ev-openModalAddCourse', this.openModalAddCourse);
 		view.on('click', '.ev-redirectToPeriod', this.redirectToPeriod);
-		view.on('click', '.ev-addCourse', this.addCourse);
-		//view.on('click', '.ev-openModalAddCourse'), this.editCourse);
+		view.on('submit', '.ev-saveCourse', this.saveCourse);
 	};
 
 	this.show = function() {
 		view.show();
 		$("#page-title").text('Cursos');
-		this.getListCourse();
+		this.getListCourses();
 	};
 
-	this.getListCourse = function() {
+	this.getListCourses = function() {
 		$.post('/course/list', {}, function(data) {
 
 			if(!data.status) {
@@ -25,9 +24,9 @@ controller('courses', function() {
 
 			var coursesList = view.find('.courses-list').empty();
 			data.courses.forEach(function(item) {
-				console.log(this);
 				coursesList.prepend(this.templateItemCourse(item));
 			}.bind(this));
+
 		}.bind(this));
 	};
 
@@ -35,15 +34,12 @@ controller('courses', function() {
 		e.stopPropagation();
 		var modal = $('#modalAddCourse');
 		var form = $('#form-course');
-		console.log(form);
 
 		//Verifica se o elemento do evento tem o atributo edit
 		if($(e.currentTarget).is('[edit]')) {
 			var id = $(e.currentTarget).closest('.item-course').attr('data-id');
 			$.post('/course/read', { 'course_id': id } , function(data){
-				console.log(data.status);
 				if(data.status == 1) {
-					console.log();
 					$('input[name="course_id"]', form).val(id);
 					$('input[name="name"]', form).val(data.course.name);
 					$('input[name="type"]', form).val(data.course.type);
@@ -54,47 +50,65 @@ controller('courses', function() {
 					$('input[name="final_average"]', form).val(data.course.final_average);
 					$('input[name="curricular_profile"]', form).val(data.course.curricular_profile);
 
-					}
+					modal.find('.modal-title').text('Editar curso');
+					modal.modal();
+				}
+				else {
+					$.dialog.info('Erro', 'Não foi possível carregar os dados do curso. Se o erro persistir contate o suporte');
+				}
 
 			});
-			modal.find('.modal-title').text('Editar curso');
 		}
 		else {
 			modal.find('.modal-title').text('Cadastrar curso');
+			modal.modal();
 		}
 
-		modal.modal();
 	};
 
 	this.redirectToPeriod = function(e) {
 		redirect('periods/'+$(e.currentTarget).attr('data-id'));
 	};
 
-	this.getCourse = function(id) {
-		console.log(id);
-	};
-
-	// adicionar curso
-	this.addCourse = function(e) {
+	// Salvar curso
+	this.saveCourse = function(e) {
 		e.preventDefault();
 		var form = $('#form-course');
 
 		if (!form.validation()) {
 			return false;
 		}
-		var data = form.serializeObject();
-		$.post('/course/save', data, function(data) {
-			if(data.status == 1) {
-				$.dialog.info('Curso adicionado com sucesso!');
-				$('#modalAddCourse').modal('hide');
-			}
-			else {
-				$.dialog.info(data.message);
-			}
+		var _data = new FormData(document.getElementById('form-course'));
+
+		//Necessário usar ajax para enviar o objeto FormData
+		$.ajax({
+			type: "POST",
+			url: '/course/save',
+			data: _data,
+			processData: false,
+			contentType: false,
+			success: function(data) {
+				if(data.status == 1) {
+					$('#modalAddCourse').modal('hide');
+					var courseList = $('.courses-list', view);
+
+					if(_data.course_id) {
+						courseList.find('.item-period[data-id="'+ _data.course_id +'"]').replaceWith(this.templateItemCourse(data.course));
+						$.alert('Curso editado com sucesso');
+					}
+					else {
+						courseList.prepend(this.templateItemCourse(data.course));
+						$.alert('Novo curso criado com sucesso');
+					}
+				}
+				else {
+					$.dialog.info('Erro', data.message);
+				}
+			}.bind(this),
+			error: errorDialog
 		});
-
-
 	};
+
 	this.templateItemCourse = function(item){
 		var html =
 		'<div class="col-xs-4 mb">'+

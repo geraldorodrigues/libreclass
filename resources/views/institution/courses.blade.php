@@ -8,33 +8,18 @@
 	<button class="ev-openModalAddCourse">Adicionar</button>
 
 	<div class="row courses-list mt">
-		<div class="col-xs-4 mb">
-			<div class="card card--shadow item-course ev-redirectToPeriod">
-				<div class="card__header">
-					<div class="flex">
-						<span class="grow text-bold text-md">Curso de Línguas</span>
-						<i class="ck material-icons icon ev-openModalAddCourse" edit>&#xE254;</i>
-					</div>
-				</div>
-				<div class="card__body">
-
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<div class="modal fade" id="modalAddCourse" tabindex="-1" role="dialog">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-			<form id="form-course">
+			<form id="form-course" class="ev-saveCourse">
 				<input type="text" name="course_id" hidden />
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
-
-					<input name="course_id" type="hidden">
 					<div class="form-group">
 						<label for="name" class="control-label">Nome do Curso</label>
 						<input class="form-control" name="name" type="text">
@@ -92,7 +77,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					<button type="submit" class="ev-addCourse btn btn-primary">Salvar</button>
+					<button type="submit" class="btn btn-primary">Salvar</button>
 				</div>
 			</form>
 		</div>
