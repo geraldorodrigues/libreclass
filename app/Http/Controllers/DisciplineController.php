@@ -40,6 +40,42 @@ class DisciplineController extends Controller
 		return ['status'=>1, 'discipline'=>$discipline];
 	}
 
+	public function list(Request $in)
+	{
+		if (!isset($in->period_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$period = Period::find(Crypt::decrypt($in->period_id));
+		if (!$period){
+			return ['status'=>0, 'message'=>'Período não encontrado'];
+		}
+		if ($period->course->institution_id != auth()->id()){
+			return ['status'=>0, 'message'=>'Operação não autorizada'];
+		}
+
+		$disciplines = $period->disciplines;
+
+		foreach ($disciplines as $discipline) {
+			$discipline->id = Crypt::
+		}
+	}
+
+
+	public function read(Request $in)
+	{
+		if (!isset($in->discipline_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$discipline = Discipline::find(Crypt::decrypt($in->discipline_id));
+		if (!$discipline){
+			return ['status'=>0, 'message'=>'Disciplina não encontrada'];
+		}
+
+		return ['status'=>1, 'discipline'=>$discipline];
+	}
+
 	public function delete(Request $in)
 	{
 		if (!isset($in->discipline_id)){
@@ -61,19 +97,5 @@ class DisciplineController extends Controller
 		$discipline->delete();
 
 		return ['status'=>1];
-	}
-
-	public function read(Request $in)
-	{
-		if (!isset($in->discipline_id)){
-			return ['status'=>0, 'message'=>'Dados incompletos'];
-		}
-
-		$discipline = Discipline::find(Crypt::decrypt($in->discipline_id));
-		if (!$discipline){
-			return ['status'=>0, 'message'=>'Disciplina não encontrada'];
-		}
-
-		return ['status'=>1, 'discipline'=>$discipline];
 	}
 }
