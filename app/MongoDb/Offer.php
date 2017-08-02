@@ -1,25 +1,27 @@
 <?php
 
 namespace App\MongoDb;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 
 class Offer extends \Moloquent
 {
+	use SoftDeletes;
 	protected $fillable = ['class_id', 'discipline_id', 'classroom', 'day_period'];
 
 	public function discipline()
 	{
-		return $this->belongsTo('Discipline');
+		return $this->belongsTo('App\MongoDb\Discipline');
 	}
 
 
 	public function classe()
 	{
-		return $this->belongsTo('Classe', 'class_id');
+		return $this->belongsTo('App\MongoDb\Classe', 'class_id');
 	}
 
 	public function lectures()
 	{
-		return $this->hasMany('Lecture');
+		return $this->hasMany('App\MongoDb\Lecture');
 	}
 
 	public function getDiscipline()

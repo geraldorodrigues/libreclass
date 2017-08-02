@@ -1,0 +1,38 @@
+.main
+	height:100%
+	display: flex
+
+.page
+	display: flex
+	flex-direction: row
+
+	.page__side
+		width: 230px
+		background: $color-primary-dark
+
+	.page__content
+		width: calc(100% - 230px)
+		flex-grow: 1
+		// background-color: $color-white
+		margin-top: 60px
+
+		.container
+			width: 100%
+
+		.page__header
+			position: fixed
+			height: 60px
+			top: 0
+			width: calc(100% - 230px)
+			z-index: 1000
+			padding: $size-sm
+			border-bottom: 1px solid $color-grey--light
+			background-color: $color-white
+
+			.page__header-title
+				font-size: 22px
+				font-weight: bold
+
+
+		&.page--scroll
+			overflow-y: auto

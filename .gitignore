@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/assets
 /storage/*.key
 /storage/*
 /app/storage
@@ -12,4 +13,5 @@ Homestead.yaml
 npm-debug.log
 .env
 .env.php
+yarn-error.log
 composer.lock

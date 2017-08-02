@@ -6,17 +6,17 @@ use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 class Discipline extends \Moloquent
 {
 	use SoftDeletes;
-	
+
 	protected $fillable = ['name', 'period_id'];
 	protected $hidden = ['_id'];
 
 	public function period()
 	{
-		return $this->belongsTo('App\Period');
+		return $this->belongsTo('App\MongoDb\Period');
 	}
 
 	public function offers()
 	{
-		return $this->hasMany('Offer');
+		return $this->hasMany('App\MongoDb\Offer');
 	}
 }

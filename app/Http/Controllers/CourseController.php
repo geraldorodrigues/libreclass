@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\MySql\Course;
-use App\MySql\Period;
+use Illuminate\Http\Request;
+use App\MongoDb\Course;
+use App\MongoDb\Period;
 
 use Session;
 use Crypt;
@@ -13,7 +14,7 @@ class CourseController extends Controller
 {
 	public function save(Request $in)
 	{
-		if (auth()->user()->type == "I") {
+		if (auth()->user()->type != "I") {
 			return ['status'=>0, 'message'=>'Operação não permitida'];
 		}
 
@@ -40,6 +41,10 @@ class CourseController extends Controller
 	// public function getIndex()
 	public function list()
 	{
+		if (auth()->user()->type != "I") {
+			return ['status'=>0, 'message'=>'Operação não permitida'];
+		}
+
 		$courses = auth()->user()->courses()->whereStatus("E")->orderBy("name")->get();
 		foreach ($courses as $course) {
 			$course->periods = $course->periods;
@@ -70,15 +75,39 @@ class CourseController extends Controller
 	// 	}
 	// }
 
-	public function delete(Request $in)
+	public function read(Request $in)
 	{
 		if (!isset($in->course_id)){
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$course = Course::find(Crypt::decrypt($in->course_id);
+		$course = Course::find(Crypt::decrypt($in->course_id));
 		if (!$course){
 			return ['status'=>0, 'message'=>'Curso não encontrado'];
+		}
+
+		$course->id = Crypt::encrypt($course->id);
+
+		return ['status'=>1, 'course'=>$course];
+	}
+
+	public function delete(Request $in)
+	{
+		if (auth()->user()->type != "I") {
+			return ['status'=>0, 'message'=>'Operação não permitida'];
+		}
+
+		if (!isset($in->course_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$course = Course::find(Crypt::decrypt($in->course_id));
+		if (!$course){
+			return ['status'=>0, 'message'=>'Curso não encontrado'];
+		}
+
+		if ($course->periods()->count()){
+			return ['status'=>0, 'message'=>'Operação não realizada. Curso já possui período(s)'];
 		}
 
 		$course->delete();

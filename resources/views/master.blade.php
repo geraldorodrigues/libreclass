@@ -13,13 +13,18 @@
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no ">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	{{-- {{ HTML::style('https://fonts.googleapis.com/icon?family=Material+Icons">')}} --}}
 
-  {{ HTML::style('css/bootstrap.min.css') }}
+  {{ HTML::style('assets/css/bootstrap.min.css') }}
+  {{ HTML::style('assets/lealjs/leal.min.css') }}
   {{ HTML::style('css/home.css') }}
   {{ HTML::style('css/fa/css/font-awesome.min.css') }}
   {{ HTML::style('css/validation.css') }}
+
+
   {{ HTML::script('js/jquery.min.js') }}
-  {{ HTML::script('js/bootstrap.min.js') }}
+	{{ HTML::script('assets/lealjs/leal.min.js') }}
+  {{ HTML::script('assets/js/bootstrap.min.js') }}
   {{ HTML::script('js/register.js') }}
   {{ HTML::script('js/menu.js') }}
 

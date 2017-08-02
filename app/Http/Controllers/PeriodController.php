@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\MySql\Course;
-use App\MySql\Period;
+use Illuminate\Http\Request;
+use App\MongoDb\Course;
+use App\MongoDb\Period;
 
 use Session;
 use Crypt;
@@ -22,7 +23,7 @@ class PeriodController extends Controller
 		}
 
 		if (isset($in->period_id)){//Edição
-			$period = Period::find(Crypt::decrypt($in->period_id);
+			$period = Period::find(Crypt::decrypt($in->period_id));
 			if (!$period){
 				return ['status'=>0, 'message'=>'Período não encontrado'];
 			}
@@ -42,6 +43,9 @@ class PeriodController extends Controller
 			}
 			$period = $course->periods()->create(['name'=>$in->name]);
 		}
+		unset($period->created_at);
+		unset($period->updated_at);
+		$period->id = Crypt::encrypt($period->id);
 
 		return ['status'=>1, 'period'=>$period];
 	}
@@ -74,5 +78,17 @@ class PeriodController extends Controller
 		}
 
 		return ['status'=>1, 'periods'=>$periods];
+	}
+
+	public function read(Request $in)
+	{
+		if (!isset($in->period_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$period = Period::find(Crypt::decrypt($in->period_id));
+		if (!$period){
+			return ['status'=>0, 'message'=>'Período não encontrado'];
+		}
 	}
 }

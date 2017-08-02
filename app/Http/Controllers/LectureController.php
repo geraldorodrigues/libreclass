@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\MySql\User;
-use App\MySql\Lecture;
-use App\MySql\Offer;
-use App\MySql\Unit;
-use App\MySql\FinalExam;
+use App\MongoDb\User;
+use App\MongoDb\Lecture;
+use App\MongoDb\Offer;
+use App\MongoDb\Unit;
+use App\MongoDb\FinalExam;
 
 use Session;
 use Crypt;
 use Redirect;
 
-class LecturesController extends Controller
+class LectureController extends Controller
 {
 
   private $idUser;
 
-  public function LecturesController()
+  public function __construct()
   {
     $id = Session::get("user");
     if ($id == null || $id == "") {
@@ -25,35 +25,37 @@ class LecturesController extends Controller
     } else {
       $this->idUser = Crypt::decrypt($id);
     }
+		if (auth()->id()) {
   }
 
-  public function getIndex()
+  public function index()
   {
-    if ($this->idUser) {
-      $user = User::find($this->idUser);
-      $lectures = Lecture::where("idUser", $this->idUser)->orderBy("order")->get();
-      return view("offers.teacher", ["user" => $user, "lectures" => $lectures]);
+      $user = User::find(auth()->id());
+      $lectures = Lecture::where("user_id", auth()->id())->orderBy("order")->get();
+      return ["status" => 1, "user" => $user, "lectures" => $lectures]);
     } else {
       return Redirect::guest("/");
     }
   }
 
-  public function getFinalreport($offer = "")
+  public function finalReport(Request $in)
   {
-    if ($this->idUser) {
-      $user = User::find($this->idUser);
+    if (auth()->id()) {
+      $user = User::find(auth()->id());
     }
-    $offer = Offer::find(Crypt::decrypt($offer));
+    $offer = Offer::find(Crypt::decrypt($in->offer_id));
     $course = $offer->getDiscipline()->getPeriod()->getCourse();
     $qtdLessons = $offer->qtdLessons();
 
-    $alunos = DB::select("SELECT Users.id, Users.name
+    /*$alunos = DB::select("SELECT Users.id, Users.name
                           FROM Attends, Units, Users
                           WHERE Units.idOffer=? AND Units.id=Attends.idUnit AND Attends.idUser=Users.id
                           GROUP BY Attends.idUser
-                          ORDER BY Users.name", [$offer->id]);
+                          ORDER BY Users.name", [$offer->id]);*/
 
-    $units = Unit::where("idOffer", $offer->id)->get();
+		$units = Unit::where("offer_id", $offer->id)->get();
+
+		$alunos = $units->attends()->user()->get();
 
     foreach ($alunos as $aluno) {
       $aluno->absence = $offer->qtdAbsences($aluno->id);
@@ -77,7 +79,7 @@ class LecturesController extends Controller
         $aluno->result = "Ap. por nota";
         $aluno->status = "label-success";
       } else {
-        $rec = FinalExam::where("idOffer", $offer->id)->where("idUser", $aluno->id)->first();
+        $rec = FinalExam::where("offer_id", $offer->id)->where("user_id", $aluno->id)->first();
         $aluno->rec = $rec ? $rec->value : "0.00";
         if ($aluno->rec >= $course->averageFinal) {
           $aluno->result = "Aprovado";
@@ -94,36 +96,38 @@ class LecturesController extends Controller
       }
     }
 
-    return view("modules.disciplines.finalreport",
-      ["user" => $user,
+    return ["status" => 1,
+			  "user" => $user,
         "units" => $units,
         "students" => $alunos,
         "offer" => $offer,
         "qtdLessons" => $qtdLessons,
-        "course" => $course]);
+        "course" => $course];
   }
 
-  public function getFrequency($offer)
+  public function frequency(Request $in)
   {
-    $user = User::find($this->idUser);
-    $offer = Offer::find(Crypt::decrypt($offer));
-    if ($offer->getLectures()->idUser != $this->idUser) {
+    $user = User::find(auth()->id());
+    $offer = Offer::find(Crypt::decrypt($in->offer));
+		$lectures_users_ids = $offer->lectures()->get(['user_id'])->pluck('user_id');
+    if (!in_array(auth()->id(), $lectures_users_ids)) {
       return Redirect::to("/lectures")->with("error", "Você não tem acesso a essa página");
     }
-    $units = Unit::where("idOffer", $offer->id)->get();
-    $students = DB::select("select Users.id, Users.name "
+    $units = Unit::where("offer_id", $offer->id)->get();
+    /*$students = DB::select("select Users.id, Users.name "
       . "from Users, Attends, Units "
       . "where Units.idOffer=? and Attends.idUnit=Units.id and Attends.idUser=Users.id "
-      . "group by Users.id order by Users.name", [$offer->id]);
+      . "group by Users.id order by Users.name", [$offer->id]);*/
+		$students_ids = Unit::where("offer_id", $offer->id)->attends()->get(['user_id'])->pluck('user_id');
+		$students = User::where('_id',$students_ids)->orderBy('name')->get();
 
-    return view("modules.frequency", ["user" => $user, "offer" => $offer, "units" => $units, "students" => $students]);
-    return $offer;
+    return ["status"=>1, "user" => $user, "offer" => $offer, "units" => $units, "students" => $students];
   }
 
-  public function postSort()
+  public function sort(Request $in)
   {
-    foreach (Input::get("order") as $key => $value) {
-      Lecture::where('idOffer', Crypt::decrypt($value))->where('idUser', $this->idUser)->update(["order" => $key + 1]);
+    foreach ($in->order as $key => $value) {
+      Lecture::where('offer_id', Crypt::decrypt($value))->where('user_id', auth()->id())->update(["order" => $key + 1]);
     }
   }
 }
