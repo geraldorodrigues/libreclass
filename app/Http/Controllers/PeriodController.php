@@ -43,6 +43,9 @@ class PeriodController extends Controller
 			}
 			$period = $course->periods()->create(['name'=>$in->name]);
 		}
+		unset($period->created_at);
+		unset($period->updated_at);
+		$period->id = Crypt::encrypt($period->id);
 
 		return ['status'=>1, 'period'=>$period];
 	}
