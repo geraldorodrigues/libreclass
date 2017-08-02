@@ -43,19 +43,11 @@
 
 				<div class="page__side side">
 
-					<div class="side__header color-white text-center">
-						<div class="text-medium text-xmd" data-name="provider-name">
-							{{-- @if(auth()->user()->type == "A")
-								Administrador
-							@endif --}}
-						</div>
-						<div>
-							{{-- @if (auth()->user()->type == 'R')
-								Olá, {{ auth()->user()->name }}
-							@endif --}}
-						</div>
+					<div class="side__header">
+						<img src="images/logo.svg" class="logomarca center-block img-full" />
 					</div>
 					<div class="side__body">
+						<img src="images/user-photo-default.jpg" class="img-smm center-block mt mb" />
 						@yield('side-menu')
 					</div>
 					<div class="side__footer">
