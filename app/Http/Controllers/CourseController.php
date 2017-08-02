@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\MySql\Course;
-use App\MySql\Period;
+use App\MongoDb\Course;
+use App\MongoDb\Period;
 
 use Session;
 use Crypt;
