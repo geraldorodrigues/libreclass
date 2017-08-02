@@ -70,6 +70,22 @@ class CourseController extends Controller
 	// 	}
 	// }
 
+	public function read(Request $in)
+	{
+		if (!isset($in->course_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$course = Course::find(Crypt::decrypt($in->course_id);
+		if (!$course){
+			return ['status'=>0, 'message'=>'Curso não encontrado'];
+		}
+
+		$course->id = Crypt::encrypt($course->id);
+
+		return ['status'=>1, 'course'=>$course];
+	}
+
 	public function delete(Request $in)
 	{
 		if (!isset($in->course_id)){
@@ -79,6 +95,10 @@ class CourseController extends Controller
 		$course = Course::find(Crypt::decrypt($in->course_id);
 		if (!$course){
 			return ['status'=>0, 'message'=>'Curso não encontrado'];
+		}
+
+		if ($course->periods()->count()){
+			return ['status'=>0, 'message'=>'Operação não realizada. Curso já possui período(s)'];
 		}
 
 		$course->delete();

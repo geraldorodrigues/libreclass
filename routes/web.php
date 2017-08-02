@@ -53,6 +53,7 @@ Route::get('classes/units/report-unit/{idUnit}', "UnitsController@getReportUnit"
 //CourseController
 Route::any('/course/save', 'CourseController@save');
 Route::any('/course/list', 'CourseController@list');
+Route::any('/course/read', 'CourseController@read');
 Route::any('/course/delete', 'CourseController@delete');
 # Route::controller('course', "CourseController");
 // Route::get('/course', 'CourseController@getIndex');
