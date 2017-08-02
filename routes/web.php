@@ -38,9 +38,9 @@ Route::get('help/{rota}', 'HelpController@getIndex');
 
 if (Session::get("user") == null) {
 	# Route::controller('/', 'LoginController');
-	Route::get('/', 'LoginController@getIndex');
+	Route::get('/', 'HomeController@index');
 	Route::post('/', 'LoginController@postIndex');
-	Route::get('/login', 'LoginController@getLogin');
+	Route::get('/login', 'LoginController@getLogin')->name('login');
 	Route::post('/login', 'LoginController@postLogin');
 	Route::get('/check', 'LoginController@getCheck');
 	Route::get('/email', 'LoginController@getEmail');

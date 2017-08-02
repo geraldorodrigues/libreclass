@@ -41,6 +41,10 @@ elixir(function(mix) {
 	mix.copy('node_modules/summernote/dist/font', 'public/assets/css/summernote/font');
 
 	//Controllers
+
+	//Controller de Login
+	mix.scripts('controllers/login/*.js', 'public/assets/js/loginController.min.js');
+
 	//Instituição
 	mix.scripts('controllers/institution/*.js', 'public/assets/js/institutionControllers.min.js');
 

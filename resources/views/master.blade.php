@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" href="/images/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no ">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	{{ HTML::style('https://fonts.googleapis.com/icon?family=Material+Icons">')}}
+	{{-- {{ HTML::style('https://fonts.googleapis.com/icon?family=Material+Icons">')}} --}}
 
   {{ HTML::style('assets/css/bootstrap.min.css') }}
   {{ HTML::style('assets/lealjs/leal.min.css') }}

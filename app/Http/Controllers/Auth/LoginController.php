@@ -54,7 +54,6 @@ class LoginController extends Controller
 		public function authenticate(Request $in)
 		{
 			//Log::useFiles(storage_path('logs/login.log'));
-
 			$user = User::whereEmail($in->email)->orWhere('cpf', preg_replace('/\D/', '', $in->login))->first();
 			if ( $user ) {
 				//dd($user);
