@@ -9,12 +9,12 @@ class Unit extends \Moloquent
 
 	public function offer()
 	{
-		return $this->belongsTo('Offer');
+		return $this->belongsTo('App\MongoDb\Offer');
 	}
 
 	public function lessons()
 	{
-		return $this->hasMany('Lesson');
+		return $this->hasMany('App\MongoDb\Lesson');
 	}
 
 	/*public function getOffer()
