@@ -74,6 +74,17 @@ Route::any('/discipline/delete', 'DisciplineController@delete');
 // Route::any('/discipline/listperiods', 'DisciplineController@postListperiods');
 // Route::any('/discipline/ementa', 'DisciplineController@getEmenta');
 
+//ClasseController
+Route::any('/classe/save', 'ClasseController@save');
+Route::any('/classe/read', 'ClasseController@read');
+Route::any('/classe/delete', 'ClasseController@delete');
+Route::any('/classe/change-status', 'ClasseController@changeStatus');
+Route::any('/classe/list-units/{status?}', 'ClasseController@postListUnits');
+Route::any('/classe/block-unit', 'ClasseController@postBlockUnit');
+Route::any('/classe/unblock-unit', 'ClasseController@postUnblockUnit');
+Route::any('/classe/create-units', 'ClasseController@anyCreateUnits');
+
+
 # Route::controller('classes/lessons', "LessonsController");
 Route::get('/classes/lessons', 'LessonsController@getIndex');
 Route::get('/classes/lessons/new', 'LessonsController@getNew');
@@ -95,20 +106,6 @@ Route::get('/classes/offers/students/{offer}', 'OffersController@getStudents');
 Route::post('/classes/offers/status-student', 'OffersController@postStatusStudent');
 Route::any('/classes/offers/delete-last-unit/{offer}', 'OffersController@anyDeleteLastUnit');
 
-# Route::controller('classes', "ClassesController");
-Route::get('/classes', 'ClassesController@getIndex');
-Route::get('/classes/panel', 'ClassesController@getPanel');
-Route::post('/classes/listdisciplines', 'ClassesController@postListdisciplines');
-Route::post('/classes/new', 'ClassesController@postNew');
-Route::get('/classes/info', 'ClassesController@getInfo');
-Route::post('/classes/edit', 'ClassesController@postEdit');
-Route::post('/classes/delete', 'ClassesController@postDelete');
-Route::post('/classes/change-status', 'ClassesController@postChangeStatus');
-Route::any('/classes/list-offers', 'ClassesController@anyListOffers');
-Route::post('/classes/list-units/{status?}', 'ClassesController@postListUnits');
-Route::post('/classes/block-unit', 'ClassesController@postBlockUnit');
-Route::post('/classes/unblock-unit', 'ClassesController@postUnblockUnit');
-Route::any('/classes/create-units', 'ClassesController@anyCreateUnits');
 
 # Route::controller('user', "UsersController");
 Route::post('/user/search-teacher', 'UsersController@postSearchTeacher');
@@ -237,3 +234,4 @@ Route::post('/suggestion', 'SocialController@postSuggestion');
 Route::any('/period/save', 'PeriodController@save');
 Route::any('/period/list', 'PeriodController@list');
 Route::any('/period/read', 'PeriodController@read');
+Route::any('/period/delete', 'PeriodController@delete');
