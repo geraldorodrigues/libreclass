@@ -93,4 +93,24 @@ class PeriodController extends Controller
 
 		return ['status'=>1, 'period'=>$period ];
 	}
+
+	public function delete(Request $in)
+	{
+		if (!isset($in->period_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$period = Period::find(Crypt::decrypt($in->period_id));
+		if (!$period){
+			return ['status'=>0, 'message'=>'Período não encontrado'];
+		}
+
+		if ($period->classes()->count() || $period->disciplines()->count()){
+			return ['status'=>0, 'message'=>'Operação não realizada. Período já possui disciplina(s) e/ou turma(s)'];
+		}
+
+		$period->delete();
+		
+		return ['status'=>1, 'period'=>$period ];
+	}
 }
