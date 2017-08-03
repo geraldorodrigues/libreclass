@@ -57,8 +57,12 @@ class DisciplineController extends Controller
 		$disciplines = $period->disciplines;
 
 		foreach ($disciplines as $discipline) {
-			$discipline->id = Crypt::
+			unset($disciplines->created_at);
+			unset($disciplines->updated_at);
+			$discipline->id = Crypt::encrypt($discipline->id);
 		}
+
+		return ['status'=>1, 'disciplines'=>$disciplines];
 	}
 
 
