@@ -1,11 +1,11 @@
 .side-menu
 	list-style: none
-	margin: 0
+	margin: 0px 15px
 	padding: 0
 
 	.side-menu__item
 		cursor: pointer
-
+		border-radius: 8px
 		a
 			display: block
 			padding: 10px 15px
@@ -15,7 +15,11 @@
 
 		&:hover
 			background-color: $color-primary
-			transition: 0.3s
+			transition: 0.3s ease
+			a
+				color: $color-white
 
 		&.selected
 			background-color: $color-primary
+			a
+				color: $color-white

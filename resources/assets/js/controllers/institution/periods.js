@@ -1,19 +1,32 @@
 controller('periods', function() {
 	var view = "#view-periods";
 
+	/**
+	 * Inicializa os eventos do controller periods;
+	 */
 	this.initialize = function() {
 		view = $(view);
-		view.on('click', '.ev-openModalAddPeriod', this.openModalAddPeriod);
-		view.on('click', '.ev-redirectToDiscipline', this.redirectToDiscipline);
-		view.on('submit', '.ev-savePeriod', this.savePeriod);
+		view.on('submit', '.ev-savePeriod', this.savePeriod); //Evento salvar
+		view.on('click', '.ev-openModalAddPeriod', this.openModalAddPeriod); //Evento abrir modal para criar ou editar período
+		view.on('click', '.ev-deletePeriod', this.deletePeriod); //Evento para deletar período
+		view.on('click', '.ev-redirectToDiscipline', this.redirectToDiscipline); //Evento para redirecionar para disciplinas
 	};
 
+	/**
+	 * Método executado toda vez que a rota periods é chamada.
+	 * Exibe a view e requisita a lista de períodos.
+	 */
 	this.show = function() {
 		view.show();
 		$("#page-title").text('Nome do curso');
 		this.getListPeriods();
 	};
 
+	/**
+	 * Obtém a lista de perídos do curso;
+	 * argument(1) retorna o argumento passado pela URL;
+	 * Escreve o template no elemento .periods-list;
+	 */
 	this.getListPeriods = function() {
 		$.post('period/list', { course_id: argument(1) }, function(data) {
 			if(!data.status) {
@@ -27,6 +40,10 @@ controller('periods', function() {
 		}.bind(this));
 	};
 
+	/**
+	 * Abre o modal com o formulário do período
+	 * @param  {object} e Objeto do evento jQuery
+	 */
 	this.openModalAddPeriod = function(e) {
 		e.stopPropagation();
 		var modal = $('#modalAddPeriod');
@@ -52,6 +69,10 @@ controller('periods', function() {
 
 	};
 
+	/**
+	 * Salva os dados informados no formulário.
+	 * @param  {object} e Objeto do evento 'submit' da classe .ev-savePeriod
+	 */
 	this.savePeriod = function(e) {
 		alert();
 		e.preventDefault();
@@ -83,7 +104,7 @@ controller('periods', function() {
 				}
 				else {
 					periodsList.prepend(this.templateItemPeriod(data.period));
-					$.alert('Novo período criado sucesso');
+					$.alert('Novo período criado com sucesso');
 				}
 			}
 
@@ -91,6 +112,11 @@ controller('periods', function() {
 
 	};
 
+	/**
+	 * Template base para o cartão do período
+	 * @param  {object} data - Objeto com as propriedades do período
+	 * @return {string}      Template HTML
+	 */
 	this.templateItemPeriod = function(data) {
 		console.log(data);
 		var template =
@@ -99,7 +125,8 @@ controller('periods', function() {
 				'<div class="card__header">'+
 					'<div class="flex">'+
 						'<span class="grow text-bold text-md">'+ data.name +'</span>'+
-						'<i class="material-icons icon ev-openModalAddPeriod ck" edit title="Editar">&#xE254;</i>'+
+						'<i class="material-icons icon mr-xs ck ev-openModalAddPeriod" edit title="Editar">&#xE254;</i>'+
+						'<i class="ck material-icons icon ev-deletePeriod" title="Deletar">&#xE872;</i>'+
 					'</div>'+
 				'</div>'+
 				'<div class="card__body">'+
@@ -110,7 +137,35 @@ controller('periods', function() {
 		return template;
 	};
 
+	/**
+	 * Redireciona para view de disciplinas passando
+	 * passando como argumento o id do curso.
+	 * @param  {object} e - Objecto de evento jQuery
+	 */
 	this.redirectToDiscipline = function(e) {
 		redirect('disciplines/'+$(e.currentTarget).closest('.item-period').attr('data-id'));
+	};
+
+/**
+ * Deleta curso.
+ * @param  {object} e - Objeto de evento jQuery.
+ */
+	this.deletePeriod = function(e) {
+		e.stopPropagation();
+		var item = $(e.currentTarget).closest('.item-period');
+
+		$.dialog.confirm('Confirmar', 'Deseja excluir o período? Essa operação é irreversível.', function() {
+			$.post('period/delete', { course_id: item.attr('data-id') }, function(data) {
+				if(!data.status) {
+					$.dialog.info('', data.message);
+				}
+				else {
+					item.fadeOut(300, function() {
+						item.remove();
+						$.alert('Período deletado com sucesso');
+					});
+				}
+			}, errorDialog);
+		});
 	};
 });

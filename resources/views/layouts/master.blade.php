@@ -47,14 +47,17 @@
 						<img src="images/logo.svg" class="logomarca center-block img-full" />
 					</div>
 					<div class="side__body">
-						<img src="images/user-photo-default.jpg" class="img-smm center-block mt mb" />
+						<img src="images/user-photo-default.jpg" class="img-smm img-circle center-block mt mb-xs" />
+						<div class="text-center text-bold text-medium br">
+							Usuário 1
+						</div>
 						@yield('side-menu')
 					</div>
 					<div class="side__footer">
 					</div>
 				</div>
 
-				<div class="page__content page--scroll bg-color-grey--light">
+				<div class="page__content page--scroll bg-background">
 
 					<div class="page__header">
 						<div class="flex center-left">
