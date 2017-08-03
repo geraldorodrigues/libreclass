@@ -35,6 +35,9 @@ class DisciplineController extends Controller
 		$discipline->name = $in->name;
 		$discipline->ementa = $in->syllabus;
 		$discipline->save();
+
+		unset($disciplines->created_at);
+		unset($disciplines->updated_at);
 		$discipline->id = Crypt::encrypt($discipline->id);
 
 		return ['status'=>1, 'discipline'=>$discipline];
@@ -65,7 +68,6 @@ class DisciplineController extends Controller
 		return ['status'=>1, 'disciplines'=>$disciplines];
 	}
 
-
 	public function read(Request $in)
 	{
 		if (!isset($in->discipline_id)){
@@ -76,6 +78,10 @@ class DisciplineController extends Controller
 		if (!$discipline){
 			return ['status'=>0, 'message'=>'Disciplina não encontrada'];
 		}
+
+		unset($disciplines->created_at);
+		unset($disciplines->updated_at);
+		$discipline->id = Crypt::encrypt($discipline->id);
 
 		return ['status'=>1, 'discipline'=>$discipline];
 	}
