@@ -18,4 +18,8 @@ class Period extends \Moloquent
 		return $this->hasMany('App\MongoDb\Discipline');
 	}
 
+	public function classes()
+	{
+		return $this->hasMany('App\MongoDb\Classe');
+	}
 }
