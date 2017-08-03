@@ -14,7 +14,7 @@ class DisciplineController extends Controller
 {
 	public function save(Request $in)
 	{
-		if (!isset($in->period_id) || !isset($in->name || !isset($in->syllabus))){
+		if (!isset($in->period_id) || !isset($in->name) || !isset($in->syllabus)){
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
