@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\MySql\Discipline;
-use App\MySql\User;
-use App\MySql\Course;
-use App\MySql\Period;
+use Illuminate\Http\Request;
+use App\MongoDb\Discipline;
+use App\MongoDb\User;
+use App\MongoDb\Course;
+use App\MongoDb\Period;
 use Crypt;
 use Session;
 use Redirect;
