@@ -10,25 +10,13 @@
 	<button class="ev-openModalAddDiscipline">Adicionar</button>
 
 	<div class="row disciplines-list mt">
-		<div class="col-xs-4 mb">
-			<div class="card card--shadow item-discipline">
-				<div class="card__header">
-					<div class="flex">
-						<span class="grow text-bold text-md">Português</span>
-						<i class="material-icons icon ev-openModalAddDiscipline" edit>&#xE254;</i>
-					</div>
-				</div>
-				<div class="card__body">
 
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<div class="modal fade" id="modalAddDiscipline" tabindex="-1" role="dialog">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-			<form id="form-discipline">
+			<form id="form-discipline" class="ev-saveDiscipline">
 				<input type="text" name="discipline_id" hidden />
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -46,7 +34,7 @@
 						<div class="col-xs-12 col-sm-4">
 							<div class="form-group">
 								<label for="name" class="control-label">Carga horária</label>
-								<input class="form-control" name="timetable" type="text">
+								<input class="form-control" name="timetable" type="number">
 							</div>
 						</div>
 					</div>
@@ -54,7 +42,7 @@
 					<div class="">
 						<div class="form-group">
 							<label for="name" class="control-label">Ementa</label>
-							<text class="form-control editor" rows="5"></textarea>
+							<textarea name="syllabus" class="form-control editor" rows="5"></textarea>
 						</div>
 					</div>
 
