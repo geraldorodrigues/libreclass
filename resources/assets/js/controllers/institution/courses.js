@@ -3,9 +3,10 @@ controller('courses', function() {
 
 	this.initialize = function() {
 		view = $(view);
-		view.on('click', '.ev-openModalAddCourse', this.openModalAddCourse);
-		view.on('click', '.ev-redirectToPeriod', this.redirectToPeriod);
 		view.on('submit', '.ev-saveCourse', this.saveCourse);
+		view.on('click', '.ev-openModalAddCourse', this.openModalAddCourse);
+		view.on('click', '.ev-deleteCourse', this.deleteCourse);
+		view.on('click', '.ev-redirectToPeriod', this.redirectToPeriod);
 	};
 
 	this.show = function() {
@@ -113,16 +114,36 @@ controller('courses', function() {
 		'<div class="col-xs-4 mb item-course" data-id="'+ item.id +'">'+
 			'<div class="ck card card--shadow ev-redirectToPeriod">'+
 				'<div class="card__header">'+
-					'<div class="flex">'+
-						'<span class="grow text-bold text-md">'+ item.name +'</span>'+
-						'<i class="ck material-icons icon ev-openModalAddCourse" edit>&#xE254;</i>'+
+					'<div class="flex center-right">'+
+						'<i class="ck material-icons icon mr-xs ev-openModalAddCourse" edit title="Editar">&#xE254;</i>'+
+						'<i class="ck material-icons icon ev-deleteCourse" title="Deletar">&#xE872;</i>'+
 					'</div>'+
 				'</div>'+
 				'<div class="card__body">'+
+				'<span class="grow text-bold text-md">'+ item.name +'</span>'+
 				'</div>'+
 			'</div>'+
 		'</div>';
 		return html;
+	};
+
+	this.deleteCourse = function(e) {
+		e.stopPropagation();
+		var item = $(e.currentTarget).closest('.item-course');
+
+		$.dialog.confirm('Confirmar', 'Deseja excluir o curso? Essa operação é irreversível.', function() {
+			$.post('course/delete', { course_id: item.attr('data-id') }, function(data) {
+				if(!data.status) {
+					$.dialog.info('', data.message);
+				}
+				else {
+					item.fadeOut(300, function() {
+						item.remove();
+						$.alert('Curso deletado com sucesso');
+					});
+				}
+			}, errorDialog);
+		});
 	};
 
 });

@@ -54,7 +54,7 @@
 					</div>
 				</div>
 
-				<div class="page__content page--scroll bg-color-grey--light">
+				<div class="page__content page--scroll bg-background">
 
 					<div class="page__header">
 						<div class="flex center-left">
