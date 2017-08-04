@@ -39,12 +39,6 @@ class Offer extends \Moloquent
 		return $this->hasMany('App\MongoDb\Unit');
 	}
 
-	public function lectures()
-	{
-		return $this->hasMany('App\MongoDb\Lecture');
-	}
-
-
 	// public function getFirstUnit()
 	// {
 	// 	return Unit::where("offer_id", $this->id)->first();
