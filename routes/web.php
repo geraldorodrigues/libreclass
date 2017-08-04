@@ -235,3 +235,16 @@ Route::any('/period/save', 'PeriodController@save');
 Route::any('/period/list', 'PeriodController@list');
 Route::any('/period/read', 'PeriodController@read');
 Route::any('/period/delete', 'PeriodController@delete');
+
+Route::any('teacher/list','TeacherController@list');
+Route::any('teacher/read','TeacherController@read');
+Route::any('teacher/save','TeacherController@save');
+Route::any('teacher/search','TeacherController@search');
+Route::any('teacher/unlink','TeacherController@unlink');
+Route::any('teacher/vinculateTeacher','TeacherController@vinculateTeacher');
+Route::any('teacher/invite','TeacherController@invite');
+
+Route::any('student/list','StudentController@list');
+Route::any('student/read','StudentController@read');
+Route::any('student/save','StudentController@save');
+Route::any('student/add-attest','StudentController@addAttest');
