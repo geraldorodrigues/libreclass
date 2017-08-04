@@ -39,7 +39,7 @@
 						</div>
 					</div>
 
-					<div class="">
+					<div class="ementa">
 						<div class="form-group">
 							<label for="name" class="control-label">Ementa</label>
 							<textarea name="syllabus" class="form-control editor" rows="5"></textarea>

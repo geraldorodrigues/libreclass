@@ -67,7 +67,7 @@ Route::any('/course/delete', 'CourseController@delete');
 //DisciplineController
 Route::any('/discipline/save', 'DisciplineController@save');
 Route::any('/discipline/list', 'DisciplineController@list');
-Route::any('/discipline/list', 'DisciplineController@read');
+Route::any('/discipline/read', 'DisciplineController@read');
 Route::any('/discipline/delete', 'DisciplineController@delete');
 // Route::any('/discipline/discipline', 'DisciplineController@getDiscipline');
 // Route::any('/discipline/edit', 'DisciplineController@postEdit');

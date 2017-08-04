@@ -36,6 +36,9 @@ controller('disciplines', function() {
 	this.openModalAddDiscipline = function(e) {
 		e.stopPropagation();
 		var modal = $('#modalAddDiscipline');
+		modal.find('form')[0].reset();
+	  modal.find('[name="syllabus"]').summernote('reset');
+
 		var form = $('#form-discipline')
 
 		//Verifica se o elemento do evento tem o atributo edit
@@ -44,10 +47,11 @@ controller('disciplines', function() {
 			var id = $(e.currentTarget).closest('.item-discipline').attr('data-id');
 			$.post('discipline/read', { 'discipline_id': id}, function(data){
 				if(data.status){
+					console.log(data);
 					$('input[name="discipline_id"]',form).val(id);
 					$('input[name="name"]',form).val(data.discipline.name);
 					$('input[name="timetable"]',form).val(data.discipline.timetable);
-					$('input[name="syllabus"]',form).val(data.discipline.syllabus);
+					$('textarea[name="syllabus"]',form).summernote('code', data.discipline.syllabus);
 
 				}
 			})
@@ -96,7 +100,7 @@ controller('disciplines', function() {
 				}
 				else {
 					disciplinesList.prepend(this.templateItemDiscipline(data.discipline));
-					$.alert('Nova Disciplina criada com sucesso');
+					$.alert('Nova disciplina criada com sucesso');
 				}
 			}
 

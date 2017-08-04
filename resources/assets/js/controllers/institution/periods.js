@@ -121,7 +121,7 @@ controller('periods', function() {
 		console.log(data);
 		var template =
 		'<div class="col-xs-6 col-sm-3 mb item-period" data-id="'+ data.id +'">'+
-			'<div class="card card--shadow ev-redirectToDiscipline">'+
+			'<div class="ck card card--shadow ev-redirectToDiscipline">'+
 				'<div class="card__header">'+
 					'<div class="flex">'+
 						'<span class="grow text-bold text-md">'+ data.name +'</span>'+
