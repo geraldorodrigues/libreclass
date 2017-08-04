@@ -2,7 +2,7 @@
 
 Route::get('/login', function () {
 	return view('user.login');
-});
+})->name('login');
 
 # Route::controller('/censo', 'CensoController');
 Route::get('/censo/student', 'CensoController@getStudent');
@@ -35,7 +35,7 @@ Route::get('help/{rota}', 'HelpController@getIndex');
 
 # Route::controller('/', 'LoginController');
 Route::get('/', 'HomeController@index');
-//Route::get('/login', 'LoginController@getLogin')->name('login');
+// Route::get('/login', 'LoginController@getLogin')->name('login');
 // Route::post('/', 'LoginController@postIndex');
 // Route::post('/login', 'LoginController@postLogin');
 //Route::get('/check', 'LoginController@getCheck');
