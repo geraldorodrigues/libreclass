@@ -47,7 +47,7 @@ controller('disciplines', function() {
 					$('input[name="discipline_id"]',form).val(id);
 					$('input[name="name"]',form).val(data.discipline.name);
 					$('input[name="timetable"]',form).val(data.discipline.timetable);
-					//$('input[name=""]',form).val();
+					$('input[name="syllabus"]',form).val(data.discipline.syllabus);
 
 				}
 			})
@@ -78,7 +78,7 @@ controller('disciplines', function() {
 		}
 		var _data = form.serializeObject();
 		_data.period_id = argument(1);
-		_data.syllabus = form.find('[name="syllabus"]').summernote('code');		
+		_data.syllabus = form.find('[name="syllabus"]').summernote('code');
 		dialogWaiting('Salvando. Aguarde.');
 		$.post('discipline/save', _data, function(data) {
 			if(!data.status) {
