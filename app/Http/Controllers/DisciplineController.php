@@ -35,6 +35,7 @@ class DisciplineController extends Controller
 		$discipline->period_id = $period->id;
 		$discipline->name = $in->name;
 		$discipline->ementa = $in->syllabus;
+		$discipline->timetable = $in->timetable;
 		$discipline->save();
 
 		unset($disciplines->created_at);
