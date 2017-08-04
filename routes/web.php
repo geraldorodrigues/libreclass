@@ -76,6 +76,8 @@ Route::any('/discipline/delete', 'DisciplineController@delete');
 
 //ClasseController
 Route::any('/classe/save', 'ClasseController@save');
+Route::any('/classe/list', 'ClasseController@list');
+Route::any('/classe/list-grouped', 'ClasseController@listGrouped');
 Route::any('/classe/read', 'ClasseController@read');
 Route::any('/classe/delete', 'ClasseController@delete');
 Route::any('/classe/change-status', 'ClasseController@changeStatus');
@@ -174,11 +176,13 @@ Route::post('/disciplines/listperiods', 'DisciplinesController@postListperiods')
 Route::any('/disciplines/list', 'DisciplinesController@anyList');
 Route::get('/disciplines/ementa', 'DisciplinesController@getEmenta');
 
-# Route::controller('lectures', "LecturesController");
-Route::get('/lectures', 'LecturesController@getIndex');
-Route::get('/lectures/finalreport/{offer}', 'LecturesController@getFinalreport');
-Route::get('/lectures/frequency/{offer}', 'LecturesController@getFrequency');
-Route::post('/lectures/sort', 'LecturesController@postSort');
+//LectureController
+Route::any('/lecture/save', 'LectureController@save');
+Route::any('/lecture/delete/', 'LectureController@delete');
+Route::any('/lecture/change-order/', 'LectureController@changeOrder');
+Route::any('/lecture/final-report/', 'LectureController@finalReport');
+Route::any('/lecture/frequency/', 'LectureController@frequency');
+Route::any('/lecture/sort', 'LectureController@sort');
 
 # Route::controller('avaliable', "AvaliableController");
 Route::get('/avaliable', 'AvaliableController@getIndex');
@@ -234,17 +238,3 @@ Route::post('/suggestion', 'SocialController@postSuggestion');
 Route::any('/period/save', 'PeriodController@save');
 Route::any('/period/list', 'PeriodController@list');
 Route::any('/period/read', 'PeriodController@read');
-Route::any('/period/delete', 'PeriodController@delete');
-
-Route::any('teacher/list','TeacherController@list');
-Route::any('teacher/read','TeacherController@read');
-Route::any('teacher/save','TeacherController@save');
-Route::any('teacher/search','TeacherController@search');
-Route::any('teacher/unlink','TeacherController@unlink');
-Route::any('teacher/vinculateTeacher','TeacherController@vinculateTeacher');
-Route::any('teacher/invite','TeacherController@invite');
-
-Route::any('student/list','StudentController@list');
-Route::any('student/read','StudentController@read');
-Route::any('student/save','StudentController@save');
-Route::any('student/add-attest','StudentController@addAttest');
