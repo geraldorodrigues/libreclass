@@ -9,11 +9,11 @@ class Work extends \Moloquent
 
 	public function teacher()
 	{
-		return $this->belongsTo('App\MongoDb\User');
+		return $this->belongsTo('App\MongoDb\User','teacher_id');
 	}
 
 	public function institution()
 	{
-		return $this->belongsTo('App\MongoDb\User');
+		return $this->belongsTo('App\MongoDb\User','institution_id');
 	}
 }

@@ -16,6 +16,7 @@ use App\MongoDb\Work;
 use App\MongoDb\Study;
 use App\MongoDb\DescriptiveExam;
 use Crypt;
+use Mail;
 use StdClass;
 use Session;
 use Illuminate\Http\Request;
@@ -48,29 +49,29 @@ class TeacherController extends Controller
 				. " ORDER BY name LIMIT ? OFFSET ?",
 				[auth()->user()->id, "%$search%", $search, $block, $current * $block]);*/
 
-				if (isset($in->search)) {
+				if ($in->search) {
 					$teachers_ids = auth()->user()->works()->get(['teacher_id'])->pluck('teacher_id');
-					$teachers = Users::whereIn('_id', $teachers_ids)->where('name','regexp',"/$in->search/i");
+					$teachers = User::whereIn('_id', $teachers_ids)->where('name','regexp',"/$in->search/i");
 					$length = clone $teachers;
 					$length = $length->count();
 					$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
 				}
 				else if (isset($in->register)) {
 					$teachers_ids = auth()->user()->works()->where('register',$in->register)->get(['teacher_id'])->pluck('teacher_id');
-					$teachers = Users::whereIn('_id', $teachers_ids);
+					$teachers = User::whereIn('_id', $teachers_ids);
 					$length = clone $teachers;
 					$length = $length->count();
 					$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
 				}
 				else {
 					$teachers_ids = auth()->user()->works()->get(['teacher_id'])->pluck('teacher_id');
-					$teachers = Users::whereIn('_id', $teachers_ids);
+					$teachers = User::whereIn('_id', $teachers_ids);
 					$length = clone $teachers;
 					$length = $length->count();
 					$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
 				}
 				foreach ($teachers as $teacher) {
-					$teacher->comment = $teacher->works()->where('status','E')->where('institution_id',auth()->id())->first(['enrollment'])->enrollment;
+					$teacher->comment = Work::where('teacher_id',$teacher->id)->where('status','E')->where('institution_id',auth()->id())->first(['register'])->register;
 					//$teacher->selected = Lecture::where('user_id', $teacher->id)->where('offer_id', $offer)->count();
 					$teacher->id = Crypt::encrypt($teacher->id);
 				}
@@ -83,8 +84,8 @@ class TeacherController extends Controller
 			return
 				[
 					"status" => 1,
-					"courses" => $courses,
-					"user" => $user,
+					//"courses" => $courses,
+					//"user" => $user,
 					"teachers" => $teachers,
 					"length" => (int) $length,
 					"block" => (int) $block,
@@ -302,7 +303,7 @@ class TeacherController extends Controller
 		$user = User::find(auth()->id());
 		if (isset($in->guest_id)) {
 			$guest = User::find($in->guest_id);
-		} else if (isset($in->guest_id)) {
+		} else if (isset($in->teacher_id)) {
 			$guest = User::find(Crypt::decrypt($in->teacher_id));
 		}
 		else {
@@ -311,20 +312,19 @@ class TeacherController extends Controller
 
 		if (($guest->type == "M" && Work::where('institution_id', auth()->id())->where('teacher_id', $guest->id)->first()) || ($guest->type == "N" && Study::where('institution_id', auth()->id())->where('study_id', $guest->id)->first())) {
 			if (User::whereEmail($in->email)->first()) {
-				return ['status' => 0, 'message' => "O email " . Input::get("email") . " já está cadastrado."];
+				return ['status' => 0, 'message' => "O email " . $guest->email . " já está cadastrado."];
 			}
 			//try
 			//{
-				$guest->email = $in->email;
 				$password = substr(md5(microtime()), 1, rand(4, 7));
-				$guest->password = Hash::make($password);
+				$guest->password = bcrypt($password);
 				Mail::send('email.invite', [
 					"institution" => auth()->user()->name,
 					"name" => $guest->name,
 					"email" => $guest->email,
 					"password" => $password,
 				], function ($message) use ($guest) {
-					$message->to(Input::get("email"), $guest->name)
+					$message->to($guest->email, $guest->name)
 						->subject("Seja bem-vindo");
 				});
 				$guest->save();

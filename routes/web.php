@@ -1,8 +1,8 @@
 <?php
 
 Route::get('/login', function () {
-	return view('auth/login');
-});
+	return view('user.login');
+})->name('login');
 
 # Route::controller('/censo', 'CensoController');
 Route::get('/censo/student', 'CensoController@getStudent');
@@ -35,12 +35,12 @@ Route::get('help/{rota}', 'HelpController@getIndex');
 
 # Route::controller('/', 'LoginController');
 Route::get('/', 'HomeController@index');
-Route::get('/login', 'LoginController@getLogin')->name('login');
+// Route::get('/login', 'LoginController@getLogin')->name('login');
 // Route::post('/', 'LoginController@postIndex');
 // Route::post('/login', 'LoginController@postLogin');
-Route::get('/check', 'LoginController@getCheck');
-Route::get('/email', 'LoginController@getEmail');
-Route::post('/forgot-password', 'LoginController@postForgotPassword');
+//Route::get('/check', 'LoginController@getCheck');
+//Route::get('/email', 'LoginController@getEmail');
+//Route::post('/forgot-password', 'LoginController@postForgotPassword');
 
 #Rotas de Autenticação
 Route::post('auth/in', 'Auth\LoginController@authenticate');
@@ -67,7 +67,7 @@ Route::any('/course/delete', 'CourseController@delete');
 //DisciplineController
 Route::any('/discipline/save', 'DisciplineController@save');
 Route::any('/discipline/list', 'DisciplineController@list');
-Route::any('/discipline/list', 'DisciplineController@read');
+Route::any('/discipline/read', 'DisciplineController@read');
 Route::any('/discipline/delete', 'DisciplineController@delete');
 // Route::any('/discipline/discipline', 'DisciplineController@getDiscipline');
 // Route::any('/discipline/edit', 'DisciplineController@postEdit');
@@ -238,3 +238,19 @@ Route::post('/suggestion', 'SocialController@postSuggestion');
 Route::any('/period/save', 'PeriodController@save');
 Route::any('/period/list', 'PeriodController@list');
 Route::any('/period/read', 'PeriodController@read');
+
+Route::any('/period/delete', 'PeriodController@delete');
+
+Route::any('teacher/list','TeacherController@list');
+Route::any('teacher/read','TeacherController@read');
+Route::any('teacher/save','TeacherController@save');
+Route::any('teacher/search','TeacherController@search');
+Route::any('teacher/unlink','TeacherController@unlink');
+Route::any('teacher/vinculate-teacher','TeacherController@vinculateTeacher');
+Route::any('teacher/invite','TeacherController@invite');
+
+Route::any('student/list','StudentController@list');
+Route::any('student/read','StudentController@read');
+Route::any('student/save','StudentController@save');
+Route::any('student/add-attest','StudentController@addAttest');
+Route::any('student/link','StudentController@link');
