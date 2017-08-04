@@ -36,12 +36,12 @@ class Offer extends \Moloquent
 
 	public function units()
 	{
-		return $this->hasMany('Unit');
+		return $this->hasMany('App\MongoDb\Unit');
 	}
 
 	public function lectures()
 	{
-		return $this->hasMany('Lecture');
+		return $this->hasMany('App\MongoDb\Lecture');
 	}
 
 
