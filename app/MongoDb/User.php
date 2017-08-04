@@ -55,7 +55,17 @@ CanResetPasswordContract
 
 	public function attends()
 	{
-		return $this->hasMany('Attend');
+		return $this->hasMany('App\MongoDb\Attend');
+	}
+
+	public function works()
+	{
+		return $this->hasMany('App\MongoDb\Work','institution_id');
+	}
+
+	public function study()
+	{
+		return $this->hasMany('App\MongoDb\Study','institution_id');
 	}
 
 	public function setNameAttribute($value)

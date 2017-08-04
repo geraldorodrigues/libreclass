@@ -50,16 +50,29 @@ class StudentController extends Controller
 				[auth()->user()->id, "%$search%", $search, $block, $current * $block]);*/
 
 			if ($in->search) {
-				$works = auth()->user()->works()->where('name','regexp',"/$in->search/i")->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name','register']);
-				$length = auth()->user()->works()->where('name','regexp',"/$in->search/i")->count();
+				$students_ids = auth()->user()->study()->get(['student_id'])->pluck('student_id');
+				$students = User::whereIn('_id',$students_ids)->where('name','regexp',"/$in->search/i");
+				$length = clone $students;
+				$length = $length->count();
+				$students = $students->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name']);
 			}
 			else if ($in->register) {
-				$works = auth()->user()->works()->where('register',$in->register)->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name','register']);
-				$length = auth()->user()->works()->where('register',$in->register)->count();
+				$students_ids = auth()->user()->study()->get(['student_id'])->pluck('student_id');
+				$students = User::whereIn('_id',$students_ids)->where('name','regexp',"/$in->search/i");
+				$length = clone $students;
+				$length = $length->count();
+				$students = $students->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name']);
 			}
 			else {
-				$works = auth()->user()->works()->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name','register']);
-				$length = auth()->user()->works()->count();
+				$students_ids = auth()->user()->study()->get(['student_id'])->pluck('student_id');
+				$students = User::whereIn('_id',$students_ids);
+				$length = clone $students;
+				$length = $length->count();
+				$students = $students->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name']);
+			}
+
+			foreach ($students as $student) {
+				$student->id = Crypt::encrypt($student->id);
 			}
 
 			/*$length = DB::select("SELECT count(*) as 'length' "
@@ -71,12 +84,12 @@ class StudentController extends Controller
 			return
 				[
 					'status' => 0,
-					"courses" => $listCourses,
-					"user" => $user,
-					"relationships" => $relationships,
-					"length" => (int) $length[0]->length,
+					//"courses" => $listCourses,
+					"students" => $students,
+					//"relationships" => $relationships,
+					"length" => (int) $length,
 					"block" => (int) $block,
-					"current" => (int) $current,
+					"current" => (int) $in->current,
 				];
 		} else {
 			return ['status'=>0,'message'=>"Usuario não logado."];
@@ -171,29 +184,21 @@ class StudentController extends Controller
 
 	public function link(Request $in)
 	{
-		if (!isset($in->type) || !isset($in->user_id)) {
+		if (!isset($in->student_id)) {
 			return ['status'=>0,'message'=>'Dados incompletos.'];
 		}
-		switch ($in->type) {
-			case "student":
-				$type = 1;
-				break;
-			default:
-				return Redirect::back()->with("error", "Cadastro errado.");
-		}
-		$user = Crypt::decrypt($user);
+		$user = Crypt::decrypt($in->student_id);
 
 		//$r = Relationship::where('user_id', auth()->user()->id)->where('friend_id', $user)->whereType($type)->first();
-		$r = Study::where('institution_id', auth()->id())->where('student_id', $in->user_id)->first();
+		$r = Study::where('institution_id', auth()->id())->where('student_id', $in->student_id)->first();
 		if ($r and $r->status == "E") {
 			return ['status'=>0, 'message'=>"Usuário já possui esse relacionamento."];
 		} elseif ($r) {
 			$r->status = "E";
 		} else {
 			$r = new Relationship;
-			$r->idUser = auth()->user()->id;
-			$r->idFriend = $user;
-			$r->type = $type;
+			$r->institution_id = auth()->user()->id;
+			$r->student_id = $user;
 		}
 		$r->save();
 

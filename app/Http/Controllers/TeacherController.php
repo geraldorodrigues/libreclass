@@ -48,29 +48,29 @@ class TeacherController extends Controller
 				. " ORDER BY name LIMIT ? OFFSET ?",
 				[auth()->user()->id, "%$search%", $search, $block, $current * $block]);*/
 
-				if (isset($in->search)) {
+				if ($in->search) {
 					$teachers_ids = auth()->user()->works()->get(['teacher_id'])->pluck('teacher_id');
-					$teachers = Users::whereIn('_id', $teachers_ids)->where('name','regexp',"/$in->search/i");
+					$teachers = User::whereIn('_id', $teachers_ids)->where('name','regexp',"/$in->search/i");
 					$length = clone $teachers;
 					$length = $length->count();
 					$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
 				}
 				else if (isset($in->register)) {
 					$teachers_ids = auth()->user()->works()->where('register',$in->register)->get(['teacher_id'])->pluck('teacher_id');
-					$teachers = Users::whereIn('_id', $teachers_ids);
+					$teachers = User::whereIn('_id', $teachers_ids);
 					$length = clone $teachers;
 					$length = $length->count();
 					$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
 				}
 				else {
 					$teachers_ids = auth()->user()->works()->get(['teacher_id'])->pluck('teacher_id');
-					$teachers = Users::whereIn('_id', $teachers_ids);
+					$teachers = User::whereIn('_id', $teachers_ids);
 					$length = clone $teachers;
 					$length = $length->count();
 					$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
 				}
 				foreach ($teachers as $teacher) {
-					$teacher->comment = $teacher->works()->where('status','E')->where('institution_id',auth()->id())->first(['enrollment'])->enrollment;
+					$teacher->comment = Work::where('teacher_id',$teacher->id)->where('status','E')->where('institution_id',auth()->id())->first(['register'])->register;
 					//$teacher->selected = Lecture::where('user_id', $teacher->id)->where('offer_id', $offer)->count();
 					$teacher->id = Crypt::encrypt($teacher->id);
 				}
@@ -83,8 +83,8 @@ class TeacherController extends Controller
 			return
 				[
 					"status" => 1,
-					"courses" => $courses,
-					"user" => $user,
+					//"courses" => $courses,
+					//"user" => $user,
 					"teachers" => $teachers,
 					"length" => (int) $length,
 					"block" => (int) $block,
