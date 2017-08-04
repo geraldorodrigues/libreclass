@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\MySql\User;
-use App\MySql\City;
-use App\MySql\State;
-use App\MySql\Country;
+use App\MongoDb\User;
+use App\MongoDb\City;
+use App\MongoDb\State;
+use App\MongoDb\Country;
 use Session;
 use Crypt;
-use Hash;
-use Redirect;
 
 class ConfigController extends Controller
 {
