@@ -57,9 +57,9 @@ controller('disciplines', function() {
 		}
 		else {
 			modal.find('.modal-title').text('Cadastrar disciplina');
+			modal.modal();
 		}
 
-		modal.modal();
 	};
 
 	this.getDiscipline = function(id) {
