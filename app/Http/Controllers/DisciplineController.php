@@ -38,8 +38,8 @@ class DisciplineController extends Controller
 		$discipline->timetable = $in->timetable;
 		$discipline->save();
 
-		unset($disciplines->created_at);
-		unset($disciplines->updated_at);
+		unset($discipline->created_at);
+		unset($discipline->updated_at);
 		$discipline->id = Crypt::encrypt($discipline->id);
 
 		return ['status'=>1, 'discipline'=>$discipline];
@@ -62,8 +62,8 @@ class DisciplineController extends Controller
 		$disciplines = $period->disciplines;
 
 		foreach ($disciplines as $discipline) {
-			unset($disciplines->created_at);
-			unset($disciplines->updated_at);
+			unset($discipline->created_at);
+			unset($discipline->updated_at);
 			$discipline->id = Crypt::encrypt($discipline->id);
 		}
 
