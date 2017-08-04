@@ -16,6 +16,7 @@ use App\MongoDb\Work;
 use App\MongoDb\Study;
 use App\MongoDb\DescriptiveExam;
 use Crypt;
+use Mail;
 use StdClass;
 use Session;
 use Illuminate\Http\Request;
@@ -302,7 +303,7 @@ class TeacherController extends Controller
 		$user = User::find(auth()->id());
 		if (isset($in->guest_id)) {
 			$guest = User::find($in->guest_id);
-		} else if (isset($in->guest_id)) {
+		} else if (isset($in->teacher_id)) {
 			$guest = User::find(Crypt::decrypt($in->teacher_id));
 		}
 		else {
@@ -311,20 +312,19 @@ class TeacherController extends Controller
 
 		if (($guest->type == "M" && Work::where('institution_id', auth()->id())->where('teacher_id', $guest->id)->first()) || ($guest->type == "N" && Study::where('institution_id', auth()->id())->where('study_id', $guest->id)->first())) {
 			if (User::whereEmail($in->email)->first()) {
-				return ['status' => 0, 'message' => "O email " . Input::get("email") . " já está cadastrado."];
+				return ['status' => 0, 'message' => "O email " . $guest->email . " já está cadastrado."];
 			}
 			//try
 			//{
-				$guest->email = $in->email;
 				$password = substr(md5(microtime()), 1, rand(4, 7));
-				$guest->password = Hash::make($password);
+				$guest->password = bcrypt($password);
 				Mail::send('email.invite', [
 					"institution" => auth()->user()->name,
 					"name" => $guest->name,
 					"email" => $guest->email,
 					"password" => $password,
 				], function ($message) use ($guest) {
-					$message->to(Input::get("email"), $guest->name)
+					$message->to($guest->email, $guest->name)
 						->subject("Seja bem-vindo");
 				});
 				$guest->save();
