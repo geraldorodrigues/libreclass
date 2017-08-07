@@ -14,4 +14,5 @@
 	@include('institution/periods')
 	@include('institution/disciplines')
 	@include('institution/classes')
+	@include('institution/students')
 @endsection
