@@ -20,7 +20,7 @@ class ClasseController extends Controller
 {
 	public function save(Request $in)
 	{
-		if (!isset($in->period_id) || !isset($in->name || !isset($in->class))){
+		if (!isset($in->period_id) || !isset($in->name) || !isset($in->class)){
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
