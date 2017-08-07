@@ -121,12 +121,12 @@ class ClasseController extends Controller
 
 		$periods = $course->periods;
 		foreach ($periods as $period) {
-			$period->courses = $period->courses;
-			$courses = $period->courses;
-			foreach ($courses as $course) {
-				$course->id = Crypt::encrypt($course->id);
+			$period->classes = $period->classes;
+			$classes = $period->classes;
+			foreach ($classes as $classe) {
+				$classe->id = Crypt::encrypt($classe->id);
 			}
-			$period->courses = $courses;
+			$period->classes = $classes;
 			$period->id = Crypt::encrypt($period->id);
 		}
 
