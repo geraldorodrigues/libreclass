@@ -20,7 +20,7 @@ class ClasseController extends Controller
 {
 	public function save(Request $in)
 	{
-		if (!isset($in->period_id) || !isset($in->name) || !isset($in->class)){
+		if (!isset($in->period_id) || !isset($in->name)){
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
@@ -39,7 +39,6 @@ class ClasseController extends Controller
 		}
 		$classe->period_id = $period->id;
 		$classe->name = $in->name;
-		$classe->class = $in->class;
 		$classe->status = 'E';
 		$classe->save();
 		$classe->id = Crypt::encrypt($classe->id);
