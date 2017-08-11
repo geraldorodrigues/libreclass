@@ -81,10 +81,10 @@ Route::any('/classe/list-grouped', 'ClasseController@listGrouped');
 Route::any('/classe/read', 'ClasseController@read');
 Route::any('/classe/delete', 'ClasseController@delete');
 Route::any('/classe/change-status', 'ClasseController@changeStatus');
-Route::any('/classe/list-units/{status?}', 'ClasseController@postListUnits');
-Route::any('/classe/block-unit', 'ClasseController@postBlockUnit');
-Route::any('/classe/unblock-unit', 'ClasseController@postUnblockUnit');
-Route::any('/classe/create-units', 'ClasseController@anyCreateUnits');
+// Route::any('/classe/list-units/{status?}', 'ClasseController@postListUnits');
+// Route::any('/classe/block-unit', 'ClasseController@postBlockUnit');
+// Route::any('/classe/unblock-unit', 'ClasseController@postUnblockUnit');
+// Route::any('/classe/create-units', 'ClasseController@anyCreateUnits');
 
 
 # Route::controller('classes/lessons', "LessonsController");

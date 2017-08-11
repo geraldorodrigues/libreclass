@@ -390,106 +390,87 @@ class CSVController extends Controller
 	 *
 	 * @return view com o que vai ser ofertado
 	 */
-	public function getOffer()
-	{
-		$structure = Session::get("structure");
-		$s_relations = false;
-		foreach ($structure as $class) {
-//		$course = Course::where("idInstitution", $this->user->id)->whereName($class[0][2])->first();
-			//		$period = Period::where("idCourse", $course->id)->where("name", $class[0][1])->first();
-			foreach ($class[1] as $offer) {
-//			foreach ( $offer[8] as $disc ) {
-				//				$discipline = Discipline::where("idPeriod", $period->id)->where("name", $disc)->first();
-				//			}
-				$status = DB::select("SELECT count(*) as 'qtd' FROM Relationships, Users
-															WHERE Relationships.idUser=? AND
-															Relationships.idFriend=Users.id AND
-															Relationships.type='2' AND
-															Users.enrollment=?", [$this->user->id, $offer[0]])[0]->qtd;
-				if (!$status) {
-					$user = new User;
-					$user->name = $offer[1];
-					$user->type = 'M';
-					$user->cadastre = 'N';
-					$user->enrollment = $offer[0];
-					$user->save();
-					if (!$s_relations) {
-						$s_relations = "INSERT IGNORE INTO Relationships (idUser, idFriend, type ) VALUES (" . $this->user->id . ", $user->id, '2')";
-					} else {
-						$s_relations .= ", (" . $this->user->id . ", $user->id, '2')";
-					}
-
-//					$relationship = new Relationship;
-					//					$relationship->idUser = $this->user->id;
-					//					$relationship->idFriend = $user->id;
-					//					$relationship->type = '2';
-					//					$relationship->save();
-				}
-			}
-			if ($s_relations) {
-				DB::insert($s_relations);
-			}
-
-		}
-		return view("modules.import.offers", ["user" => $this->user, "structure" => $structure]);
-	}
-
-	public function getConfirmoffer()
-	{
-		$structure = Session::get("structure");
-		foreach ($structure as $class) {
-			$course = Course::where("idInstitution", $this->user->id)->whereName($class[0][2])->first();
-			$period = Period::where("idCourse", $course->id)->where("name", $class[0][1])->first();
-			$classe = Classe::where("idPeriod", $period->id)->whereClass($class[0][0])->first();
-			if (!$classe) {
-				$classe = new Classe;
-				$classe->idPeriod = $period->id;
-				$classe->name = $class[0][0];
-				$classe->class = date("Y");
-				$classe->save();
-			}
-			foreach ($class[1] as $offer_aux) {
-				$teacher = DB::select("SELECT Users.id FROM Relationships, Users
-															 WHERE Relationships.idUser=? AND
-															 Relationships.idFriend=Users.id AND
-															 Relationships.type='2' AND
-															 Users.enrollment=?", [$this->user->id, $offer_aux[0]])[0];
-				foreach ($offer_aux[8] as $disc) {
-					$discipline = Discipline::where("idPeriod", $period->id)->where("name", $disc)->first();
-					$offer = new Offer;
-					$offer->idDiscipline = $discipline->id;
-					$offer->classroom = $offer_aux[6];
-					$offer->idClass = $classe->id;
-					$offer->save();
-					$lecture = new Lecture;
-					$lecture->idUser = $teacher->id;
-					$lecture->idOffer = $offer->id;
-					$lecture->save();
-					$unit = new Unit;
-					$unit->idOffer = $offer->id;
-					$unit->save();
-				}
-			}
-		}
-		return Redirect::to("/import")->with("success", "Turmas inseridas com sucesso");
-	}
-
-	/**
-	 * Padroniza nomes próprios deixando a primeira letra maiúscula
-	 *
-	 * @param type $str string
-	 * @return type string
-	 */
-	public function firstUpper($str)
-	{
-		$str = ucwords(mb_strtolower($str, "UTF-8"));
-		$str = str_replace(" Da ", " da ", $str);
-		$str = str_replace(" Das ", " das ", $str);
-		$str = str_replace(" De ", " de ", $str);
-		$str = str_replace(" Do ", " do ", $str);
-		$str = str_replace(" Dos ", " dos ", $str);
-		$str = str_replace(" E ", " e ", $str);
-		$str = str_replace(" O ", " o ", $str);
-		return $str;
-	}
+// 	public function getOffer()
+// 	{
+// 		$structure = Session::get("structure");
+// 		$s_relations = false;
+// 		foreach ($structure as $class) {
+// //		$course = Course::where("idInstitution", $this->user->id)->whereName($class[0][2])->first();
+// 			//		$period = Period::where("idCourse", $course->id)->where("name", $class[0][1])->first();
+// 			foreach ($class[1] as $offer) {
+// //			foreach ( $offer[8] as $disc ) {
+// 				//				$discipline = Discipline::where("idPeriod", $period->id)->where("name", $disc)->first();
+// 				//			}
+// 				$status = DB::select("SELECT count(*) as 'qtd' FROM Relationships, Users
+// 															WHERE Relationships.idUser=? AND
+// 															Relationships.idFriend=Users.id AND
+// 															Relationships.type='2' AND
+// 															Users.enrollment=?", [$this->user->id, $offer[0]])[0]->qtd;
+// 				if (!$status) {
+// 					$user = new User;
+// 					$user->name = $offer[1];
+// 					$user->type = 'M';
+// 					$user->cadastre = 'N';
+// 					$user->enrollment = $offer[0];
+// 					$user->save();
+// 					if (!$s_relations) {
+// 						$s_relations = "INSERT IGNORE INTO Relationships (idUser, idFriend, type ) VALUES (" . $this->user->id . ", $user->id, '2')";
+// 					} else {
+// 						$s_relations .= ", (" . $this->user->id . ", $user->id, '2')";
+// 					}
+//
+// //					$relationship = new Relationship;
+// 					//					$relationship->idUser = $this->user->id;
+// 					//					$relationship->idFriend = $user->id;
+// 					//					$relationship->type = '2';
+// 					//					$relationship->save();
+// 				}
+// 			}
+// 			if ($s_relations) {
+// 				DB::insert($s_relations);
+// 			}
+//
+// 		}
+// 		return view("modules.import.offers", ["user" => $this->user, "structure" => $structure]);
+// 	}
+//
+// 	public function getConfirmoffer()
+// 	{
+// 		$structure = Session::get("structure");
+// 		foreach ($structure as $class) {
+// 			$course = Course::where("idInstitution", $this->user->id)->whereName($class[0][2])->first();
+// 			$period = Period::where("idCourse", $course->id)->where("name", $class[0][1])->first();
+// 			$classe = Classe::where("idPeriod", $period->id)->whereClass($class[0][0])->first();
+// 			if (!$classe) {
+// 				$classe = new Classe;
+// 				$classe->idPeriod = $period->id;
+// 				$classe->name = $class[0][0];
+// 				$classe->class = date("Y");
+// 				$classe->save();
+// 			}
+// 			foreach ($class[1] as $offer_aux) {
+// 				$teacher = DB::select("SELECT Users.id FROM Relationships, Users
+// 															 WHERE Relationships.idUser=? AND
+// 															 Relationships.idFriend=Users.id AND
+// 															 Relationships.type='2' AND
+// 															 Users.enrollment=?", [$this->user->id, $offer_aux[0]])[0];
+// 				foreach ($offer_aux[8] as $disc) {
+// 					$discipline = Discipline::where("idPeriod", $period->id)->where("name", $disc)->first();
+// 					$offer = new Offer;
+// 					$offer->idDiscipline = $discipline->id;
+// 					$offer->classroom = $offer_aux[6];
+// 					$offer->idClass = $classe->id;
+// 					$offer->save();
+// 					$lecture = new Lecture;
+// 					$lecture->idUser = $teacher->id;
+// 					$lecture->idOffer = $offer->id;
+// 					$lecture->save();
+// 					$unit = new Unit;
+// 					$unit->idOffer = $offer->id;
+// 					$unit->save();
+// 				}
+// 			}
+// 		}
+// 		return Redirect::to("/import")->with("success", "Turmas inseridas com sucesso");
+// 	}
 }

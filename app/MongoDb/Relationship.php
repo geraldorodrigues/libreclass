@@ -4,15 +4,21 @@ namespace App\MongoDb;
 
 class Relationship extends \Moloquent
 {
-	protected $fillable = ['user_id', 'friend_id', 'type'];
+	protected $hidden = ['_id'];
+	protected $fillable = ['institution_id', 'teacher_id', 'register'];
 
-	public function getUser()
+	public function institution()
 	{
-		return User::find($this->idUser);
+		return $this->belongsTo('App\MongoDb\User', 'institution_id');
 	}
 
-	public function getFriend()
+	public function teacher()
 	{
-		return User::find($this->idFriend);
+		return $this->belongsTo('App\MongoDb\User', 'teacher_id');
+	}
+
+	public function student()
+	{
+		return $this->belongsTo('App\MongoDb\User', 'student_id');
 	}
 }

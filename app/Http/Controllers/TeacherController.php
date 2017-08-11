@@ -12,8 +12,6 @@ use App\MongoDb\Attend;
 use App\MongoDb\Lesson;
 use App\MongoDb\Frequency;
 use App\MongoDb\Unit;
-use App\MongoDb\Work;
-use App\MongoDb\Study;
 use App\MongoDb\DescriptiveExam;
 use Crypt;
 use Mail;
@@ -23,90 +21,157 @@ use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
+	public function save(Request $in)
+	{
+		if (!in_array(auth()->user()->type, ['P', 'I'])){
+			return ['status'=>0, 'message'=>'Operação não permitida'];
+		}
+
+		if (auth()->user()->type == 'P'){// Tipo P é professor com conta liberada. Ele mesmo deve atualizar as suas informações e não a instituição.
+			$teacher = auth()->user();
+		} else {//type == 'I'
+			if (isset($in->teacher_id)) {//Edição
+				$teacher = User::find(Crypt::decrypt($in->teacher_id));
+				if (!$teacher) {
+					return ['status' => 0, 'message' => "Professor não encontrado"];
+				}
+
+				// Tipo P é professor com conta liberada. Ele mesmo deve atualizar as suas informações e não a instituição.
+				if ($teacher->type == "P") {
+					return ['status' => 0, 'message' => "Professor não pode ser editado"];
+				}
+
+				// if (isset($in->email)){
+				// 	if (User::where('email', trimpp(strtolower($in->email)))->where('register', '!=', $teacher->register)->count()){
+				// 		return ['status' => 0, 'message' => "Email já cadastrado"];
+				// 	}
+				// 	$teacher->email = $in->email;
+				// }
+			} else {
+				if (!isset($in->register)){
+					return ['status' => 0, 'message' => "Dados incompletos"];
+				}
+
+				if (Relationship::where('institution_id', auth()->id())->where('register', $in->register)->count()) {
+					return ['status' => 0, 'message' => "Este número de inscrição já está cadastrado"];
+				}
+
+				if (User::where('email', trimpp(strtolower($in->email)))->count()) {
+					return ['status' => 0, 'message' => "Este email já cadastrado"];
+				}
+
+				$teacher = User::create();
+				$teacher->type = "M";
+				$teacher->email = $in->email;
+				$teacher->password = Crypt::encrypt('12345');
+
+				$relationship = new Relationship;
+				$relationship->institution_id = auth()->id();
+				$relationship->teacher_id = $teacher->id;
+				$relationship->register = $in->register;
+				$relationship->status = "E";
+				$relationship->save();
+
+				// $request = new Request;
+				// $request->teacher_id = $teacher->id;
+				//$this->invite($request);
+			}
+		}
+		$teacher->name = $in->name;
+		$teacher->formation = $in->formation;
+		$teacher->gender = $in->gender;
+		$teacher->birthdate = $in->birthdate;
+		$teacher->save();
+
+		unset($teacher->created_at);
+		unset($teacher->updated_at);
+		unset($teacher->password);
+		$teacher->id = Crypt::encrypt($teacher->birthdate);
+
+		return ['status' => 1, 'teacher' => $teacher];
+	}
 
 	public function list(Request $in)
 	{
-		if (auth()->user()) {
-			$block = 30;
-			if (!$in->has("search")){
-				$in->search = "";
-			}
-			$current = (int) $in->has("current") ? $in->current : 0;
-			$user = User::find(auth()->user()->id);
-			$courses = Course::where('institution_id', auth()->user()->id)
-				->whereStatus("E")
-				->orderBy("name")
-				->get();
-			/*$listCourses = ["" => ""];
-			foreach ($courses as $course) {
-				$listCourses[$course->name] = $course->name;
-			}*/
-
-			/*$relationships = DB::select("SELECT Users.id, Users.name, Relationships.enrollment, Users.type "
-				. "FROM Users, Relationships "
-				. "WHERE Relationships.idUser=? AND Relationships.type='2' AND Relationships.idFriend=Users.id "
-				. "AND Relationships.status='E' AND (Users.name LIKE ? OR Relationships.enrollment=?) "
-				. " ORDER BY name LIMIT ? OFFSET ?",
-				[auth()->user()->id, "%$search%", $search, $block, $current * $block]);*/
-
-				if ($in->search) {
-					$teachers_ids = auth()->user()->works()->get(['teacher_id'])->pluck('teacher_id');
-					$teachers = User::whereIn('_id', $teachers_ids)->where('name','regexp',"/$in->search/i");
-					$length = clone $teachers;
-					$length = $length->count();
-					$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
-				}
-				else if (isset($in->register)) {
-					$teachers_ids = auth()->user()->works()->where('register',$in->register)->get(['teacher_id'])->pluck('teacher_id');
-					$teachers = User::whereIn('_id', $teachers_ids);
-					$length = clone $teachers;
-					$length = $length->count();
-					$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
-				}
-				else {
-					$teachers_ids = auth()->user()->works()->get(['teacher_id'])->pluck('teacher_id');
-					$teachers = User::whereIn('_id', $teachers_ids);
-					$length = clone $teachers;
-					$length = $length->count();
-					$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
-				}
-				foreach ($teachers as $teacher) {
-					$teacher->comment = Work::where('teacher_id',$teacher->id)->where('status','E')->where('institution_id',auth()->id())->first(['register'])->register;
-					//$teacher->selected = Lecture::where('user_id', $teacher->id)->where('offer_id', $offer)->count();
-					$teacher->id = Crypt::encrypt($teacher->id);
-				}
-
-			/*$length = DB::select("SELECT count(*) as 'length' "
-				. "FROM Users, Relationships "
-				. "WHERE Relationships.idUser=? AND Relationships.type='2' AND Relationships.idFriend=Users.id "
-				. "AND (Users.name LIKE ? OR Relationships.enrollment=?) ", [auth()->user()->id, "%$search%", $search]);*/
-
-			return
-				[
-					"status" => 1,
-					//"courses" => $courses,
-					//"user" => $user,
-					"teachers" => $teachers,
-					"length" => (int) $length,
-					"block" => (int) $block,
-					"current" => (int) $current,
-				];
-
-		} else {
-			return ['status'=>0,'message'=>'Usuario não logado.'];
+		if (auth()->user()->type != 'I'){
+			return ['status'=>0, 'message'=>'Operação não permitida'];
 		}
+		$block = 30;
+		if (!isset($in->search)){
+			$in->search = "";
+		}
+		$current = (int) isset($in->current) ? $in->current : 0;
+
+		$courses = Course::where('institution_id', auth()->id())->whereStatus("E")->orderBy("name")->get();
+		/*$listCourses = ["" => ""];
+		foreach ($courses as $course) {
+			$listCourses[$course->name] = $course->name;
+		}*/
+
+		/*$relationships = DB::select("SELECT Users.id, Users.name, Relationships.enrollment, Users.type "
+			. "FROM Users, Relationships "
+			. "WHERE Relationships.idUser=? AND Relationships.type='2' AND Relationships.idFriend=Users.id "
+			. "AND Relationships.status='E' AND (Users.name LIKE ? OR Relationships.enrollment=?) "
+			. " ORDER BY name LIMIT ? OFFSET ?",
+			[auth()->user()->id, "%$search%", $search, $block, $current * $block]);*/
+
+		if ($in->search) {
+			$teachers_ids = auth()->user()->relationships()->whereNotNull('teacher_id')->where('status', 'E')->get(['teacher_id'])->pluck('teacher_id');
+			$teachers = User::whereIn('_id', $teachers_ids)->where('name', 'regexp', "/$in->search/i");
+			$length = clone $teachers;
+			$length = $length->count();
+			$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
+		}
+		elseif (isset($in->register)) {
+			$teachers_ids = auth()->user()->relationships()->whereNotNull('teacher_id')->where('status', 'E')->where('register',$in->register)->get(['teacher_id'])->pluck('teacher_id');
+			$teachers = User::whereIn('_id', $teachers_ids);
+			$length = clone $teachers;
+			$length = $length->count();
+			$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
+		}
+		else {
+			$teachers_ids = auth()->user()->relationships()->whereNotNull('teacher_id')->where('status', 'E')->get(['teacher_id'])->pluck('teacher_id');
+			$teachers = User::whereIn('_id', $teachers_ids);
+			$length = clone $teachers;
+			$length = $length->count();
+			$teachers = $teachers->skip($current * $block)->take($block)->get(['_id', 'name', 'type']);
+		}
+
+		foreach ($teachers as $teacher) {
+			$teacher->register = Relationship::where('teacher_id', $teacher->id)->where('institution_id', auth()->id())->where('status', 'E')->first(['register'])->register;
+			//$teacher->selected = Lecture::where('user_id', $teacher->id)->where('offer_id', $offer)->count();
+			unset($teacher->created_at);
+			unset($teacher->updated_at);
+			$teacher->id = Crypt::encrypt($teacher->id);
+		}
+
+		/*$length = DB::select("SELECT count(*) as 'length' "
+			. "FROM Users, Relationships "
+			. "WHERE Relationships.idUser=? AND Relationships.type='2' AND Relationships.idFriend=Users.id "
+			. "AND (Users.name LIKE ? OR Relationships.enrollment=?) ", [auth()->user()->id, "%$search%", $search]);*/
+
+		return [
+			"status" => 1,
+			"teachers" => $teachers,
+			"length" => (int) $length,
+			"block" => (int) $block,
+			"current" => (int) $current,
+		];
 	}
 
 	public function read(Request $in)
 	{
-		$user = User::find(auth()->id());
 		if (!isset($in->teacher_id)) {
 			return ['status'=>0,'message'=>"Dados incompletos"];
 		}
-		$in->teacher_id = Crypt::decrypt($in->teacher_id);
-		$teacher = User::find($in->teacher_id);
-		$work = Work::where('user_id', auth()->id())->where('teacher_id', $teacher->id)->first();
-		$teacher->register = $work->register;
+
+		$teacher = User::where('_id', Crypt::decrypt($in->teacher_id))->whereIn('type', ['P', 'M'])->first();
+		if (!$teacher){
+			return ['status'=>0,'message'=>"Professor não encontrado"];
+		}
+
+		$relationship = Relationship::where('user_id', auth()->id())->where('teacher_id', $teacher->id)->where('status', 'E')->first();
+		$teacher->register = $relationship->register;
 		switch ($teacher->formation) {
 			case '0':$teacher->formation = "Não quero informar";
 				break;
@@ -133,174 +198,83 @@ class TeacherController extends Controller
 		return ["status"=>1, "teacher" => $teacher];
 	}
 
-	public function search(Request $in) {
+	public function searchByEmail(Request $in)
+	{
 		if (!isset($in->email)) {
 			return ['status' => 0, 'message' => 'Dados incompletos'];
 		}
 
-		$teacher = User::where('email', $in->email)->first(['_id','name','formation']);
-		if ($teacher) {
-			$relationship = Work::where('institution_id', auth()->id())->where('teacher_id', $teacher->id)->first();
-			if (!$relationship) {
-				return [
-					'status' => 1,
-					'teacher' => [
-						'id' => Crypt::encrypt($teacher->id),
-						'name' => $teacher->name,
-						'formation' => $teacher->formation,
-					],
-					'message' => 'Este professor já está cadastrado no LibreClass e será vinculado à sua instituição.',
-				];
-			} else {
-				return ([
-					'status' => -1,
-					'teacher' => [
-						'id' => Crypt::encrypt($teacher->id),
-						'name' => $teacher->name,
-						'formation' => $teacher->formation,
-						'enrollment' => $relationship->enrollment,
-					],
-					'message' => 'Este professor já está vinculado à instituição!',
-				]);
-			}
-		} else {
-			return ([
-				'status' => 0,
-			]);
+		$teacher = User::where('email', trimpp(strtolower($in->email)))->first();
+		if (!$teacher) {
+			return ['status' => 0, 'message' => 'Professor não encontrado'];
 		}
+
+		if (!Relationship::where('institution_id', auth()->id())->where('teacher_id', $teacher->id)->count()){
+			return ['status' => 0, 'message' => 'Professor não vinculado à instituição'];
+		}
+
+		return ['status' => 1, 'teacher' => $teacher];
 	}
 
-	public function unlink(Request $in) {
-		if (!isset($in->teacher_id)) {
+	//Vincula um professor a uma instituição
+	public function link(Request $in)
+	{
+		if (!isset($in->teacher_id) || !isset($in->register)) {
 			return ['status' => 0, 'message' => 'Dados incompletos'];
 		}
-		$in->teacher_id = Crypt::decrypt($in->teacher_id);
 
-		/*$offers = DB::select("SELECT Courses.name AS course, Periods.name AS period, Classes.class as class, Disciplines.name AS discipline "
-			. "FROM Courses, Periods, Classes, Offers, Lectures, Disciplines "
-			. "WHERE Courses.idInstitution=? AND Courses.id=Periods.idCourse AND "
-			. "Periods.id=Classes.idPeriod AND Classes.id=Offers.idClass AND "
-			. "Offers.idDiscipline=Disciplines.id AND "
-			. "Offers.id=Lectures.idOffer AND Lectures.idUser=?", [auth()->user()->id, $idTeacher]);*/
-
-		$courses_ids = auth()->user()->courses()->get(['_id'])->pluck('_id');
-		$periods_ids = Period::whereIn('course_id',$courses_ids)->get(['_id'])->pluck('_id');
-		$classes_ids = Classe::whereIn('period_id',$periods_ids)->get(['_id'])->pluck('_id');
-		$offers_ids = Offer::whereIn('classe_id',$classes_ids)->get(['_id'])->pluck('_id');
-		$disciplines_ids = Discipline::whereIn('offer_id',$offers_ids)->get(['_id'])->pluck('_id');
-		$lectures = Lecture::whereIn('discipline_id',$disciplines_ids)->where('teacher_id',$in->teacher_id)->count();
-
-		if ($lectures) {
-			/*$str = "Erro ao desvincular professor, ele está associado a(s) disciplina(s): <br><br>";
-			$str .= "<ul class='text-justify text-sm list-group'>";
-			foreach ($offers as $offer) {
-				$str .= "<li class='list-group-item'>$offer->course/$offer->period/$offer->class/$offer->discipline</li>";
-			}
-			$str .= "</ul>";*/
-
-			return ['status'=>0,'message'=>'Professor não pode ser removido pois está associado à disciplinas.'];
-		} else {
-			Work::where('institution_id', auth()->id())
-				->where('teacher_id', $in->teacher_id)
-				->update(["status" => "D"]);
-
-			return ['status'=>1];
+		$teacher = User::find(Crypt::decrypt($in->teacher_id));
+		if (!$teacher) {
+			return ['status' => 0, 'message' => "Professor não encontrado"];
 		}
+
+		$relationship = auth()->user()->relationships()->where('teacher_id', $teacher->id)->first();
+		if ($relationship) {
+			return ['status' => 0, 'message' => 'Professor já vinculado à instituição'];
+		}
+
+		$relationship = new Relationship;
+		$relationship->institution_id = auth()->id();
+		$relationship->teacher_id = $teacher->id;
+		$relationship->register = $in->register;
+		$relationship->status = "E";
+		$relationship->save();
+
+		return ['status' => 1];
 	}
 
-	public function save(Request $in) {
-		if (isset($in->teacher_id)) {
-			$teacher = User::find(Crypt::decrypt($in->teacher_id));
-
-			if (!$teacher) {
-				return ['status' => 0, 'message' => "Professor não encontrado!"];
-			}
-
-			// Tipo P é professor com conta liberada. Ele mesmo deve atualizar as suas informações e não a instituição.
-			if ($teacher->type == "P") {
-				return ['status' => 0, 'message' => "Professor não pode ser editado!"];
-			}
-			$teacher->email = $in->email;
-			// $user->enrollment = Input::get("enrollment");
-			$teacher->name = $in->name;
-			$teacher->formation = $in->formation;
-			$teacher->gender = $in->gender;
-			$teacher->save();
-
-			unset($teacher->created_at);
-			unset($teacher->updated_at);
-			unset($teacher->password);
-
-			return ['status' => 1, 'teacher' => $teacher];
-		} else {
-			$verify = Work::where('register',$in->register)->where('user_id', auth()->id())->first();
-			if (isset($verify) || $verify != null) {
-				return ['status' => 0, 'message' => "Este número de inscrição já está cadastrado!"];
-			}
-			if (User::where('email', $in->email)->count()) {
-				return ['status' => 0, 'message' => "Este email já está cadastrado!"];
-			}
-			$teacher = new User;
-			$teacher->type = "M";
-			// $user->email = Input::get("email");
-			// $user->enrollment = Input::get("enrollment");
-			$teacher->name = $in->name;
-			$teacher->email = $in->email;
-			$teacher->formation = $in->formation;
-			$teacher->gender = $in->gender;
-			$teacher->password = Crypt::encrypt('12345');
-			if ($in->has("year")) {
-				$teacher->birthdate = $in->year . "-"
-				. $in->month . "-"
-				. $in->day;
-			}
-			$teacher->save();
-
-			$work = new Work;
-			$work->institution_id = auth()->id();
-			$work->teacher_id = $teacher->id;
-			$work->register = $in->register;
-			$work->status = "E";
-			$work->save();
-
-			$request = new Request;
-			$request->teacher_id = $teacher->id;
-
-			//$this->invite($request);
-
-			unset($teacher->created_at);
-			unset($teacher->updated_at);
-			unset($teacher->password);
-
-			return ['status' => 1, 'teacher' => $teacher];
-		}
-	}
-
-	public function vinculateTeacher(Request $in)
+	//Desfaz vínculo de professor com uma instituição
+	public function unlink(Request $in)
 	{
 		if (!isset($in->teacher_id)) {
 			return ['status' => 0, 'message' => 'Dados incompletos'];
 		}
-		$teacher = User::find(Crypt::decrypt($in->teacher_id));
 
-		if (!$teacher) {
-			return ['status' => 0, 'message' => "Professor não encontrado!"];
+		$teacher = User::find(Crypt::decrypt($in->teacher_id));
+		if (!$teacher){
+			return ['status' => 0, 'message' => 'Professor não encontrado'];
 		}
-		$work = auth()->user()->works()->where('teacher_id', $teacher->id)->first();
-		if (!$work) {
-			$work = new Work;
-			$work->institution_id = auth()->id();
-			$work->teacher_id = $teacher->id;
-			$work->register = $in->register;
-			$work->status = "E";
-			$work->save();
+
+		if (!Relationship::where('institution_id', auth()->id())->where('teacher_id, '$teacher->id)->where('status', 'E')->count()){
+			return ['status' => 0, 'message' => 'Professor não está vinculado à instituição'];
 		}
-		return ['status' => 1];
+
+		$offers_ids = $teacher->lectures()->get(['offer_id'])->pluck('offer_id');
+		$classes_ids = Offer::whereIn('_id', $offers_ids)->get(['class_id'])->pluck('class_id')->unique();
+		$periods_ids = Classe::whereIn('_id', $classes_ids)->get(['period_id'])->pluck('period_id')->unique();
+		$courses_ids = Period::whereIn('_id', $periods_ids)->get(['course_id'])->pluck('course_id')->unique();
+		$institutions_ids = Course::whereIn('_id', $courses_ids)->get(['institution_id'])->pluck('institution_id')->unique();
+		if (in_array(auth()->id(), $institutions_ids)){
+			return ['status'=>0, 'message'=>'Professor não pode ser removido. Já está vinculado a ofertas'];
+		}
+
+		Relationship::where('institution_id', auth()->id())->where('teacher_id', $in->teacher_id)->update(["status" => "D"]);
+
+		return ['status'=>1];
 	}
 
 	public function invite(Request $in)
 	{
-		$user = User::find(auth()->id());
 		if (isset($in->guest_id)) {
 			$guest = User::find($in->guest_id);
 		} else if (isset($in->teacher_id)) {
@@ -310,7 +284,7 @@ class TeacherController extends Controller
 			return ['status' => 0, 'message' => "Dados incompletos"];
 		}
 
-		if (($guest->type == "M" && Work::where('institution_id', auth()->id())->where('teacher_id', $guest->id)->first()) || ($guest->type == "N" && Study::where('institution_id', auth()->id())->where('study_id', $guest->id)->first())) {
+		if (($guest->type == "M" && Relationship::where('institution_id', auth()->id())->where('teacher_id', $guest->id)->first()) || ($guest->type == "N" && Study::where('institution_id', auth()->id())->where('study_id', $guest->id)->first())) {
 			if (User::whereEmail($in->email)->first()) {
 				return ['status' => 0, 'message' => "O email " . $guest->email . " já está cadastrado."];
 			}

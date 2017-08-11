@@ -120,12 +120,12 @@ class ClasseController extends Controller
 
 		$periods = $course->periods;
 		foreach ($periods as $period) {
-			$period->courses = $period->courses;
-			$courses = $period->courses;
-			foreach ($courses as $course) {
-				$course->id = Crypt::encrypt($course->id);
+			$period->classes = $period->classes;
+			$classes = $period->classes;
+			foreach ($classes as $classe) {
+				$classe->id = Crypt::encrypt($classe->id);
 			}
-			$period->courses = $courses;
+			$period->classes = $classes;
 			$period->id = Crypt::encrypt($period->id);
 		}
 
@@ -174,26 +174,25 @@ class ClasseController extends Controller
 		return ['status'=>1];
 	}
 
-	public function changeStatus()
+	public function changeStatus(Request $in)
 	{
-		$id = Crypt::decrypt(Input::get("key"));
-
-		$class = Classe::find($id);
-		if ($class) {
-			$class->status = Input::get("status");
-			$class->save();
-			if ($class->status == "E") {
-				return Redirect::guest("/classes")->with("success", "Turma ativada com sucesso!");
-			} else {
-				return Redirect::guest("/classes")->with("success", "Turma bloqueada com sucesso!<br/>Turmas bloqueadas são movidas para o final.");
-			}
-
-		} else {
-			return Redirect::guest("/classes")->with("error", "Não foi possível realizar essa operação!");
+		if (!isset($in->classe_id) || !isset($in->status)){
+			return ['status' => 0, 'message' => 'Dados incompletos'];
+		}
+		$classe = Classe::find(Crypt::decrypt($in->classe_id));
+		if (!$classe) {
+			return ['status' => 0, 'message' => 'Turma não encontrada'];
 		}
 
-	}
+		if (!in_array($in->status, ['E', 'D'])){
+			return ['status' => 0, 'message' => 'Status inválido'];
+		}
 
+		$classe->status = $in->status;
+		$classe->save();
+
+		return ['status'=>1];
+	}
 	// public function anyListOffers()
 	// {
 	// 	$offers = Offer::where("idClass", Crypt::decrypt(Input::get("class")))->get();
