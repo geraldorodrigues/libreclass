@@ -15,6 +15,7 @@ use App\MongoDb\Unit;
 use App\MongoDb\Work;
 use App\MongoDb\Study;
 use App\MongoDb\DescriptiveExam;
+use App\Mail\Invite;
 use Crypt;
 use Mail;
 use StdClass;
@@ -318,7 +319,13 @@ class TeacherController extends Controller
 			//{
 				$password = substr(md5(microtime()), 1, rand(4, 7));
 				$guest->password = bcrypt($password);
-				Mail::send('email.invite', [
+				Mail::to($guest)->send(new Invite([
+					"institution" => auth()->user()->name,
+					"name" => $guest->name,
+					"email" => $guest->email,
+					"password" => $password,
+				],'Seja bem vindo'));
+				/*Mail::send('email.invite', [
 					"institution" => auth()->user()->name,
 					"name" => $guest->name,
 					"email" => $guest->email,
@@ -326,7 +333,7 @@ class TeacherController extends Controller
 				], function ($message) use ($guest) {
 					$message->to($guest->email, $guest->name)
 						->subject("Seja bem-vindo");
-				});
+				});*/
 				$guest->save();
 				return ['status'=>1];
 			/*} catch (Exception $e) {
