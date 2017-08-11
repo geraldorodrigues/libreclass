@@ -100,7 +100,6 @@ class TeacherController extends Controller
 
 	public function read(Request $in)
 	{
-		$user = User::find(auth()->id());
 		if (!isset($in->teacher_id)) {
 			return ['status'=>0,'message'=>"Dados incompletos"];
 		}
