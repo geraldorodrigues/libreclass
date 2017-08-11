@@ -12,7 +12,7 @@ O LibreClass CE é mantido pela empresa Modeon Devhouse. É um projeto que surgi
 
 #### 2. Habilite os módulos necessários:
 
-    $ sudo a2enmod rewrite && sudo php5nmod mcrypt && sudo service apache2 restart
+    $ sudo a2enmod rewrite && sudo phpenmod mcrypt && sudo service apache2 restart
 
 #### 3. Instale o código do LibreClass CE:
 
