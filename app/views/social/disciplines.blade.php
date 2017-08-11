@@ -33,7 +33,7 @@
       <br>
       <a href="/courses" class="text-md"><i class="fa fa-folder-o"></i> Cadastrar um novo curso</a>
     </div>
-          
+
     </div>
 </div>
 @else
@@ -51,7 +51,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="block">
         <div class="row">
           <div class="col-md-12">
