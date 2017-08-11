@@ -6,7 +6,7 @@ use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 class Offer extends \Moloquent
 {
 	use SoftDeletes;
-	protected $fillable = ['class_id', 'discipline_id', 'classroom', 'day_period'];
+	protected $fillable = ['classe_id', 'discipline_id', 'classroom', 'day_period'];
 
 	public function discipline()
 	{
@@ -16,7 +16,7 @@ class Offer extends \Moloquent
 
 	public function classe()
 	{
-		return $this->belongsTo('App\MongoDb\Classe', 'class_id');
+		return $this->belongsTo('App\MongoDb\Classe');
 	}
 
 	public function lectures()

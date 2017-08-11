@@ -2,39 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\MySql\User;
-use App\MySql\Course;
-use App\MySql\Period;
-use App\MySql\Offer;
-use App\MySql\Discipline;
-use App\MySql\Classe;
-use App\MySql\Unit;
-use App\MySql\Attend;
+use Illuminate\Http\Request;
+use App\MongoDb\User;
+use App\MongoDb\Course;
+use App\MongoDb\Period;
+use App\MongoDb\Offer;
+use App\MongoDb\Discipline;
+use App\MongoDb\Classe;
+use App\MongoDb\Unit;
+use App\MongoDb\Attend;
 
 use Session;
 use Crypt;
 use Redirect;
 
-class ClassesController extends Controller
+class ClasseController extends Controller
 {
-	// public function postListdisciplines()
-	// {
-	// 	if (Input::has("flag")) {
-	// 		$offers = Offer::where("idClass", Crypt::decrypt(Input::get("classe_id")))->get();
-	// 		$registered_disciplines_ids = [];
-	// 		foreach ($offers as $offer) {
-	// 			$registered_disciplines_ids[] = $offer->idDiscipline;
-	// 		}
-	// 		$disciplines = Discipline::where("idPeriod", Crypt::decrypt(Input::get("period_id")))->whereStatus('E')->whereNotIn('id', $registered_disciplines_ids)->get();
-	// 	} else {
-	// 		$disciplines = Discipline::where("idPeriod", Crypt::decrypt(Input::get("period")))->whereStatus('E')->get();
-	// 	}
-	// 	return view("modules.disciplines.listOffer", ["disciplines" => $disciplines]);
-	// }
-
 	public function save(Request $in)
 	{
-		if (!isset($in->period_id) || !isset($in->name || !isset($in->class))){
+		if (!isset($in->period_id) || !isset($in->name)){
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
@@ -59,6 +45,7 @@ class ClassesController extends Controller
 
 		return ['status'=>1, 'classe'=>$classe];
 	}
+
 	// public function postNew()
 	// {
 	// 	$class = new Classe;
@@ -83,7 +70,68 @@ class ClassesController extends Controller
 	// 	return Redirect::guest("classes")->with("success", "Turma criada com sucesso!");
 	// }
 
-	// public function getInfo()
+	public function list(Request $in)
+	{
+		if (auth()->user()->type != 'I'){
+			return ['status'=>0, 'message'=>'Operação não autorizada'];
+		}
+
+		if (!isset($in->period_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$period = Period::find(Crypt::decrypt($in->period_id));
+		if (!$period){
+			return ['status'=>0, 'message'=>'Período não encontrado'];
+		}
+		if ($period->course->institution_id != auth()->id()){
+			return ['status'=>0, 'message'=>'Operação não autorizada'];
+		}
+
+		$classes = $period->classes;
+
+		foreach ($classes as $classe) {
+			$classe->id = Crypt::encrypt($classe->id);
+			unset($classe->period_id);
+			unset($classe->created_at);
+			unset($classe->updated_at);
+		}
+
+		return ['status'=>1, 'classes'=>$classes];
+	}
+
+	public function listGrouped(Request $in)
+	{
+		if (auth()->user()->type != 'I'){
+			return ['status'=>0, 'message'=>'Operação não autorizada'];
+		}
+
+		if (!isset($in->course_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$course = Course::find(Crypt::decrypt($in->course_id));
+		if (!$course){
+			return ['status'=>0, 'message'=>'Curso não encontrado'];
+		}
+		if ($course->institution_id != auth()->id()){
+			return ['status'=>0, 'message'=>'Operação não autorizada'];
+		}
+
+		$periods = $course->periods;
+		foreach ($periods as $period) {
+			$period->courses = $period->courses;
+			$courses = $period->courses;
+			foreach ($courses as $course) {
+				$course->id = Crypt::encrypt($course->id);
+			}
+			$period->courses = $courses;
+			$period->id = Crypt::encrypt($period->id);
+		}
+
+		return ['status'=>1, 'periods'=>$periods];
+	}
+
 	public function read(Request $in)
 	{
 		if (!isset($in->classe_id)){
@@ -126,7 +174,7 @@ class ClassesController extends Controller
 		return ['status'=>1];
 	}
 
-	public function postChangeStatus()
+	public function changeStatus()
 	{
 		$id = Crypt::decrypt(Input::get("key"));
 
@@ -169,7 +217,7 @@ class ClassesController extends Controller
 	 *
 	 * @return json com cursos e unidades
 	 */
-	public function postListUnits($status = 1)
+	public function listUnits($status = 1)
 	{
 		$status = ((int) $status ? "E" : "D");
 
@@ -191,7 +239,7 @@ class ClassesController extends Controller
 		return $courses;
 	}
 
-	public function postBlockUnit()
+	public function blockUnit()
 	{
 		$course = Course::find(Crypt::decrypt(Input::get("course")));
 		if ($course->idInstitution != $this->idUser) {
@@ -211,7 +259,7 @@ class ClassesController extends Controller
 		}
 	}
 
-	public function postUnblockUnit()
+	public function unblockUnit()
 	{
 		$course = Course::find(Crypt::decrypt(Input::get("course")));
 		if ($course->idInstitution != $this->idUser) {
@@ -231,7 +279,7 @@ class ClassesController extends Controller
 		}
 	}
 
-	public function anyCreateUnits()
+	public function createUnits()
 	{
 		$s_attends = false;
 		$course = Course::find(Crypt::decrypt(Input::get("course")));

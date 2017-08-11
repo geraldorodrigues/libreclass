@@ -2,7 +2,7 @@
 
 Route::get('/login', function () {
 	return view('user.login');
-});
+})->name('login');
 
 # Route::controller('/censo', 'CensoController');
 Route::get('/censo/student', 'CensoController@getStudent');
@@ -35,7 +35,7 @@ Route::get('help/{rota}', 'HelpController@getIndex');
 
 # Route::controller('/', 'LoginController');
 Route::get('/', 'HomeController@index');
-//Route::get('/login', 'LoginController@getLogin')->name('login');
+// Route::get('/login', 'LoginController@getLogin')->name('login');
 // Route::post('/', 'LoginController@postIndex');
 // Route::post('/login', 'LoginController@postLogin');
 //Route::get('/check', 'LoginController@getCheck');
@@ -76,6 +76,8 @@ Route::any('/discipline/delete', 'DisciplineController@delete');
 
 //ClasseController
 Route::any('/classe/save', 'ClasseController@save');
+Route::any('/classe/list', 'ClasseController@list');
+Route::any('/classe/list-grouped', 'ClasseController@listGrouped');
 Route::any('/classe/read', 'ClasseController@read');
 Route::any('/classe/delete', 'ClasseController@delete');
 Route::any('/classe/change-status', 'ClasseController@changeStatus');
@@ -174,11 +176,13 @@ Route::post('/disciplines/listperiods', 'DisciplinesController@postListperiods')
 Route::any('/disciplines/list', 'DisciplinesController@anyList');
 Route::get('/disciplines/ementa', 'DisciplinesController@getEmenta');
 
-# Route::controller('lectures', "LecturesController");
-Route::get('/lectures', 'LecturesController@getIndex');
-Route::get('/lectures/finalreport/{offer}', 'LecturesController@getFinalreport');
-Route::get('/lectures/frequency/{offer}', 'LecturesController@getFrequency');
-Route::post('/lectures/sort', 'LecturesController@postSort');
+//LectureController
+Route::any('/lecture/save', 'LectureController@save');
+Route::any('/lecture/delete/', 'LectureController@delete');
+Route::any('/lecture/change-order/', 'LectureController@changeOrder');
+Route::any('/lecture/final-report/', 'LectureController@finalReport');
+Route::any('/lecture/frequency/', 'LectureController@frequency');
+Route::any('/lecture/sort', 'LectureController@sort');
 
 # Route::controller('avaliable', "AvaliableController");
 Route::get('/avaliable', 'AvaliableController@getIndex');
@@ -234,6 +238,7 @@ Route::post('/suggestion', 'SocialController@postSuggestion');
 Route::any('/period/save', 'PeriodController@save');
 Route::any('/period/list', 'PeriodController@list');
 Route::any('/period/read', 'PeriodController@read');
+
 Route::any('/period/delete', 'PeriodController@delete');
 
 Route::any('teacher/list','TeacherController@list');
