@@ -13,6 +13,10 @@ class Exam extends \Moloquent
 		return $this->belongsTo('App\MongoDb\Unit');
 	}
 
+	public function results()
+	{
+		return $this->hasMany('App\MongoDb\Result');
+	}
 	// public function descriptive_exams()
 	// {
 	// 	$descriptive_exams = $this->hasMany("DescriptiveExam", "exam_id")->get();

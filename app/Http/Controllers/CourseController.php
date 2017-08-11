@@ -32,6 +32,8 @@ class CourseController extends Controller
 		$course->average = $in->average;
 		$course->average_final = $in->average_final;
 		$course->status = 'E';
+		'content' => new MongoBinData(file_get_contents($in->file('file')), MongoBinData::GENERIC),
+		$associated->file_id = File::create(['content' => new Binary($decoded_str, Binary::TYPE_GENERIC)])->id;
 
 		$course->save();
 
@@ -40,7 +42,6 @@ class CourseController extends Controller
 		return ['status'=>1, 'course'=>$course];
 	}
 
-	// public function getIndex()
 	public function list()
 	{
 		if (auth()->user()->type != "I") {
@@ -56,26 +57,7 @@ class CourseController extends Controller
 		}
 
 		return ['status'=>1, 'courses'=>$courses];
-		// $listcourses = [];
-		// foreach ($courses as $course) {
-		// 	$listcourses[Crypt::encrypt($course->id)] = $course->name;
-		// 	$course->periods = Period::where("idCourse", $course->id)->get();
-		// }
-		// return view("social.courses", ["courses" => $courses, "user" => $this->user, "listcourses" => $listcourses]);
 	}
-
-	/*Mesclado com o método anterior (getIndex()) e transformado em list()*/
-	// public function postAllCourses()
-	// {
-	// 	if ($this->idUser) {
-	// 		$courses = Course::where("idInstitution", $this->idUser)->whereStatus("E")->orderBy("name")->get();
-	//
-	// 		foreach ($courses as $course) {
-	// 			$course->id = Crypt::encrypt($course->id);
-	// 		}
-	// 		return $courses;
-	// 	}
-	// }
 
 	public function read(Request $in)
 	{

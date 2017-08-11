@@ -7,7 +7,7 @@ class Classe extends \Moloquent
 {
 	use SoftDeletes;
 
-	protected $fillable = ['name', 'period_id', 'class'];
+	protected $fillable = ['name', 'period_id'];
 	protected $hidden = ['_id'];
 
 	public function period()

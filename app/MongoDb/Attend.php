@@ -23,4 +23,9 @@ class Attend extends \Moloquent
 		return $this->hasMany('App\MongoDb\Frequency');
 	}
 
+	public function results()
+	{
+		return $this->hasMany('App\MongoDb\Result');
+	}
+
 }

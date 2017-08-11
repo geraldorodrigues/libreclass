@@ -19,7 +19,12 @@ class Unit extends \Moloquent
 
 	public function attends()
 	{
-		return $this->hasMany('Attend');
+		return $this->hasMany('App\MongoDb\Attend');
+	}
+
+	public function exams()
+	{
+		return $this->hasMany('App\MongoDb\Exam');
 	}
 
 	/*public function getOffer()

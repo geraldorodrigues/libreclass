@@ -12,120 +12,121 @@ use Redirect;
 
 class LessonController extends Controller
 {
-	private $idUser;
-
-	public function __construct()
-	{
-		$id = Session::get("user");
-		if ($id == null || $id == "") {
-			$this->idUser = false;
-		} else {
-			$this->idUser = Crypt::decrypt($id);
-		}
-
-	}
-
-	public function index(Requesg $in)
-	{
-
-		if (auth()->id()) {
-			$user = User::find(auth()->id());
-
-			$lesson = Lesson::find(Crypt::decrypt($in->lesson_id));
-
-			/*$students = DB::select("SELECT Users.name AS name, Attends.id AS idAttend, Frequencies.value AS value, Units.idOffer, Attends.idUser
-																FROM Frequencies, Attends, Users, Units
-																WHERE Frequencies.idAttend=Attends.id AND
-																			Attends.idUser=Users.id AND
-																			Frequencies.idLesson=? AND
-																			Attends.idUnit=Units.id
-																ORDER BY Users.name", [$lesson->id]);*/
-
-			$students = [];
-			$frequencies = Frequencies::where('lesson_id', $in->lesson_id)->get(['attend_id','value']);
-			foreach ($frequencies as $frequency) {
-				$attend = $frequency->attend;
-				$student = $attend->student;
-				$student->value = $frequency->value;
-				$student->attend_id = $frequency->attend_id;
-				$student->offer_id = $attend->offer_id;
-				$students[] = $student;
-			}
-
-			foreach ($students as $student) {
-				/*$frequency = DB::select("SELECT Offers.maxlessons, COUNT(*) as qtd "
-					. "FROM Offers, Units, Attends, Frequencies "
-					. "WHERE Offers.id=? AND Offers.id=Units.idOffer AND Units.id=Attends.idUnit "
-					. "AND Attends.idUser=? AND Attends.id=Frequencies.idAttend AND Frequencies.value='F'",
-					[$student->idOffer, $student->idUser])[0];*/
-				$student->maxlessons = Offer::where('_id', $student->offer_id)->first(['maxlessons'])->maxlessons;
-				$student->qtd = Attend::where('_id', $student->attend_id)->frequency()->where('value','F')->count();
-				/*$student->maxlessons = $frequency->maxlessons;
-				$student->qtd = $frequency->qtd;*/
-			}
-
-			return ["status" => 1, "user" => $user, "lesson" => $lesson, "students" => $students]);
-		} else {
-			return Redirect::guest("/");
-		}
-	}
-
-	public function newLesson(Request $in)
-	{
-		$unit = Unit::find(Crypt::decrypt($in->unit_id));
-
-		$lesson = new Lesson;
-		$lesson->idUnit = $unit->id;
-		$lesson->date = date("Y-m-d");
-		$lesson->title = "Sem título";
-		$lesson->save();
-
-		$attends = Attend::where("unit_id", $unit->id)->get();
-		foreach ($attends as $attend) {
-			$frequency = new Frequency;
-			$frequency->attend_id = $attend->id;
-			$frequency->lesson_id = $lesson->id;
-			$frequency->value = "P";
-			$frequency->save();
-		}
-
-		return ['status' => 1, 'lesson' => $lesson];
-	}
+	// public function index(Requesg $in)
+	// {
+	// 	$lesson = Lesson::find(Crypt::decrypt($in->lesson_id));
+	//
+	// 	/*$students = DB::select("SELECT Users.name AS name, Attends.id AS idAttend, Frequencies.value AS value, Units.idOffer, Attends.idUser
+	// 														FROM Frequencies, Attends, Users, Units
+	// 														WHERE Frequencies.idAttend=Attends.id AND
+	// 																	Attends.idUser=Users.id AND
+	// 																	Frequencies.idLesson=? AND
+	// 																	Attends.idUnit=Units.id
+	// 														ORDER BY Users.name", [$lesson->id]);*/
+	//
+	// 	$students = [];
+	// 	$frequencies = Frequency::where('lesson_id', $in->lesson_id)->get(['attend_id','value']);
+	// 	foreach ($frequencies as $frequency) {
+	// 		$attend = $frequency->attend;
+	// 		$student = $attend->student;
+	// 		$student->value = $frequency->value;
+	// 		$student->attend_id = $frequency->attend_id;
+	// 		$student->offer_id = $attend->offer_id;
+	// 		$students[] = $student;
+	// 	}
+	//
+	// 	foreach ($students as $student) {
+	// 		/*$frequency = DB::select("SELECT Offers.maxlessons, COUNT(*) as qtd "
+	// 			. "FROM Offers, Units, Attends, Frequencies "
+	// 			. "WHERE Offers.id=? AND Offers.id=Units.idOffer AND Units.id=Attends.idUnit "
+	// 			. "AND Attends.idUser=? AND Attends.id=Frequencies.idAttend AND Frequencies.value='F'",
+	// 			[$student->idOffer, $student->idUser])[0];*/
+	// 		$student->maxlessons = Offer::where('_id', $student->offer_id)->first(['maxlessons'])->maxlessons;
+	// 		$student->qtd = Attend::where('_id', $student->attend_id)->frequency()->where('value','F')->count();
+	// 		/*$student->maxlessons = $frequency->maxlessons;
+	// 		$student->qtd = $frequency->qtd;*/
+	// 	}
+	//
+	// 	return ["status" => 1, "lesson" => $lesson, "students" => $students]);
+	// }
 
 	public function save(Request $in)
 	{
-		//~ var_dump(Input::all());
+		if (isset($in->lesson_id)){//Edição
 
-		$lesson = Lesson::find(Crypt::decrypt($in->lesson_id));
+		} else {//Criação
+			if (!isset($in->unit_id)){
+				return ['status'=>0, 'message'=>'Dados incompletos'];
+			}
 
-		$values = ['date','title','description','goals','content','methodology','resources','valuation','estimatedTime','keyworks','bibliography','notes'];
+			$unit = Unit::find(Crypt::decrypt($in->unit_id));
+			if (!$unit){
+				return ['status'=>0, 'message'=>'Unidade não encontrada'];
+			}
 
-		foreach($values as $value) {
-			$lesson->{$value} = $in->{$value};
+			$lesson = $unit->lessons()->create([]);
+
+			//Lista de presença para esta aula
+			foreach ($unit->attends as $attend) {
+				$frequency = new Frequency;
+				$frequency->attend_id = $attend->id;
+				$frequency->lesson_id = $lesson->id;
+				$frequency->value = "P";
+				$frequency->save();
+			}
 		}
 
-		/*$lesson->date = Input::get("date-year") . "-" . Input::get("date-month") . "-" . Input::get("date-day");
-		$lesson->title = Input::get("title");
-		$lesson->description = Input::get("description");
-		$lesson->goals = Input::get("goals");
-		$lesson->content = Input::get("content");
-		$lesson->methodology = Input::get("methodology");
-		$lesson->resources = Input::get("resources");
-		$lesson->valuation = Input::get("valuation");
-		$lesson->estimatedTime = Input::get("estimatedTime");
-		$lesson->keyworks = Input::get("keyworks");
-		$lesson->bibliography = Input::get("bibliography");
-		$lesson->notes = Input::get("notes");
-		$lesson->save();*/
+		foreach (['date', 'title', 'description', 'goals', 'content', 'methodology', 'resources', 'valuation', 'estimatedTime', 'keyworks', 'bibliography', 'notes'] as $key) {
+				$lesson->$key = $in->$key;
+		}
 
-		//~ return $lesson;
-		/*$unit = DB::select("SELECT Units.id, Units.status
-													FROM Units, Lessons
-													WHERE Units.id = Lessons.idUnit AND
-														Lessons.id=?", [$lesson->id]);*/
+		$lesson->save();
 
-		//return Redirect::guest("/lectures/units?u=" . Crypt::encrypt($unit[0]->id))->with("success", "Aula atualizada com sucesso");
 		return ['status' => 1, 'lesson' => $lesson];
+	}
+
+	public function read(Request $in)
+	{
+		if (!isset($in->lesson_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$lesson = Lesson::find(Crypt::decrypt($in->lesson_id));
+		if (!$lesson){
+			return ['status'=>0, 'message'=>'Aula não encontrada'];
+		}
+
+		unset($lesson->created_at);
+		unset($lesson->updated_at);
+		$lesson->id = Crypt::encrypt($lesson->id);
+
+		return ['status'=>1, 'lesson'=>$lesson];
+	}
+
+	public function delete(Request $in)
+	{
+		if (!isset($in->lesson_id)){
+			return ['status'=>0, 'message'=>'Dados incompletos'];
+		}
+
+		$lesson = Lesson::find(Crypt::decrypt($in->lesson_id));
+		if (!$lesson){
+			return ['status'=>0, 'message'=>'Aula não encontrada'];
+		}
+
+		if ($lesson->unit->status == 'D'){
+			return ['status'=>0, 'message'=>'Não é possível excluir a aula. Unidade desabilitada'];
+		}
+
+		//Verificar exclusão das frequências relacionadas à aula!!!
+		// if ($lesson->frequencies()->count()){
+		// 	return ['status'=>0, 'message'=>'Não é possível excluir a aula.'];
+		// }
+
+		$lesson->status = "D";
+		$lesson->save();
+
+		return ['status'=>1];
 	}
 
 	public function frequency(Request $in)
@@ -148,36 +149,6 @@ class LessonController extends Controller
 		return ['status' => 1, 'value' => $value, 'qtd' => $qtd, 'percentage' => 100 * $frequency->qtd / $frequency->maxlessons]
 
 		//return Response::json(["status" => $status, "value" => $value, "frequency" => sprintf("%d (%.1f %%)", $frequency->qtd, 100. * $frequency->qtd / $frequency->maxlessons)]);
-	}
-
-	public function delete(Request $in)
-	{
-		$lesson = Lesson::find(Crypt::decrypt($in->lesson_id));
-
-		/*$unit = DB::select("SELECT Units.id, Units.status
-													FROM Units, Lessons
-													WHERE Units.id = Lessons.idUnit AND
-														Lessons.id=?", [$lesson->id]);*/
-
-		$unit = $lesson->unit;
-
-		if ($unit->status == 'D') {
-			return ['status' => 0, 'message' => "Não foi possível deletar.<br>Unidade desabilitada."];
-		}
-		if ($lesson) {
-			$lesson->status = "D";
-			$lesson->save();
-			return ['status' => 1, 'message'=>"Aula excluída com sucesso!"];
-		} else {
-			return ['status' => 0, 'message' => "Não foi possível deletar"];
-		}
-	}
-
-	public function info(Request $in)
-	{
-		$lesson = Lesson::find(Crypt::decrypt($in->lesson_id));
-		$lesson->date = date("d/m/Y", strtotime($lesson->date));
-		return $lesson;
 	}
 
 	/**
@@ -229,32 +200,5 @@ class LessonController extends Controller
 			$copy->date = date("d/m/Y", strtotime($copy->date));
 			return ['status' => 1, 'copy' => $copy];
 		}
-	}
-
-	/**
-	 * seleciona as ofertas ministradas pelo professor que está logado
-	 *
-	 * @return lista das ofertas
-	 */
-	public function listOffers()
-	{
-		/*$offers = DB::select("SELECT Offers.id, Disciplines.name, Classes.class FROM Lectures, Offers, Classes, Disciplines "
-			. "WHERE Lectures.idUser=? AND Lectures.idOffer=Offers.id AND Offers.idClass=Classes.id AND Offers.idDiscipline=Disciplines.id",
-			[$this->idUser]);*/
-		$offers_ids = Lecture::where('user_id',auth()->id())->get(['offer_id'])->pluck('offer_id');
-		$offers = Offer::whereIn('_id',$offers_ids)->get();
-
-		foreach ($offers as $offer) {
-			$offer->id = Crypt::encrypt($offer->id);
-		}
-
-		return $offers;
-	}
-
-	public function delete(Request $in)
-	{
-		// return Crypt::decrypt(Input::get("input-trash"));
-		Lesson::find(Crypt::decrypt($in->lesson_id))->delete();
-		return  ['status' => 1, 'message' => "Aula excluída!"];
 	}
 }

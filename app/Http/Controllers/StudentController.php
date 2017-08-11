@@ -12,8 +12,6 @@ use App\MongoDb\Attend;
 use App\MongoDb\Lesson;
 use App\MongoDb\Frequency;
 use App\MongoDb\Unit;
-use App\MongoDb\Work;
-use App\MongoDb\Study;
 use App\MongoDb\Attest;
 use App\MongoDb\DescriptiveExam;
 use Crypt;
@@ -24,76 +22,98 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
+	public function save(Request $in)
+	{
+		if (isset($in->student_id))) {//Edição
+			$student = User::find(Crypt::decrypt($in->student_id));
+			if (!$student) {
+				return ['status' => 0, 'message' => "Aluno não encontrado"];
+			}
+		} else {//Criação
+			$student = new User;
+
+			$relationship = new Study;
+			$relationship->institution_id = auth()->id();
+			$relationship->status = "E";
+		}
+		//$student->enrollment = $in->enrollment;
+		$student->name = $in->name;
+		$student->email = $in->has("email") ? $in->email : null;
+		$student->course = $in->course;
+		$student->birthdate = $in->birthdate;
+		$student->type = "N";
+		$student->save();
+
+		if (isset($relationship)) {
+			$relationship->student_id = $student->id;
+			$relationship->save();
+		}
+		unset($student->created_at);
+		unset($student->updated_at);
+		unset($student->password);
+		$student->id = Crypt::encrypt($student->id);
+
+		return ['status' => 1, 'student'=>$student];
+	}
 
 	public function list(Request $in)
 	{
-		if (auth()->user()) {
-			$block = 30;
-			$in->search = $in->has("search") ? $in->search : "";
-			$in->current = (int) $in->has("current") ? $in->current : 0;
-			$user = User::find(auth()->id());
-			$courses = Course::where('institution_id', auth()->id())
-				->whereStatus("E")
-				->orderBy("name")
-				->get();
+		$block = 30;
+		$in->search = $in->has("search") ? $in->search : "";
+		$in->current = (int) $in->has("current") ? $in->current : 0;
+		// $user = User::find(auth()->id());
+		$courses = Course::where('institution_id', auth()->id())->whereStatus("E")->orderBy("name")->get();
 
-			/*$listCourses = ["" => ""];
-			foreach ($courses as $course) {
-				$listCourses[$course->name] = $course->name;
-			}*/
+		/*$listCourses = ["" => ""];
+		foreach ($courses as $course) {
+			$listCourses[$course->name] = $course->name;
+		}*/
 
-			/*$relationships = DB::select("SELECT Users.id, Users.name, Users.enrollment "
-				. "FROM Users, Relationships "
-				. "WHERE Relationships.idUser=? AND Relationships.type='1' AND Relationships.idFriend=Users.id "
-				. "AND (Users.name LIKE ? OR Users.enrollment=?) "
-				. " ORDER BY name LIMIT ? OFFSET ?",
-				[auth()->user()->id, "%$search%", $search, $block, $current * $block]);*/
+		/*$relationships = DB::select("SELECT Users.id, Users.name, Users.enrollment "
+			. "FROM Users, Relationships "
+			. "WHERE Relationships.idUser=? AND Relationships.type='1' AND Relationships.idFriend=Users.id "
+			. "AND (Users.name LIKE ? OR Users.enrollment=?) "
+			. " ORDER BY name LIMIT ? OFFSET ?",
+			[auth()->user()->id, "%$search%", $search, $block, $current * $block]);*/
 
-			if ($in->search) {
-				$students_ids = auth()->user()->study()->get(['student_id'])->pluck('student_id');
-				$students = User::whereIn('_id',$students_ids)->where('name','regexp',"/$in->search/i");
-				$length = clone $students;
-				$length = $length->count();
-				$students = $students->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name']);
-			}
-			else if ($in->register) {
-				$students_ids = auth()->user()->study()->get(['student_id'])->pluck('student_id');
-				$students = User::whereIn('_id',$students_ids)->where('name','regexp',"/$in->search/i");
-				$length = clone $students;
-				$length = $length->count();
-				$students = $students->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name']);
-			}
-			else {
-				$students_ids = auth()->user()->study()->get(['student_id'])->pluck('student_id');
-				$students = User::whereIn('_id',$students_ids);
-				$length = clone $students;
-				$length = $length->count();
-				$students = $students->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name']);
-			}
-
-			foreach ($students as $student) {
-				$student->id = Crypt::encrypt($student->id);
-			}
-
-			/*$length = DB::select("SELECT count(*) as 'length' "
-				. "FROM Users, Relationships "
-				. "WHERE Relationships.idUser=? AND Relationships.type='1' AND Relationships.idFriend=Users.id "
-				. "AND (Users.name LIKE ? OR Users.enrollment=?) ", [auth()->user()->id, "%$search%", $search]);*/
-
-
-			return
-				[
-					'status' => 0,
-					//"courses" => $listCourses,
-					"students" => $students,
-					//"relationships" => $relationships,
-					"length" => (int) $length,
-					"block" => (int) $block,
-					"current" => (int) $in->current,
-				];
-		} else {
-			return ['status'=>0,'message'=>"Usuario não logado."];
+		if ($in->search) {
+			$students_ids = auth()->user()->contains()->get(['student_id'])->pluck('student_id');
+			$students = User::whereIn('_id',$students_ids)->where('name','regexp',"/$in->search/i");
+			$length = clone $students;
+			$length = $length->count();
+			$students = $students->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name']);
 		}
+		else if ($in->register) {
+			$students_ids = auth()->user()->contains()->get(['student_id'])->pluck('student_id');
+			$students = User::whereIn('_id',$students_ids)->where('name','regexp',"/$in->search/i");
+			$length = clone $students;
+			$length = $length->count();
+			$students = $students->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name']);
+		}
+		else {
+			$students_ids = auth()->user()->contains()->get(['student_id'])->pluck('student_id');
+			$students = User::whereIn('_id',$students_ids);
+			$length = clone $students;
+			$length = $length->count();
+			$students = $students->skip($in->current * $block)->take($block)->orderBy('name')->get(['_id','name']);
+		}
+
+		foreach ($students as $student) {
+			$student->id = Crypt::encrypt($student->id);
+		}
+
+		/*$length = DB::select("SELECT count(*) as 'length' "
+			. "FROM Users, Relationships "
+			. "WHERE Relationships.idUser=? AND Relationships.type='1' AND Relationships.idFriend=Users.id "
+			. "AND (Users.name LIKE ? OR Users.enrollment=?) ", [auth()->user()->id, "%$search%", $search]);*/
+
+		return [
+			'status' => 1,
+			"students" => $students,
+			"length" => (int) $length,
+			"block" => (int) $block,
+			"current" => (int) $in->current,
+		];
 	}
 
 	public function read(Request $in)
@@ -124,62 +144,27 @@ class StudentController extends Controller
 		return ['status'=> 1, "student" => $student];
 	}
 
-	public function save(Request $in)
-	{
-		if ($in->has('student_id')) {
-			$student = User::find(Crypt::decrypt($in->student_id));
-			if (!$student) {
-				return ['status' => 0, 'message' => "Aluno não encontrado!"];
-			}
-		}
-		else {
-			$student = new User;
-
-			$relationship = new Study;
-			$relationship->institution_id = auth()->id();
-			$relationship->status = "E";
-		}
-		//$student->enrollment = $in->enrollment;
-		$student->name = $in->name;
-		$student->email = $in->has("email") ? $in->email : null;
-		$student->course = $in->course;
-		$student->birthdate = $in->year . "-" . $in->month . "-" . $in->day;
-		$student->type = "N";
-		$student->save();
-
-		if (isset($relationship)) {
-			$relationship->student_id = $student->id;
-			$relationship->save();
-			$student->id = Crypt::encrypt($student->id);
-		}
-		unset($student->created_at);
-		unset($student->updated_at);
-		unset($student->password);
-
-		return ['status' => 1, 'student'=>$student];
-	}
-
 	public function addAttest(Request $in)
 	{
-		if (!isset($in->student_id) || !isset($in->year) || !isset($in->month) || !isset($in->day) || !isset($in->days)) {
+		if (!isset($in->student_id) || !isset($in->date) || !isset($in->days)) {
 			return ['status'=>0,'message'=>"Dados incompletos"];
 		}
-		$in->student_id = Crypt::decrypt($in->student_id);
-		$relation = Study::where('user_id', auth()->id())->where('student_id', $in->student_id)->whereStatus("E")->first();
 
-		if ($relation) {
-			$attest = new Attest;
-			$attest->institution_id = auth()->id();
-			$attest->student_id = $in->student_id;
-			$attest->date = $in->year . "-" . $in->month . "-" . $in->day;
-			$attest->days = $in->days;
-			$attest->description = $in->description;
-			$attest->save();
+		$student =
 
-			return ['status' => 1];
-		} else {
-			return ['status'=>0,'message'=>"Essa operação não pode ser realizado. Consulte o suporte."];
+		if (!Relationship::where('institution_id', auth()->id())->where('student_id', Crypt::decrypt($in->student_id))->whereStatus("E")->count()){
+			return ['status'=>0,'message'=>"Estudante não está vinculado a esta instituição"];
 		}
+
+		$attest = new Attest;
+		$attest->institution_id = auth()->id();
+		$attest->student_id = $in->student_id;
+		$attest->date = $in->year . "-" . $in->month . "-" . $in->day;
+		$attest->days = $in->days;
+		$attest->description = $in->description;
+		$attest->save();
+
+		return ['status' => 1];
 	}
 
 	public function link(Request $in)
@@ -330,7 +315,7 @@ class StudentController extends Controller
 		// return $pareceres->disciplines;
 	}
 
-	public function reporterStudentClass(Request $in)
+	public function reportStudentClass(Request $in)
 	{
 		if (!isset($in->student_id)) {
 			return ['status'=>0,'message'=>"Dados incompletos"];
