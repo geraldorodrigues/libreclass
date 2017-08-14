@@ -23,7 +23,7 @@ class PeriodController extends Controller
 		}
 
 		if (isset($in->period_id)){//Edição
-			$period = Period::find(Crypt::decrypt($in->period_id));
+			$period = Period::find($in->period_id);
 			if (!$period){
 				return ['status'=>0, 'message'=>'Período não encontrado'];
 			}
@@ -37,7 +37,7 @@ class PeriodController extends Controller
 			if (!isset($in->course_id)){
 				return ['status'=>0, 'message'=>'Operação não autorizada'];
 			}
-			$course = Course::find(Crypt::decrypt($in->course_id));
+			$course = Course::find($in->course_id);
 			if (!$course){
 				return ['status'=>0, 'message'=>'Curso não encontrado'];
 			}
@@ -45,7 +45,7 @@ class PeriodController extends Controller
 		}
 		unset($period->created_at);
 		unset($period->updated_at);
-		$period->id = Crypt::encrypt($period->id);
+		$period->id = $period->id;
 
 		return ['status'=>1, 'period'=>$period];
 	}
@@ -57,7 +57,7 @@ class PeriodController extends Controller
 		}
 
 		if (isset($in->course_id)){
-			$course = Course::find(Crypt::decrypt($in->course_id));
+			$course = Course::find($in->course_id);
 			if (!$course){
 				return ['status'=>0, 'message'=>'Curso não encontrado'];
 			}
@@ -71,7 +71,7 @@ class PeriodController extends Controller
 		}
 
 		foreach ($periods as $period) {
-			$period->id = Crypt::encrypt($period->id);
+			$period->id = $period->id;
 			unset($period->course_id);
 			unset($period->created_at);
 			unset($period->updated_at);
@@ -86,7 +86,7 @@ class PeriodController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$period = Period::find(Crypt::decrypt($in->period_id));
+		$period = Period::find($in->period_id);
 		if (!$period){
 			return ['status'=>0, 'message'=>'Período não encontrado'];
 		}
@@ -100,7 +100,7 @@ class PeriodController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$period = Period::find(Crypt::decrypt($in->period_id));
+		$period = Period::find($in->period_id);
 		if (!$period){
 			return ['status'=>0, 'message'=>'Período não encontrado'];
 		}
@@ -110,7 +110,7 @@ class PeriodController extends Controller
 		}
 
 		$period->delete();
-		
+
 		return ['status'=>1, 'period'=>$period ];
 	}
 }

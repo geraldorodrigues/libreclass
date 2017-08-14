@@ -19,7 +19,7 @@ class CourseController extends Controller
 		}
 
 		if (isset($in->course_id)) {
-			$course = Course::find(Crypt::decrypt($in->course_id));
+			$course = Course::find($in->course_id);
 		} else {
 			$course = new Course;
 			$course->institution_id = auth()->id();
@@ -32,12 +32,12 @@ class CourseController extends Controller
 		$course->average = $in->average;
 		$course->average_final = $in->average_final;
 		$course->status = 'E';
-		'content' => new MongoBinData(file_get_contents($in->file('file')), MongoBinData::GENERIC),
-		$associated->file_id = File::create(['content' => new Binary($decoded_str, Binary::TYPE_GENERIC)])->id;
+		// 'content' => new MongoBinData(file_get_contents($in->file('file')), MongoBinData::GENERIC),
+		// $associated->file_id = File::create(['content' => new Binary($decoded_str, Binary::TYPE_GENERIC)])->id;
 
 		$course->save();
 
-		$course->id = Crypt::encrypt($course->id);
+		$course->id = $course->id;
 
 		return ['status'=>1, 'course'=>$course];
 	}
@@ -53,7 +53,7 @@ class CourseController extends Controller
 			$course->periods = $course->periods;
 			$course->unset('created_at');
 			$course->unset('updated_at');
-			$course->id = Crypt::encrypt($course->id);
+			$course->id = $course->id;
 		}
 
 		return ['status'=>1, 'courses'=>$courses];
@@ -65,12 +65,12 @@ class CourseController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$course = Course::find(Crypt::decrypt($in->course_id));
+		$course = Course::find($in->course_id);
 		if (!$course){
 			return ['status'=>0, 'message'=>'Curso não encontrado'];
 		}
 
-		$course->id = Crypt::encrypt($course->id);
+		$course->id = $course->id;
 
 		return ['status'=>1, 'course'=>$course];
 	}
@@ -85,7 +85,7 @@ class CourseController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$course = Course::find(Crypt::decrypt($in->course_id));
+		$course = Course::find($in->course_id);
 		if (!$course){
 			return ['status'=>0, 'message'=>'Curso não encontrado'];
 		}

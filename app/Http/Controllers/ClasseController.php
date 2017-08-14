@@ -24,7 +24,7 @@ class ClasseController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$period = Period::find(Crypt::decrypt($in->period_id));
+		$period = Period::find($in->period_id);
 		if (!$period){
 			return ['status'=>0, 'message'=>'Período não encontrado'];
 		}
@@ -33,7 +33,7 @@ class ClasseController extends Controller
 		}
 
 		if (isset($in->classe_id)) {//Edição
-			$classe = Classe::find(Crypt::decrypt($in->classe_id));
+			$classe = Classe::find($in->classe_id);
 		} else {
 			$classe = new Classe;
 		}
@@ -41,7 +41,7 @@ class ClasseController extends Controller
 		$classe->name = $in->name;
 		$classe->status = 'E';
 		$classe->save();
-		$classe->id = Crypt::encrypt($classe->id);
+		$classe->id = $classe->id;
 
 		return ['status'=>1, 'classe'=>$classe];
 	}
@@ -80,7 +80,7 @@ class ClasseController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$period = Period::find(Crypt::decrypt($in->period_id));
+		$period = Period::find($in->period_id);
 		if (!$period){
 			return ['status'=>0, 'message'=>'Período não encontrado'];
 		}
@@ -91,7 +91,7 @@ class ClasseController extends Controller
 		$classes = $period->classes;
 
 		foreach ($classes as $classe) {
-			$classe->id = Crypt::encrypt($classe->id);
+			$classe->id = $classe->id;
 			unset($classe->period_id);
 			unset($classe->created_at);
 			unset($classe->updated_at);
@@ -110,7 +110,7 @@ class ClasseController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$course = Course::find(Crypt::decrypt($in->course_id));
+		$course = Course::find($in->course_id);
 		if (!$course){
 			return ['status'=>0, 'message'=>'Curso não encontrado'];
 		}
@@ -123,10 +123,10 @@ class ClasseController extends Controller
 			$period->classes = $period->classes;
 			$classes = $period->classes;
 			foreach ($classes as $classe) {
-				$classe->id = Crypt::encrypt($classe->id);
+				$classe->id = $classe->id;
 			}
 			$period->classes = $classes;
-			$period->id = Crypt::encrypt($period->id);
+			$period->id = $period->id;
 		}
 
 		return ['status'=>1, 'periods'=>$periods];
@@ -138,7 +138,7 @@ class ClasseController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$classe = Classe::find(Crypt::decrypt($in->classe_id));
+		$classe = Classe::find($in->classe_id);
 		if (!$classe){
 			return ['status'=>0, 'message'=>'Turma não encontrada'];
 		}
@@ -157,7 +157,7 @@ class ClasseController extends Controller
 			return ['status'=>0, 'message'=>'Dados incompletos'];
 		}
 
-		$classe = Classe::find(Crypt::decrypt($in->classe_id));
+		$classe = Classe::find($in->classe_id);
 		if (!$classe){
 			return ['status'=>0, 'message'=>'Turma não encontrada'];
 		}
@@ -179,7 +179,7 @@ class ClasseController extends Controller
 		if (!isset($in->classe_id) || !isset($in->status)){
 			return ['status' => 0, 'message' => 'Dados incompletos'];
 		}
-		$classe = Classe::find(Crypt::decrypt($in->classe_id));
+		$classe = Classe::find($in->classe_id);
 		if (!$classe) {
 			return ['status' => 0, 'message' => 'Turma não encontrada'];
 		}
@@ -232,15 +232,15 @@ class ClasseController extends Controller
 																					AND Units.status=?
 																 GROUP BY Units.value", [$course->id, $status]);
 
-			$course->id = Crypt::encrypt($course->id);
+			$course->id = $course->id;
 		}
 
 		return $courses;
 	}
 
-	public function blockUnit()
+	public function blockUnit(Request $in)
 	{
-		$course = Course::find(Crypt::decrypt(Input::get("course")));
+		$course = Course::find($in->course_id);
 		if ($course->idInstitution != $this->idUser) {
 			throw new Exception('Usuário inválido');
 		}
@@ -258,9 +258,9 @@ class ClasseController extends Controller
 		}
 	}
 
-	public function unblockUnit()
+	public function unblockUnit(Request $in)
 	{
-		$course = Course::find(Crypt::decrypt(Input::get("course")));
+		$course = Course::find($in->course_id);
 		if ($course->idInstitution != $this->idUser) {
 			throw new Exception('Usuário inválido');
 		}
@@ -278,10 +278,10 @@ class ClasseController extends Controller
 		}
 	}
 
-	public function createUnits()
+	public function createUnits(Request $in)
 	{
 		$s_attends = false;
-		$course = Course::find(Crypt::decrypt(Input::get("course")));
+		$course = Course::find($in->course_id);
 		if ($course->idInstitution != $this->idUser) {
 			throw new Exception("Você não tem permissão para realizar essa operação");
 		}
