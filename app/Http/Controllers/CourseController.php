@@ -32,8 +32,8 @@ class CourseController extends Controller
 		$course->average = $in->average;
 		$course->average_final = $in->average_final;
 		$course->status = 'E';
-		'content' => new MongoBinData(file_get_contents($in->file('file')), MongoBinData::GENERIC),
-		$associated->file_id = File::create(['content' => new Binary($decoded_str, Binary::TYPE_GENERIC)])->id;
+		// 'content' => new MongoBinData(file_get_contents($in->file('file')), MongoBinData::GENERIC),
+		// $associated->file_id = File::create(['content' => new Binary($decoded_str, Binary::TYPE_GENERIC)])->id;
 
 		$course->save();
 
