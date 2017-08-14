@@ -7,6 +7,7 @@ class Offer extends \Moloquent
 {
 	use SoftDeletes;
 	protected $fillable = ['classe_id', 'discipline_id', 'classroom', 'day_period'];
+	protected $hidden = ['_id'];
 
 	public function discipline()
 	{

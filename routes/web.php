@@ -248,6 +248,7 @@ Route::any('teacher/search','TeacherController@search');
 Route::any('teacher/unlink','TeacherController@unlink');
 Route::any('teacher/vinculate-teacher','TeacherController@vinculateTeacher');
 Route::any('teacher/invite','TeacherController@invite');
+Route::any('teacher/offers','TeacherController@offers');
 
 Route::any('student/list','StudentController@list');
 Route::any('student/read','StudentController@read');

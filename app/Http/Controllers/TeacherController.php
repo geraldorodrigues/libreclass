@@ -256,7 +256,7 @@ class TeacherController extends Controller
 			return ['status' => 0, 'message' => 'Professor não encontrado'];
 		}
 
-		if (!Relationship::where('institution_id', auth()->id())->where('teacher_id, '$teacher->id)->where('status', 'E')->count()){
+		if (!Relationship::where('institution_id', auth()->id())->where('teacher_id', $teacher->id)->where('status', 'E')->count()){
 			return ['status' => 0, 'message' => 'Professor não está vinculado à instituição'];
 		}
 
@@ -316,6 +316,24 @@ class TeacherController extends Controller
 		} else {
 			return ['status' => 0, 'message' => "Operação inválida"];
 		}
+	}
+
+	public function offers(Request $in) {
+		if (!auth()->user()) {
+			return ['status'=>0,'message'=>'Usuário não logado.'];
+		}
+		$teacher = User::find(auth()->id());
+		$offers_ids = $teacher->lectures()->get(['offer_id'])->pluck('offer_id')->unique();
+		$offers = Offer::whereIn('_id',$offers_ids)->get();
+		foreach ($offers as $offer) {
+			$offer->institution_id = Crypt::encrypt($offer->classe->period->course->institution->id);
+			$offer->id = Crypt::encrypt($offer->id);
+			$offer->discipline_id = Crypt::encrypt($offer->discipline_id);
+			$offer->classe_id = Crypt::encrypt($offer->classe_id);
+			unset($offer->created_at);
+			unset($offer->classe);
+		}
+		return ['status' => 1, 'offers'=>$offers];
 	}
 
 }
