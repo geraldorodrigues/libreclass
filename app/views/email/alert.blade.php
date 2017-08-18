@@ -7,5 +7,5 @@
 </p>
 
 <p>
-  LibreClass.com
+  LibreClass.org
 </p>
