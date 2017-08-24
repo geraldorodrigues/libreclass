@@ -10,7 +10,7 @@
 
 <body>
   <center>
-    {{HTML::image(("http://s23.postimg.org/8imz07wyj/banner_svi.png"), null, ["style" => "width: 200px;"])}}
+    {{HTML::image(("https://app.libreclass.org/images/icon.png"), null, ["style" => "width: 200px;"])}}
 
     <p style="font-size: 16pt">Seja bem vindo ao Libreclass, {{ $name }}!</p>
   </center>
