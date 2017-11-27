@@ -125,8 +125,8 @@
 			<div class="panel panel-default small">
 			  <div class="small panel-heading"><b>{{ $lessons_note['description'] }}</b></div>
 			  <div class="small panel-body">
-			    <p class="small"><b>Título:</b> {{ $lessons_note['title'] }}</p>
-			    <p class="small"><b>Nota de aula:</b> {{ $lessons_note['note'] }}</p>
+			    <p><b>Título:</b> {{ $lessons_note['title'] }}</p>
+			    <p><b>Nota de aula:</b> {{ $lessons_note['note'] }}</p>
 			  </div>
 			</div>
 		@endforeach
