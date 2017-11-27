@@ -135,7 +135,7 @@
 			<h5 class='page-break text-center breadcrumb'>Avaliações</h5>
 		</div>
 
-		<div class="small">
+		<div class="small table-responsive">
 			<table class="table table-bordered table-condensed">
 				<tr>
 					<th class="text-center vertical-align"><b>N#</b></th>
