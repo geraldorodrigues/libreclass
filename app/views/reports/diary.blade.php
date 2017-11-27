@@ -132,7 +132,7 @@
 		@endforeach
 
 		<div>
-			<h5 class='text-center breadcrumb'>Avaliações</h5>
+			<h5 class='page-break text-center breadcrumb'>Avaliações</h5>
 		</div>
 
 		<div class="small">
