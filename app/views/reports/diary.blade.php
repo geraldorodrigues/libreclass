@@ -135,26 +135,26 @@
 			<h5 class='page-break text-center breadcrumb'>Avaliações</h5>
 		</div>
 
-		<div class="small table-responsive">
+		<div class="small">
 			<table class="table table-bordered table-condensed">
 				<tr>
-					<th class="text-center vertical-align"><b>N#</b></th>
-					<th class="text-center vertical-align"><b>Aluno(a)</b></th>
+					<th class="small text-center vertical-align"><b>N#</b></th>
+					<th class="small text-center vertical-align"><b>Aluno(a)</b></th>
 					@foreach ($data['exams'] as $exam)
-						<th class="limited-width text-center vertical-align"><div>Avaliação {{ $exam->number }} ({{ $exam->date }})</div></th>
+						<th class="small limited-width text-center vertical-align"><div>Avaliação {{ $exam->number }} ({{ $exam->date }})</div></th>
 					@endforeach
-					<th class="limited-width text-center vertical-align">Média</th>
-					<th class="limited-width text-center vertical-align">Avaliação de recuperação</th>
+					<th class="small limited-width text-center vertical-align">Média</th>
+					<th class="small limited-width text-center vertical-align">Avaliação de recuperação</th>
 				</tr>
 				@foreach ($data['students'] as $student)
 					<tr>
-						<td class="text-center">{{ $student->number }}</td>
-						<td>{{ trim($student->name) }}</td>
+						<td class="small text-center">{{ $student->number }}</td>
+						<td class="small">{{ trim($student->name) }}</td>
 						@foreach ($student->exams as $exam)
-							<td class="text-center">{{ $exam }}</td>
+							<td class="small text-center">{{ $exam }}</td>
 						@endforeach
-						<td class="text-center">{{ $student->average }}</td>
-						<td class="text-center">{{ $student->finalAverage }}</td>
+						<td class="small text-center">{{ $student->average }}</td>
+						<td class="small text-center">{{ $student->finalAverage }}</td>
 					</tr>
 				@endforeach
 			</table>
