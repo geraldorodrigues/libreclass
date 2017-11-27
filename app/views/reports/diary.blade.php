@@ -34,6 +34,22 @@
 				margin-left: -10em;
 				margin-right: -10em;
 			}
+			.page-break-inside {
+				page-break-inside: avoid;
+			}
+			.page-break {
+				page-break-before: always;
+			}
+			.box {
+				padding: 15px;
+				border: 1px solid #ddd;
+				margin-bottom: 15px
+			}
+
+			.bg-muted {
+				padding: 5px;
+				background: #eee;
+			}
 		</style>
 	</head>
 
@@ -102,7 +118,7 @@
 		</div>
 
 		<div>
-			<h5 class='text-center breadcrumb'>Notas de aula</h5>
+			<h5 class='page-break text-center breadcrumb'>Notas de aula</h5>
 		</div>
 
 		@foreach ($data['lessons_notes'] as $lessons_note)
