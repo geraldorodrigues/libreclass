@@ -2,7 +2,7 @@
 
 > Software LibreClass CE.
 
-O LibreClass CE é mantido pela empresa Modeon Devhouse. É um projeto que surgiu a partir do LibreClass desenvolvido e mantido pela empresa Sysvale Softgroup [Github](https://github.com/Sysvale/libreclass).
+O LibreClass CE é mantido por empresas no Vale do São Francisco (Petrolina - PE e Juazeiro - BA). É um projeto que surgiu a partir do [LibreClass](https://github.com/Sysvale/libreclass).
 
 ## Instalação
 
@@ -84,3 +84,11 @@ Neste ponto você terá um usuário do tipo instituição. Poderá realizar logi
 ## Contribuindo
 
 Agradecemos caso deseje contribuir para o projeto!
+
+Faça parte da comunidade no [Facebook](https://www.facebook.com/groups/libreclassce) para ficar por dentro das novidades!
+
+## Lista de empresas que mantém o LibreClass Community Edition
+
+* [Modeon Devhouse](http://modeon.co)
+* [Sysvale Softgroup](http://www.sysvale.com)
+* Quer fazer parte desta lista? Demonstre o seu interesse através de issue. Gostaríamos de mostrar para a comunidade quais empresas contribuem para o crescimento deste projeto.
