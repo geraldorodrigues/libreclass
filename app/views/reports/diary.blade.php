@@ -63,7 +63,7 @@
 						<div style="width: 100%;">
 							<h4>{{ $data['institution']->name }}</h4>
 							<h5>{{ $data['institution']->street }}, {{ $data['institution']->local }}</h5>
-							<h5>Código UEE: {{ $data['institution']->uee }}</h5>
+							{{-- <h5>Código UEE: uee</h5> --}}
 						</div>
 					</td>
 					<td style="width: 10%; padding-left: 15px;"></td>
@@ -78,7 +78,7 @@
 		<div>
 			<div class='container small'>
 				<div class="row">
-					<div class="col-xs-4"><p><b>Tipo de ensino:</b> {{ $data['course']->type }}</p></div>
+					<div class="col-xs-4"><p><b>Disciplina:</b> {{ $data['disciplineName'] }}</p></div>
 					<div class="col-xs-4"><p><b>Modalidade:</b> {{ $data['course']->modality }}</p></div>
 					<div class="col-xs-4"><p><b>Submodalidade:</b> {{ $data['course']->name }}</p></div>
 				</div>

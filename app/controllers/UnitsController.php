@@ -206,6 +206,7 @@ class UnitsController extends \BaseController
       $data['classe'] = $unit->offer->getClass();
       $data['period'] = $unit->offer->classe->getPeriod();
       $data['course'] = $unit->offer->classe->period->getCourse();
+      $data['disciplineName'] = $unit->offer->discipline->name;
 
       $offer = Offer::find($unit->idOffer);
 
