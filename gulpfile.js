@@ -117,4 +117,3 @@ gulp.task('browserSync', ['connect-php'], function() {
 gulp.task('dev', ['browserSync', 'stylus', 'minify-js', 'copy']);
 
 gulp.task('default', ['stylus', 'minify-js', 'copy']);
-// gulp.task('default', ['dev']);
