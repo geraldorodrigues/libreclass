@@ -8,7 +8,7 @@ class CSVController extends \BaseController {
    */
   private $user;
 
-  public function CSVController()
+  public function __construct()
   {
     $id = Session::get("user");
     $this->user = User::find(Crypt::decrypt($id));

@@ -5,7 +5,7 @@ class UsersController extends \BaseController
 
   private $idUser;
 
-  public function UsersController()
+  public function __construct()
   {
     $id = Session::get("user");
     if ($id == null || $id == "") {

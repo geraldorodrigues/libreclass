@@ -4,7 +4,7 @@ class OffersController extends \BaseController {
 
   private $idUser;
 
-  public function OffersController()
+  public function __construct()
   {
     $id = Session::get("user");
     if ( $id == null || $id == "" )
